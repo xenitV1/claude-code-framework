@@ -1,0 +1,10 @@
+# Settings Files
+
+settings.json
+settings.local.json
+.credentials.json
+
+# docs
+
+kaynakca.md
+claudecodedoc.md

@@ -1,0 +1,52 @@
+{
+    "hooks": {
+        "SessionStart": [
+            {
+                "matcher": "startup",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python \"%USERPROFILE%\\.claude\\scripts\\session_hooks.py\" start --silent"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python \"%USERPROFILE%\\.claude\\scripts\\explorer_helper.py\" . --silent"
+                    }
+                ]
+            }
+        ],
+        "PreToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python \"%USERPROFILE%\\.claude\\scripts\\pre_bash.py\" \"$TOOL_INPUT\""
+                    }
+                ]
+            }
+        ],
+        "PostToolUse": [
+            {
+                "matcher": "Bash",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python \"%USERPROFILE%\\.claude\\scripts\\track_error.py\" \"$TOOL_INPUT\" \"$EXIT_CODE\" \"$TOOL_OUTPUT\""
+                    }
+                ]
+            }
+        ],
+        "SessionEnd": [
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python \"%USERPROFILE%\\.claude\\scripts\\session_hooks.py\" end --silent"
+                    }
+                ]
+            }
+        ]
+    }
+}
