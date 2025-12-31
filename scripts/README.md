@@ -10,6 +10,10 @@ These run automatically via `settings.json` hooks:
 |--------|------|---------|
 | [session_hooks.py](session_hooks.py) | SessionStart/End | Project detection, session tracking |
 | [explorer_helper.py](explorer_helper.py) | SessionStart | Deep project discovery |
+| [pre_bash.py](pre_bash.py) | PreToolUse | Error learning - warns about known issues |
+| [check_prevention.py](check_prevention.py) | PreToolUse | Blocks dangerous commands |
+| [track_error.py](track_error.py) | PostToolUse | Records errors for learning |
+| [token_tracker.py](token_tracker.py) | PostToolUse/SessionEnd | Token usage & cost estimation |
 
 ## Utility Scripts
 
@@ -17,6 +21,7 @@ These run automatically via `settings.json` hooks:
 |--------|---------|
 | [session_manager.py](session_manager.py) | Project state management |
 | [auto_preview.py](auto_preview.py) | Preview server control |
+| [git_commit_helper.py](git_commit_helper.py) | Smart commit message generation |
 
 ## Usage
 
@@ -24,6 +29,13 @@ These run automatically via `settings.json` hooks:
 ```bash
 # Configured in settings.json, runs automatically
 python session_hooks.py start
+python pre_bash.py "npm install package"
+python track_error.py "command" "exit_code" "output"
+
+# Token tracking (automatic via hooks)
+python token_tracker.py reset           # Called on SessionStart
+python token_tracker.py track "Bash" "input" "output"  # Called on PostToolUse
+python token_tracker.py summary         # Called on SessionEnd
 ```
 
 ### Utility Scripts (manual)

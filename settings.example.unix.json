@@ -11,6 +11,10 @@
                     {
                         "type": "command",
                         "command": "python3 ~/.claude/scripts/explorer_helper.py . --silent"
+                    },
+                    {
+                        "type": "command",
+                        "command": "python3 ~/.claude/scripts/token_tracker.py reset"
                     }
                 ]
             }
@@ -35,12 +39,25 @@
                         "command": "python3 ~/.claude/scripts/track_error.py \"$TOOL_INPUT\" \"$EXIT_CODE\" \"$TOOL_OUTPUT\""
                     }
                 ]
+            },
+            {
+                "matcher": "",
+                "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 ~/.claude/scripts/token_tracker.py track \"$TOOL_NAME\" \"$TOOL_INPUT\" \"$TOOL_OUTPUT\""
+                    }
+                ]
             }
         ],
         "SessionEnd": [
             {
                 "matcher": "",
                 "hooks": [
+                    {
+                        "type": "command",
+                        "command": "python3 ~/.claude/scripts/token_tracker.py summary"
+                    },
                     {
                         "type": "command",
                         "command": "python3 ~/.claude/scripts/session_hooks.py end --silent"

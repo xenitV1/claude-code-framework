@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+#
+# Maestro CLI wrapper
+# Provides convenient access to Claude Code Maestro commands
+#
+
+# Find the script directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+MAESTRO_DIR="$(dirname "$SCRIPT_DIR")"
+
+# Check if installed globally
+if [[ -f "$HOME/.claude/scripts/maestro.py" ]]; then
+    MAESTRO_SCRIPT="$HOME/.claude/scripts/maestro.py"
+elif [[ -f "$MAESTRO_DIR/scripts/maestro.py" ]]; then
+    MAESTRO_SCRIPT="$MAESTRO_DIR/scripts/maestro.py"
+else
+    echo "Error: maestro.py not found"
+    echo "Run 'make install' to install Maestro"
+    exit 1
+fi
+
+# Run the Python script
+exec python3 "$MAESTRO_SCRIPT" "$@"
