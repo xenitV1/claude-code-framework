@@ -1,4 +1,4 @@
-# 🔧 Claude Code Hooks Troubleshooting
+# 🔧 Maestro Hooks Troubleshooting
 
 ## ❌ Problem: SessionStart/SessionEnd Hooks Not Working
 

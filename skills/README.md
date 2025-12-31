@@ -1,4 +1,4 @@
-# Skills
+# 📚 Maestro Skills
 
 Knowledge resources that agents reference for domain expertise. Skills are not directly callable - they provide documentation and patterns.
 

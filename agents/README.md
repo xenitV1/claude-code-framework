@@ -1,4 +1,4 @@
-# Agents
+# 🤖 Maestro Agents
 
 Specialized AI agents for different development domains. Each agent has specific expertise, tools, and skill references.
 

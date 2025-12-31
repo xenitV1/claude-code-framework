@@ -1,4 +1,4 @@
-# Scripts
+# 🐍 Maestro Scripts
 
 Python automation scripts for hooks and utilities.
 

@@ -1,6 +1,6 @@
-# 🤖 Claude Framework
+# 🎼 Maestro
 
-> **A comprehensive AI-assisted development framework** that transforms Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
+> **AI Development Orchestrator** - Transform Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
 
 [![Agents](https://img.shields.io/badge/Agents-14-blue)](#-agents)
 [![Skills](https://img.shields.io/badge/Skills-37-green)](#-skills)
@@ -59,7 +59,7 @@ The framework will:
 ## 📁 Project Structure
 
 ```
-claude-framework/
+maestro/
 ├── agents/              # 12 specialized AI agents
 │   ├── frontend-specialist.md
 │   ├── backend-specialist.md
@@ -390,6 +390,6 @@ Contributions are welcome! Please read the documentation in each directory's REA
 ---
 
 <p align="center">
-  <b>Built with ❤️ for AI-assisted development</b><br/>
+  <b>🎼 Maestro - Built with ❤️ for AI-assisted development</b><br/>
   <a href="https://x.com/xenit_v0">@xenit_v0</a>
 </p>

@@ -1,4 +1,4 @@
-# Commands
+# ⚡ Maestro Commands
 
 Slash commands for common development workflows.
 

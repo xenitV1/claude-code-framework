@@ -1,7 +1,7 @@
-# CLAUDE.md - AI Development Framework Configuration
+# CLAUDE.md - Maestro Configuration
 
 > This file defines how Claude AI behaves in this workspace.
-> **Version 3.0** - Full-featured App Builder Platform
+> **Version 3.0** - Maestro AI Development Orchestrator
 
 ---
 
@@ -236,5 +236,5 @@ Hooks are configured in `settings.json`:
 
 ---
 
-**Version:** 3.0 - App Builder Platform  
-**Last Updated:** 2025-12-30
+**Version:** 3.0 - Maestro AI Development Orchestrator  
+**Last Updated:** 2025-12-31

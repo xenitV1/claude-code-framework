@@ -61,8 +61,8 @@ def get_project_survey(root_path=".", max_depth=5):
         "expo.json": "Expo/React Native",
         "app.json": "React Native/Expo",
         "docker-compose.yml": "Docker Compose",
-        "settings.json": "Claude Framework (Settings)",
-        "CLAUDE.md": "Claude Framework (Context)",
+        "settings.json": "Maestro (Settings)",
+        "CLAUDE.md": "Maestro (Context)",
         ".env": "Environment Config"
     }
 
