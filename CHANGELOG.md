@@ -5,6 +5,27 @@ All notable changes to Maestro will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.4] - 2025-12-31
+
+### Added
+- **CODEBASE.md** - Project context file
+  - Relocated from `.claude/rules.md` to root directory
+  - Improves visibility for Claude (`.claude/` directory was not always accessible)
+  - Contains project structure and codebase context
+- **mobile-typography skill** - New skill for mobile typography
+  - Mobile type scale patterns
+  - Responsive typography guidelines
+  - Font optimization for mobile platforms
+
+### Changed
+- Updated CLAUDE.md skills table with mobile-typography
+- Updated skills/README.md total count from 40 to 41 skills
+- Updated mobile-developer agent to reference mobile-typography skill
+- Updated session hooks configuration
+- Updated settings.example.json
+
+---
+
 ## [0.0.3] - 2025-12-31
 
 ### Added
