@@ -2,19 +2,19 @@
 
 > **AI Development Orchestrator** - Transform Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
 
-[![Agents](https://img.shields.io/badge/Agents-16-blue)](#-agents)
-[![Skills](https://img.shields.io/badge/Skills-38-green)](#-skills)
-[![Commands](https://img.shields.io/badge/Commands-9-orange)](#-commands)
-[![Python](https://img.shields.io/badge/Scripts-5-yellow)](#-scripts)
+[![Agents](https://img.shields.io/badge/Agents-15-blue)](#-agents)
+[![Skills](https://img.shields.io/badge/Skills-43-green)](#-skills)
+[![Commands](https://img.shields.io/badge/Commands-8-orange)](#-commands)
+[![Python](https://img.shields.io/badge/Scripts-12-yellow)](#-scripts)
 
 ---
 
 ## ✨ Features
 
-- 🤖 **16 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, and more
-- 📚 **38 Skills** - Domain knowledge resources with patterns, best practices, and templates
-- ⚡ **9 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
-- 🐍 **5 Python Scripts** - Automation hooks for session management and project discovery
+- 🤖 **15 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, and more
+- 📚 **43 Skills** - Domain knowledge resources with patterns, best practices, and templates
+- ⚡ **8 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
+- 🐍 **12 Python Scripts** - Automation hooks for error learning, session management, and project discovery
 - 🎯 **Clean Code Standards** - CRITICAL skill for concise, direct, solution-focused code
 - 🎭 **6 Behavioral Modes** - Adaptive AI behavior: Brainstorm, Implement, Debug, Review, Teach, Ship
 - 🔄 **Project Detection** - Automatically detects project type and tech stack
@@ -81,14 +81,16 @@ maestro/
 │   ├── enhance.md
 │   ├── debug.md
 │   └── ...
-├── scripts/             # 5 Python automation scripts
+├── scripts/             # 12 Python automation scripts
+│   ├── setup.py         # Cross-platform installer
 │   ├── session_hooks.py
 │   ├── parallel_orchestrator.py
 │   ├── explorer_helper.py
 │   ├── session_manager.py
 │   └── auto_preview.py
-├── data/                # Runtime state
-├── settings.json        # Hook configuration
+├── data/                # Runtime state and error database
+├── settings.example.unix.json     # Hook config (macOS/Linux)
+├── settings.example.windows.json  # Hook config (Windows)
 ├── CLAUDE.md           # AI behavior configuration
 └── README.md           # This file
 ```
@@ -284,9 +286,14 @@ python scripts/parallel_orchestrator.py "Analyze this codebase" --agents 5 --tes
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
-Hooks are configured in `settings.json`:
+Hooks are configured in `~/.claude/settings.json`. Platform-specific examples are provided:
+
+- **macOS/Linux**: `settings.example.unix.json`
+- **Windows**: `settings.example.windows.json`
+
+Example structure (macOS/Linux):
 
 ```json
 {
@@ -294,19 +301,17 @@ Hooks are configured in `settings.json`:
     "SessionStart": [
       {
         "matcher": "startup",
-        "hooks": [{
-          "type": "command",
-          "command": "python scripts/session_hooks.py start"
-        }]
+        "hooks": [
+          { "type": "command", "command": "python3 ~/.claude/scripts/session_hooks.py start --silent" }
+        ]
       }
     ],
-    "SessionEnd": [
+    "PreToolUse": [
       {
-        "matcher": "",
-        "hooks": [{
-          "type": "command",
-          "command": "python scripts/session_hooks.py end --silent"
-        }]
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": "python3 ~/.claude/scripts/pre_bash.py \"$TOOL_INPUT\"" }
+        ]
       }
     ]
   }
@@ -326,16 +331,18 @@ Hooks are configured in `settings.json`:
 
 > **Why project root?** Easy to find and reference. Hook stdout ensures Claude always receives context.
 
+See [HOOKS-TROUBLESHOOTING.md](HOOKS-TROUBLESHOOTING.md) for complete examples for each platform.
+
 ---
 
 ## 📊 Statistics
 
 | Category | Count |
 |----------|-------|
-| Agents | 16 |
-| Skills | 38 |
-| Commands | 9 |
-| Scripts | 5 |
+| Agents | 15 |
+| Skills | 43 |
+| Commands | 8 |
+| Scripts | 12 |
 | Templates | 12 |
 | Behavioral Modes | 6 |
 | Hook Scripts | 2 (session_hooks, explorer_helper) |
@@ -394,7 +401,71 @@ For complete troubleshooting guide, see **[HOOKS-TROUBLESHOOTING.md](HOOKS-TROUB
 
 - Python 3.10+
 - Node.js 23+ (for native TypeScript & SQLite support)
-- Claude Code or compatible AI assistant
+- Claude Code CLI
+
+---
+
+## 📦 Installation
+
+### Quick Setup (Recommended)
+
+Run the cross-platform setup script:
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/claude-code-maestro.git
+cd claude-code-maestro
+
+# Install Python dependencies
+pip install rich pydantic
+
+# Run the setup script (auto-detects your OS)
+python scripts/setup.py
+```
+
+The setup script will:
+1. Detect your operating system (Windows, macOS, or Linux)
+2. Copy scripts to `~/.claude/scripts/`
+3. Install the appropriate settings file
+4. Create the data directory structure
+
+### Manual Installation
+
+#### macOS / Linux
+
+```bash
+# Create directories
+mkdir -p ~/.claude/scripts ~/.claude/data/projects ~/.claude/data/reports
+
+# Copy scripts
+cp scripts/*.py ~/.claude/scripts/
+
+# Copy settings
+cp settings.example.unix.json ~/.claude/settings.json
+```
+
+#### Windows (PowerShell)
+
+```powershell
+# Create directories
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\scripts"
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\data\projects"
+New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.claude\data\reports"
+
+# Copy scripts
+Copy-Item scripts\*.py "$env:USERPROFILE\.claude\scripts\"
+
+# Copy settings
+Copy-Item settings.example.windows.json "$env:USERPROFILE\.claude\settings.json"
+```
+
+### Verify Installation
+
+```bash
+claude --debug
+```
+
+Check the debug log at `~/.claude/debug/[session-id].txt` for "Found X hook matchers"
 
 ---
 
