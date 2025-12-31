@@ -203,6 +203,49 @@ Knowledge resources that agents reference for domain expertise:
 
 ---
 
+## 🔧 Makefile Commands
+
+Maestro includes a Makefile for easy management:
+
+### Setup Commands
+```bash
+make install       # Full installation to ~/.claude
+make install-deps  # Install Python dependencies only
+make uninstall     # Remove Maestro (preserves data)
+make verify        # Verify installation status
+```
+
+### Development Commands
+```bash
+make setup-dev     # Setup development environment
+make test          # Run tests
+make lint          # Run linters (flake8, black)
+make clean         # Clean temporary files
+```
+
+### Utility Commands
+```bash
+make token-stats   # Show token usage statistics
+make commit        # Generate smart commit message
+make commit-copy   # Generate and copy to clipboard
+make git-stats     # Show repository statistics
+make status        # Show current project status
+make agents        # List available agents
+make skills        # List available skills
+```
+
+### Quick Reference
+| Command | Description |
+|---------|-------------|
+| `make install` | Install Maestro to ~/.claude |
+| `make verify` | Check installation status |
+| `make commit` | AI-powered commit message |
+| `make token-stats` | View token/cost usage |
+| `make agents` | List all 15 agents |
+| `make skills` | List all 40+ skills |
+
+---
+
 ## 🐍 Scripts
 
 Python automation scripts that provide intelligent hooks:
@@ -212,13 +255,20 @@ Python automation scripts that provide intelligent hooks:
 |--------|------|---------|
 | `session_hooks.py` | SessionStart/End | Project detection, session tracking |
 | `explorer_helper.py` | SessionStart | Deep project discovery |
+| `pre_bash.py` | PreToolUse | Error learning - warns about known issues |
+| `check_prevention.py` | PreToolUse | Blocks dangerous commands |
+| `track_error.py` | PostToolUse | Records errors for learning |
+| `token_tracker.py` | PostToolUse/SessionEnd | Token usage & cost estimation |
 
 ### Utility Scripts (Manual)
 | Script | Purpose |
 |--------|---------|
-| `parallel_orchestrator.py` | Multi-agent parallel execution engine |
+| `parallel_orchestrator.py` | Multi-agent parallel execution with streaming UI |
 | `session_manager.py` | Project state management |
 | `auto_preview.py` | Preview server control |
+| `git_commit_helper.py` | Smart commit message generation |
+| `maestro.py` | Unified CLI wrapper |
+| `error_formatter.py` | Human-friendly error messages |
 
 ### Dependencies
 
@@ -407,27 +457,36 @@ For complete troubleshooting guide, see **[HOOKS-TROUBLESHOOTING.md](HOOKS-TROUB
 
 ## 📦 Installation
 
-### Quick Setup (Recommended)
-
-Run the cross-platform setup script:
+### Quick Setup with Makefile (Recommended)
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/claude-code-maestro.git
+git clone https://github.com/aliihsansepar/claude-code-maestro.git
 cd claude-code-maestro
 
-# Install Python dependencies
-pip install rich pydantic
+# Install with one command
+make install
 
-# Run the setup script (auto-detects your OS)
-python scripts/setup.py
+# Verify installation
+make verify
 ```
 
-The setup script will:
+### Alternative: Interactive Setup
+
+```bash
+# Run the interactive TUI installer
+python scripts/setup.py
+
+# Or quick install without prompts
+python scripts/setup.py --quick
+```
+
+The setup will:
 1. Detect your operating system (Windows, macOS, or Linux)
-2. Copy scripts to `~/.claude/scripts/`
-3. Install the appropriate settings file
-4. Create the data directory structure
+2. Install Python dependencies (rich, pydantic)
+3. Copy scripts to `~/.claude/scripts/`
+4. Install the appropriate settings file
+5. Create the data directory structure
 
 ### Manual Installation
 
