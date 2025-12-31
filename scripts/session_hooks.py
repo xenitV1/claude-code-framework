@@ -125,7 +125,7 @@ def detect_project_type(project_path: str, max_depth: int = 3) -> Dict[str, Any]
         "projectType": None,
         "framework": None,
         "platform": None,
-        "detectedAt": None  # Which directory was it detected in
+        "detectedAt": None
     }
 
     def find_project_files(current_path: Path, depth: int = 0) -> Optional[Dict[str, Any]]:
@@ -181,12 +181,14 @@ def detect_project_type(project_path: str, max_depth: int = 3) -> Dict[str, Any]
                 "platform": "general",
                 "detectedAt": str(current_path)
             }
+
             if (current_path / "manage.py").exists():
                 result["framework"] = "django"
                 result["platform"] = "web"
             elif (current_path / "app.py").exists() or (current_path / "main.py").exists():
                 result["framework"] = "flask-or-fastapi"
                 result["platform"] = "api"
+
             return result
 
         # Rust project
@@ -430,7 +432,15 @@ def generate_context_markdown(session_info: Dict, analysis: Dict, os_info: Dict[
             return 'Unknown'
         return str(val).upper()
 
-    md = f"""# 📁 Project Context
+    md = f"""# CODEBASE.md
+
+> **Auto-generated project context file.** Refreshed on every session start.
+>
+> **Purpose:** Provides Claude AI with project structure, OS info, and coding standards automatically.
+
+---
+
+# 📁 Project Context
 
 **Project:** `{project_name}`
 **Framework:** `{framework or 'Unknown'}`
@@ -548,12 +558,10 @@ def session_start(project_path: str, silent: bool = False):
         "lastAccess": datetime.now().isoformat()
     }, indent=2, ensure_ascii=False))
 
-    # Create context file in .claude directory for AI to read
-    claude_dir = Path(project_path) / ".claude"
-    claude_dir.mkdir(parents=True, exist_ok=True)
-    context_file = claude_dir / "rules.md"
+    # Create CODEBASE.md in project root
     context_md = generate_context_markdown(session_info, analysis, os_info)
-    context_file.write_text(context_md, encoding="utf-8")
+    codebase_file = Path(project_path) / "CODEBASE.md"
+    codebase_file.write_text(context_md, encoding="utf-8")
 
     # Output for Claude (markdown format for AI to parse)
     if not silent:

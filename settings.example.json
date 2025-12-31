@@ -6,7 +6,7 @@
                 "hooks": [
                     {
                         "type": "command",
-                        "command": "python \"%USERPROFILE%\\.claude\\scripts\\session_hooks.py\" start --silent"
+                        "command": "python \"%USERPROFILE%\\.claude\\scripts\\session_hooks.py\" start"
                     },
                     {
                         "type": "command",
