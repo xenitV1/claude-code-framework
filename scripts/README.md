@@ -15,8 +15,10 @@ These run automatically via `settings.json` hooks:
 
 | Script | Purpose |
 |--------|---------|
+| [parallel_orchestrator.py](parallel_orchestrator.py) | Multi-agent parallel execution |
 | [session_manager.py](session_manager.py) | Project state management |
 | [auto_preview.py](auto_preview.py) | Preview server control |
+| [setup.py](setup.py) | 🆕 Cross-platform installation script |
 
 ## Usage
 
@@ -221,6 +223,7 @@ Duration: 0:45:23
 
 ---
 
-**Last Updated:** 2025-12-31
+**Last Updated:** 2026-01-01
 **Version:** 2.0
 **Claude Code:** v2.0.64
+

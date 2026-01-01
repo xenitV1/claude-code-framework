@@ -7,6 +7,7 @@ Knowledge resources that agents reference for domain expertise. Skills are not d
 ### 🏗️ Architecture & Patterns
 | Skill | Description |
 |-------|-------------|
+| architecture | 🆕 Architectural decision framework, ADR, trade-offs |
 | api-patterns | REST/GraphQL patterns |
 | react-patterns | React component patterns |
 | mobile-patterns | Mobile development patterns |
@@ -92,4 +93,4 @@ skills/
         └── TEMPLATE.md
 ```
 
-## Total: 41 Skills (+3 Security)
+## Total: 40 Skills

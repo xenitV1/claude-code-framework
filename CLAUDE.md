@@ -326,17 +326,6 @@ Hooks are configured in `settings.json` (platform-specific):
 
 ---
 
-## 📊 Statistics
-
-| Category | Count |
-|----------|-------|
-| Agents | 14 |
-| Skills | 37 |
-| Commands | 8 |
-| Scripts | 5 |
-| Templates | 12 |
-
----
-
 **Version:** 3.0 - Maestro AI Development Orchestrator  
-**Last Updated:** 2025-12-31
+**Last Updated:** 2026-01-01
+
