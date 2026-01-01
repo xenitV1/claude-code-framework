@@ -12,7 +12,7 @@
 **Framework:** `Unknown`
 **Type:** `Unknown`
 **Path:** `c:\claude`
-**Detected:** 2025-12-31 18:14:42
+**Detected:** 2026-01-01 21:00:42
 
 ---
 
@@ -82,6 +82,7 @@ CHANGELOG.md
 CLAUDE.md
 CODEBASE.md
 HOOKS-TROUBLESHOOTING.md
+Makefile
 README.md
 agents/
   README.md
@@ -99,6 +100,7 @@ agents/
   performance-optimizer.md
   project-planner.md
   security-auditor.md
+  seo-specialist.md
   test-engineer.md
 commands/
   README.md
@@ -119,11 +121,14 @@ nul
 scripts/
   README.md
   auto_preview.py
+  dependency_scanner.py
   explorer_helper.py
   parallel_orchestrator.py
   session_hooks.py
   session_manager.py
-settings.example.json
+  setup.py
+settings.example.unix.json
+settings.example.windows.json
 skills/
   README.md
   api-patterns/
@@ -131,6 +136,8 @@ skills/
   api-security-testing/
     SKILL.md
   app-builder/
+    SKILL.md
+  architecture/
     SKILL.md
   artifacts-builder/
     SKILL.md
@@ -229,6 +236,22 @@ skills/
     SKILL.md
 ```
 
+
+## 📊 File Dependencies
+
+> Scanned 7 files
+
+### API Endpoints Used
+
+```
+/api/...
+```
+
+### Database Models
+
+```
+modelName
+```
 
 # Clean Code - Pragmatic AI Coding Standards
 

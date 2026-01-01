@@ -5,6 +5,20 @@
 
 ---
 
+## ⚠️ CRITICAL: Use Maestro System
+
+**MANDATORY:** When working in this project, you MUST:
+
+1. **Check available agents** in `agents/` before starting complex tasks
+2. **Use appropriate skills** from `skills/` for domain-specific knowledge
+3. **ALWAYS check CODEBASE.md** file tree before making any file changes - it shows project structure and file dependencies
+4. **Respect File Dependency Awareness** - check `←` annotations before making changes
+5. **Use slash commands** (`/create`, `/debug`, etc.) for structured workflows
+
+> ⚠️ Do NOT ignore this system. Maestro provides specialized agents, skills, and workflows that improve code quality and prevent errors.
+
+---
+
 ## 🚀 Quick Start Commands
 
 | Command | Description |
@@ -59,7 +73,7 @@ Context injection requires hook stdout output. `CODEBASE.md` is created in proje
 
 ---
 
-## 🤖 Available Agents (15)
+## 🤖 Available Agents (16)
 
 ### Orchestration Agents
 
@@ -85,6 +99,7 @@ Context injection requires hook stdout output. `CODEBASE.md` is created in proje
 | `documentation-writer` | README, JSDoc, API docs |
 | `explorer-agent` | Deep directory scan, tech stack survey |
 | `debugger` | Root cause analysis, systematic debugging |
+| `seo-specialist` | 🆕 SEO, GEO, E-E-A-T, AI citations |
 
 ---
 
@@ -143,7 +158,8 @@ skills/
 
 | Script | Hook | Purpose |
 |--------|------|---------|
-| `session_hooks.py` | SessionStart/End | Project detection, session tracking |
+| `session_hooks.py` | SessionStart/End | Project detection, session tracking, dependency analysis |
+| `dependency_scanner.py` | SessionStart | 🆕 File dependency analysis (imports, API calls, DB models) |
 | `explorer_helper.py` | SessionStart | Deep project discovery |
 | `parallel_orchestrator.py` | - | Parallel agent orchestrator |
 | `session_manager.py` | - | Project state management |
@@ -179,6 +195,39 @@ When user request is unclear or could be implemented multiple ways:
 - ✅ YES: Ambiguous requests with multiple valid approaches
 - ✅ YES: Changes affecting architecture or multiple files
 - ✅ YES: Installing new dependencies or tools
+
+---
+
+### ⚠️ File Dependency Awareness
+
+**CRITICAL:** Before modifying any file, **ALWAYS check and update dependent files.**
+
+The `CODEBASE.md` file contains a **📊 File Dependencies** section that shows:
+- API endpoints used by frontend files
+- Database models referenced in code
+- High-impact files (imported by many other files)
+
+**Before making changes:**
+1. Check `CODEBASE.md` → File Dependencies section
+2. Identify files that depend on the file you're changing
+3. Update ALL affected files together
+4. If adding/removing a file, update referencing files
+
+**Examples:**
+| Change | Check | Update |
+|--------|-------|--------|
+| Modify `prisma/schema.prisma` | API routes using that model | Types, API handlers, components |
+| Rename API endpoint | Frontend files calling it | All `fetch()` / `axios` calls |
+| Delete a component | Files importing it | Remove imports, replace usage |
+| Add new skill | Agent using it | Agent's `skills:` list |
+| Create new agent | README, CLAUDE.md | Agent listings, counts |
+
+**Anti-Pattern:**
+```
+❌ Change schema.prisma but forget to update API route
+❌ Rename file but leave old imports broken
+❌ Add feature but don't update types
+```
 
 ---
 

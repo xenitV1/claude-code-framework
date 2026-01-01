@@ -2,19 +2,19 @@
 
 > **AI Development Orchestrator** - Transform Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
 
-[![Agents](https://img.shields.io/badge/Agents-16-blue)](#-agents)
-[![Skills](https://img.shields.io/badge/Skills-38-green)](#-skills)
+[![Agents](https://img.shields.io/badge/Agents-17-blue)](#-agents)
+[![Skills](https://img.shields.io/badge/Skills-40-green)](#-skills)
 [![Commands](https://img.shields.io/badge/Commands-9-orange)](#-commands)
-[![Python](https://img.shields.io/badge/Scripts-5-yellow)](#-scripts)
+[![Python](https://img.shields.io/badge/Scripts-8-yellow)](#-scripts)
 
 ---
 
 ## ✨ Features
 
-- 🤖 **16 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, and more
-- 📚 **38 Skills** - Domain knowledge resources with patterns, best practices, and templates
+- 🤖 **17 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, SEO and more
+- 📚 **40 Skills** - Domain knowledge resources with patterns, best practices, and templates
 - ⚡ **9 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
-- 🐍 **5 Python Scripts** - Automation hooks for session management and project discovery
+- 🐍 **8 Python Scripts** - Automation hooks for session management, project discovery, and dependency analysis
 - 🎯 **Clean Code Standards** - CRITICAL skill for concise, direct, solution-focused code
 - 🎭 **6 Behavioral Modes** - Adaptive AI behavior: Brainstorm, Implement, Debug, Review, Teach, Ship
 - 🔄 **Project Detection** - Automatically detects project type and tech stack
@@ -316,31 +316,6 @@ The framework adapts its behavior based on context:
 
 ---
 
-## 🔄 Hook System Flow
-
-The framework uses an intelligent hook system that automatically detects projects:
-
-```mermaid
-flowchart LR
-    Start([claude]) --> SessionStart[SessionStart Hook]
-    SessionStart --> Detect[Detect Project<br/>& Tech Stack]
-    Detect --> Explore[Deep Project Scan<br/>& Structure Analysis]
-    Explore --> Ready[Ready for Commands]
-
-    Ready --> UserCmd{User Action}
-    UserCmd -->|Chat Message| AIResponse[AI Response]
-    UserCmd -->|Bash Command| Execute[Execute Command]
-
-    Execute --> Ready
-    UserCmd -->|Exit| SessionEnd[SessionEnd Hook<br/>Save Session]
-    SessionEnd --> End([Exit])
-
-    style SessionStart fill:#4CAF50,color:#fff
-    style SessionEnd fill:#9C27B0,color:#fff
-```
-
----
-
 ## 🧠 Multi-Agent Orchestration
 
 The framework supports parallel execution through the `parallel_orchestrator.py` engine:
@@ -417,8 +392,6 @@ Hooks are configured in `settings.json`:
 
 ---
 
----
-
 ## 🔧 Troubleshooting
 
 ### ❌ Hooks Not Working?
@@ -462,14 +435,6 @@ Check the debug log at `~/.claude/debug/[session-id].txt` and look for:
 - `Found 1 hook matchers` ✅ (not `Found 0` ❌)
 
 For complete troubleshooting guide, see **[HOOKS-TROUBLESHOOTING.md](HOOKS-TROUBLESHOOTING.md)**.
-
----
-
-## 🛠️ Requirements
-
-- Python 3.10+
-- Node.js 23+ (for native TypeScript & SQLite support)
-- Claude Code or compatible AI assistant
 
 ---
 
