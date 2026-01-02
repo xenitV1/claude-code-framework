@@ -2,24 +2,24 @@
 
 > **AI Development Orchestrator** - Transform Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
 
-[![Agents](https://img.shields.io/badge/Agents-17-blue)](#-agents)
-[![Skills](https://img.shields.io/badge/Skills-40-green)](#-skills)
-[![Commands](https://img.shields.io/badge/Commands-9-orange)](#-commands)
-[![Python](https://img.shields.io/badge/Scripts-8-yellow)](#-scripts)
+[![Agents](https://img.shields.io/badge/Agents-18-blue)](#-agents)
+[![Skills](https://img.shields.io/badge/Skills-49-green)](#-skills)
+[![Commands](https://img.shields.io/badge/Commands-10-orange)](#-commands)
+[![Python](https://img.shields.io/badge/Scripts-6-yellow)](#-scripts)
 
 ---
 
 ## ✨ Features
 
-- 🤖 **17 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, SEO and more
-- 📚 **40 Skills** - Domain knowledge resources with patterns, best practices, and templates
-- ⚡ **9 Slash Commands** - Quick actions for creating apps, debugging, testing, and deploying
-- 🐍 **8 Python Scripts** - Automation hooks for session management, project discovery, and dependency analysis
+- 🤖 **18 Specialized Agents** - Expert AI personas for frontend, backend, mobile, DevOps, security, SEO, games and more
+- 📚 **49 Skills** - Domain knowledge resources with patterns, best practices, and templates
+- ⚡ **10 Slash Commands** - Quick actions for creating, orchestrating, debugging, testing, and deploying
+- 🐍 **6 Python Scripts** - Automation hooks for session management and project discovery
 - 🎯 **Clean Code Standards** - CRITICAL skill for concise, direct, solution-focused code
 - 🎭 **6 Behavioral Modes** - Adaptive AI behavior: Brainstorm, Implement, Debug, Review, Teach, Ship
 - 🔄 **Project Detection** - Automatically detects project type and tech stack
-- 🧩 **Parallel Orchestration** - Run multiple specialized agents concurrently for different perspectives
-- 🧠 **Synthesis Reporting** - Automatically combines multi-agent outputs into cohesive project reports
+- 🧩 **Native Agent Orchestration** - Coordinate multiple agents using Claude Code's Agent Tool
+- 🧠 **Synthesis Reporting** - Automatically combines multi-agent outputs into cohesive reports
 
 ---
 
@@ -156,10 +156,10 @@ maestro/
 │   ├── enhance.md
 │   ├── debug.md
 │   └── ...
-├── scripts/             # 5 Python automation scripts
+├── scripts/             # 6 Python automation scripts
 │   ├── session_hooks.py
-│   ├── parallel_orchestrator.py
 │   ├── explorer_helper.py
+│   ├── dependency_scanner.py
 │   ├── session_manager.py
 │   └── auto_preview.py
 ├── data/                # Runtime state
@@ -267,12 +267,13 @@ Knowledge resources that agents reference for domain expertise:
 |---------|-------------|------|
 | `/create` | Create new application from natural language | IMPLEMENT |
 | `/enhance` | Add features to existing app | IMPLEMENT |
-| `/preview` | Start/stop preview server | UTILITY |
-| `/status` | Show project and agent status | UTILITY |
+| `/orchestrate` | Multi-agent coordination for complex tasks | ORCHESTRATE |
 | `/brainstorm` | Structured idea exploration | BRAINSTORM |
 | `/debug` | Systematic problem investigation | DEBUG |
 | `/test` | Generate and run tests | IMPLEMENT |
 | `/deploy` | Production deployment with safety checks | SHIP |
+| `/preview` | Start/stop preview server | UTILITY |
+| `/status` | Show project and agent status | UTILITY |
 
 ---
 
@@ -289,9 +290,10 @@ Python automation scripts that provide intelligent hooks:
 ### Utility Scripts (Manual)
 | Script | Purpose |
 |--------|---------|
-| `parallel_orchestrator.py` | Multi-agent parallel execution engine |
 | `session_manager.py` | Project state management |
 | `auto_preview.py` | Preview server control |
+| `dependency_scanner.py` | Dependency analysis |
+| `setup.py` | Installation setup |
 
 ### Dependencies
 
@@ -318,19 +320,41 @@ The framework adapts its behavior based on context:
 
 ## 🧠 Multi-Agent Orchestration
 
-The framework supports parallel execution through the `parallel_orchestrator.py` engine:
+The framework uses **Claude Code's native Agent Tool** for multi-agent coordination:
 
-1. **Task Decomposition**: The orchestrator assigns different perspectives (Security, Backend, Frontend, Testing, DevOps) to specialized agents.
-2. **Parallel Dispatch**: Agents are spawned concurrently using ThreadPoolExecutor and work independently.
-3. **State Tracking**: Agent status and results are tracked in `data/orchestrator-state.json` for monitoring.
-4. **Synthesis**: After all agents complete, a unified synthesis report is generated in `data/reports/`.
+### How It Works
 
+1. **Task Decomposition**: Claude analyzes the task and identifies required expertise domains
+2. **Agent Selection**: Appropriate agents are selected (security, backend, frontend, testing, etc.)
+3. **Native Invocation**: Agents are invoked using Claude Code's built-in Agent Tool
+4. **Synthesis**: Results are combined into a unified report with actionable recommendations
+
+### Usage
+
+**Via Slash Command:**
 ```bash
-python scripts/parallel_orchestrator.py "Analyze this codebase" --agents 3
-python scripts/parallel_orchestrator.py "Analyze this codebase" --agents 5 --test  # Test mode with mock results
+/orchestrate Review the authentication system from security, backend, and testing perspectives
 ```
 
-**Note:** Agents work independently and do not directly communicate with each other. Each agent produces its own output, which is then synthesized into a final report.
+**Via Direct Invocation:**
+```
+Use the orchestrator agent to coordinate a comprehensive review of the payment module
+```
+
+**Chaining Agents:**
+```
+First, use the explorer-agent to map the codebase.
+Then, use the security-auditor to review vulnerabilities.
+Finally, use the test-engineer to identify missing tests.
+```
+
+### Benefits
+
+- ✅ **Single session** - All agents share context
+- ✅ **AI-controlled** - Claude orchestrates, not external scripts
+- ✅ **Native integration** - Works with built-in Explore, Plan agents
+- ✅ **Resume support** - Can continue previous agent work
+- ✅ **Context passing** - Findings flow between agents
 
 ---
 
@@ -382,10 +406,10 @@ Hooks are configured in `settings.json`:
 
 | Category | Count |
 |----------|-------|
-| Agents | 16 |
-| Skills | 38 |
-| Commands | 9 |
-| Scripts | 5 |
+| Agents | 18 |
+| Skills | 49 |
+| Commands | 10 |
+| Scripts | 6 |
 | Templates | 12 |
 | Behavioral Modes | 6 |
 | Hook Scripts | 2 (session_hooks, explorer_helper) |

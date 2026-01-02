@@ -16,7 +16,6 @@ These run automatically via `settings.json` hooks:
 
 | Script | Purpose |
 |--------|---------|
-| [parallel_orchestrator.py](parallel_orchestrator.py) | Multi-agent parallel execution |
 | [session_manager.py](session_manager.py) | Project state management |
 | [auto_preview.py](auto_preview.py) | Preview server control |
 | [setup.py](setup.py) | 🆕 Cross-platform installation script |

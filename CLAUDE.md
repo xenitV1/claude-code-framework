@@ -31,6 +31,7 @@
 | `/debug` | Systematic problem investigation |
 | `/test` | Generate and run tests |
 | `/deploy` | Production deployment (⚠️ CRITICAL) |
+| `/orchestrate` | Multi-agent coordination |
 
 ### Usage Examples
 
@@ -73,7 +74,7 @@ Context injection requires hook stdout output. `CODEBASE.md` is created in proje
 
 ---
 
-## 🤖 Available Agents (16)
+## 🤖 Available Agents (18)
 
 ### Orchestration Agents
 
@@ -100,10 +101,11 @@ Context injection requires hook stdout output. `CODEBASE.md` is created in proje
 | `explorer-agent` | Deep directory scan, tech stack survey |
 | `debugger` | Root cause analysis, systematic debugging |
 | `seo-specialist` | 🆕 SEO, GEO, E-E-A-T, AI citations |
+| `game-developer` | 🆕 Unity, Godot, Unreal, Phaser, multiplayer |
 
 ---
 
-## 📚 Skills (40)
+## 📚 Skills (49)
 
 ### Core Skills
 
@@ -149,7 +151,7 @@ skills/
 ├── vulnerability-scanner/ # 🆕 DAST, SAST, SCA tools
 ├── red-team-tactics/     # 🆕 MITRE ATT&CK, exploitation
 ├── api-security-testing/ # 🆕 OWASP API Top 10, JWT
-└── ... (40 total)
+└── ... (49 total)
 ```
 
 ---
@@ -161,9 +163,9 @@ skills/
 | `session_hooks.py` | SessionStart/End | Project detection, session tracking, dependency analysis |
 | `dependency_scanner.py` | SessionStart | 🆕 File dependency analysis (imports, API calls, DB models) |
 | `explorer_helper.py` | SessionStart | Deep project discovery |
-| `parallel_orchestrator.py` | - | Parallel agent orchestrator |
 | `session_manager.py` | - | Project state management |
 | `auto_preview.py` | - | Preview server control |
+| `setup.py` | - | Cross-platform installation |
 
 ### Dependencies
 
@@ -244,7 +246,7 @@ The `CODEBASE.md` file contains a **📊 File Dependencies** section that shows:
 
 ---
 
-## � Claude Code Mode Mapping
+## 🎭 Claude Code Mode Mapping
 
 **IMPORTANT:** When user selects a Claude Code mode, use the corresponding agents and skills:
 
@@ -281,10 +283,10 @@ The `CODEBASE.md` file contains a **📊 File Dependencies** section that shows:
 
 ```
 c:\claude\
-├── agents/          # 14 specialized agents
-├── skills/          # 37 knowledge resources
-├── commands/        # 8 slash commands
-├── scripts/         # 5 Python automation scripts
+├── agents/          # 18 specialized agents
+├── skills/          # 49 knowledge resources
+├── commands/        # 10 slash commands
+├── scripts/         # 6 Python automation scripts
 ├── data/            # Runtime state
 ├── settings.json    # Hook configuration
 ├── README.md        # Project documentation
@@ -375,6 +377,6 @@ Hooks are configured in `settings.json` (platform-specific):
 
 ---
 
-**Version:** 3.0 - Maestro AI Development Orchestrator  
-**Last Updated:** 2026-01-01
+**Version:** 3.1 - Maestro AI Development Orchestrator  
+**Last Updated:** 2026-01-02
 

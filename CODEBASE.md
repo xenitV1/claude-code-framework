@@ -12,7 +12,7 @@
 **Framework:** `Unknown`
 **Type:** `Unknown`
 **Path:** `c:\claude`
-**Detected:** 2026-01-01 21:00:42
+**Detected:** 2026-01-02 11:06:12
 
 ---
 
@@ -77,6 +77,11 @@ winget list              # List installed apps
 
 ## 📂 Project Structure
 
+> **Legend:** `file.ts ← A.tsx, B.tsx` = This file is **imported by** A.tsx and B.tsx.
+> Changing this file will affect those files.
+>
+> ⚠️ **Note:** If a file has no ← annotation but you see imports in the actual code, this dependency is not yet tracked or is incomplete in CODEBASE.md.
+
 ```
 CHANGELOG.md
 CLAUDE.md
@@ -94,6 +99,7 @@ agents/
   documentation-writer.md
   explorer-agent.md
   frontend-specialist.md
+  game-developer.md
   mobile-developer.md
   orchestrator.md
   penetration-tester.md
@@ -109,6 +115,7 @@ commands/
   debug.md
   deploy.md
   enhance.md
+  orchestrate.md
   preview.md
   status.md
   test.md
@@ -117,13 +124,11 @@ data/
 docs/
   RESOURCES.md
   claude-code-reference.md
-nul
 scripts/
   README.md
   auto_preview.py
   dependency_scanner.py
   explorer_helper.py
-  parallel_orchestrator.py
   session_hooks.py
   session_manager.py
   setup.py
@@ -159,6 +164,24 @@ skills/
     SKILL.md
   frontend-design/
     SKILL.md
+  game-development/
+    2d-games/
+      SKILL.md
+    3d-games/
+      SKILL.md
+    SKILL.md
+    game-design/
+      SKILL.md
+    mobile-games/
+      SKILL.md
+    multiplayer/
+      SKILL.md
+    pc-games/
+      SKILL.md
+    vr-ar/
+      SKILL.md
+    web-games/
+      SKILL.md
   geo-fundamentals/
     SKILL.md
   git-worktrees/
@@ -239,7 +262,7 @@ skills/
 
 ## 📊 File Dependencies
 
-> Scanned 7 files
+> Scanned 6 files
 
 ### API Endpoints Used
 
