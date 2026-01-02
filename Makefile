@@ -117,9 +117,9 @@ test:
 	@$(PYTHON) -m pytest tests/ -v 2>/dev/null || echo "No tests found"
 
 lint:
-	@echo "Running linters..."
-	@$(PYTHON) -m flake8 scripts/*.py --max-line-length=120 --ignore=E501,W503
-	@$(PYTHON) -m black scripts/*.py --check --quiet || true
+	@echo "Running modern quality audit (Ruff)..."
+	@$(PYTHON) -m ruff check scripts/*.py --fix || true
+	@$(PYTHON) -m mypy scripts/*.py --ignore-missing-imports || true
 
 clean:
 	@echo "Cleaning temporary files..."

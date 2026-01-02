@@ -82,6 +82,7 @@ def get_all_scripts() -> List[str]:
         "dependency_scanner.py",
         "auto_preview.py",
         "session_manager.py",
+        "lint_check.py",
     ]
 
 
