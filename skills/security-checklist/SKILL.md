@@ -1,68 +1,64 @@
 ---
 name: security-checklist
-description: Comprehensive security checklist covering OWASP Top 10, input validation, authentication, and secure coding practices. Use for security audits and reviews.
+description: Security audit checklist covering OWASP Top 10, authentication, and secure coding practices.
 ---
 
 # Security Checklist
 
-## OWASP Top 10 (2021)
+> Quick reference checklist for security audits.
+
+---
+
+## 1. OWASP Top 10 (2021+)
 
 ### A01: Broken Access Control
-- [ ] Authorization checks on all protected routes
+- [ ] Authorization on all protected routes
 - [ ] Deny by default
 - [ ] Rate limiting implemented
 - [ ] CORS properly configured
-- [ ] Directory listing disabled
 
 ### A02: Cryptographic Failures
-- [ ] Passwords hashed with bcrypt/argon2 (cost 12+)
+- [ ] Passwords hashed (bcrypt/argon2, cost 12+)
 - [ ] Sensitive data encrypted at rest
 - [ ] TLS 1.2+ for all connections
 - [ ] No secrets in code/logs
-- [ ] Strong random number generation
 
 ### A03: Injection
-- [ ] Parameterized queries only
+- [ ] Parameterized queries
 - [ ] Input validation on all user data
-- [ ] Output encoding for XSS prevention
+- [ ] Output encoding for XSS
 - [ ] No eval() or dynamic code execution
-- [ ] Command injection prevented
 
 ### A04: Insecure Design
 - [ ] Threat modeling done
 - [ ] Security requirements defined
-- [ ] Secure development lifecycle followed
 - [ ] Business logic validated
 
 ### A05: Security Misconfiguration
 - [ ] Unnecessary features disabled
-- [ ] Error messages don't reveal info
+- [ ] Error messages sanitized
 - [ ] Security headers configured
 - [ ] Default credentials changed
-- [ ] Latest security patches applied
 
 ### A06: Vulnerable Components
 - [ ] Dependencies up to date
-- [ ] No known vulnerabilities (npm audit)
-- [ ] License compliance checked
+- [ ] No known vulnerabilities
 - [ ] Unused dependencies removed
 
 ### A07: Authentication Failures
-- [ ] Multi-factor authentication available
+- [ ] MFA available
 - [ ] Session invalidation on logout
 - [ ] Session timeout implemented
-- [ ] Password policy enforced
 - [ ] Brute force protection
 
 ### A08: Integrity Failures
 - [ ] Dependency integrity verified
 - [ ] CI/CD pipeline secured
-- [ ] Code signing implemented
 - [ ] Update mechanism secured
 
 ### A09: Logging Failures
 - [ ] Security events logged
-- [ ] Logs protected from tampering
+- [ ] Logs protected
 - [ ] No sensitive data in logs
 - [ ] Alerting configured
 
@@ -71,35 +67,60 @@ description: Comprehensive security checklist covering OWASP Top 10, input valid
 - [ ] Allow-list for external calls
 - [ ] Network segmentation
 
-## Quick Audit Commands
+---
 
-```bash
-# NPM security audit
-npm audit
+## 2. Authentication Checklist
 
-# Check for secrets in code
-grep -r "password\s*=" --include="*.ts"
-grep -r "api[_-]?key" --include="*.ts"
+- [ ] Strong password policy
+- [ ] Account lockout
+- [ ] Secure password reset
+- [ ] Session management
+- [ ] Token expiration
+- [ ] Logout invalidation
 
-# Check for dangerous functions
-grep -r "eval\(" --include="*.ts"
-grep -r "dangerouslySetInnerHTML" --include="*.tsx"
-```
+---
 
-## Security Headers
+## 3. API Security Checklist
 
-```typescript
-// helmet.js configuration
-app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
-      styleSrc: ["'self'", "'unsafe-inline'"],
-    }
-  },
-  hsts: { maxAge: 31536000, includeSubDomains: true },
-  noSniff: true,
-  frameguard: { action: 'deny' }
-}));
-```
+- [ ] Authentication required
+- [ ] Authorization per endpoint
+- [ ] Input validation
+- [ ] Rate limiting
+- [ ] Output sanitization
+- [ ] Error handling
+
+---
+
+## 4. Data Protection Checklist
+
+- [ ] Encryption at rest
+- [ ] Encryption in transit
+- [ ] Key management
+- [ ] Data minimization
+- [ ] Secure deletion
+
+---
+
+## 5. Security Headers
+
+| Header | Purpose |
+|--------|---------|
+| **Content-Security-Policy** | XSS prevention |
+| **X-Content-Type-Options** | MIME sniffing |
+| **X-Frame-Options** | Clickjacking |
+| **Strict-Transport-Security** | Force HTTPS |
+| **Referrer-Policy** | Referrer control |
+
+---
+
+## 6. Audit Commands Reference
+
+| Check | What to Look For |
+|-------|------------------|
+| Secrets in code | password, api_key, secret |
+| Dangerous patterns | eval, innerHTML, SQL concat |
+| Dependency issues | npm audit, snyk |
+
+---
+
+> **Remember:** Checklists catch obvious issues. Deep testing requires methodology.

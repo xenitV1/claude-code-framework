@@ -1,298 +1,158 @@
 ---
 name: powershell-windows
-description: PowerShell scripting patterns for Windows including common pitfalls, operator syntax, Unicode handling, and best practices. CRITICAL for writing error-free PowerShell scripts on Windows.
+description: PowerShell Windows patterns. Critical pitfalls, operator syntax, error handling.
 ---
 
 # PowerShell Windows Patterns
 
-## Overview
-This skill contains common pitfalls and correct usage patterns for Windows PowerShell. It enables AI to write error-free PowerShell scripts on Windows.
+> Critical patterns and pitfalls for Windows PowerShell.
 
-## Critical Rules
+---
 
-### 1. Operator Usage
+## 1. Operator Syntax Rules
 
-Logical operators in PowerShell REQUIRE parentheses!
+### CRITICAL: Parentheses Required
 
-```powershell
-# ❌ WRONG - This will throw an ERROR!
-if (Test-Path "file1.txt" -or Test-Path "file2.txt") { }
+| ❌ Wrong | ✅ Correct |
+|----------|-----------|
+| `if (Test-Path "a" -or Test-Path "b")` | `if ((Test-Path "a") -or (Test-Path "b"))` |
+| `if (Get-Item $x -and $y -eq 5)` | `if ((Get-Item $x) -and ($y -eq 5))` |
 
-# ✅ CORRECT - Each Test-Path must be in parentheses
-if ((Test-Path "file1.txt") -or (Test-Path "file2.txt")) { }
+**Rule:** Each cmdlet call MUST be in parentheses when using logical operators.
 
-# ❌ WRONG
-if (Test-Path $path -and $variable -eq "value") { }
+---
 
-# ✅ CORRECT
-if ((Test-Path $path) -and ($variable -eq "value")) { }
-```
+## 2. Unicode/Emoji Restriction
 
-### 2. Do Not Use Unicode and Emojis
+### CRITICAL: No Unicode in Scripts
 
-Unicode emoji characters cause ISSUES in PowerShell!
-
-```powershell
-# ❌ WRONG - Throws parser error
-Write-Output "✅ Success"
-Write-Output "🔴 Error"
-Write-Output "⚠️ Warning"
-
-# ✅ CORRECT - Use ASCII characters
-Write-Output "[OK] Success"
-Write-Output "[!] Error"
-Write-Output "[*] Warning"
-Write-Output "[+] Added"
-Write-Output "[-] Removed"
-Write-Output "[?] Question"
-```
-
-### Icon Reference Table
-
-| Purpose | DO NOT USE | USE |
-|---------|------------|-----|
+| Purpose | ❌ Don't Use | ✅ Use |
+|---------|-------------|--------|
 | Success | ✅ ✓ | [OK] [+] |
 | Error | ❌ ✗ 🔴 | [!] [X] |
 | Warning | ⚠️ 🟡 | [*] [WARN] |
 | Info | ℹ️ 🔵 | [i] [INFO] |
-| Critical | 🔴 | [!!] [CRITICAL] |
 | Progress | ⏳ | [...] |
 
-### 3. Null Checks
+**Rule:** Use ASCII characters only in PowerShell scripts.
 
-Always check if variables are null:
+---
 
-```powershell
-# ❌ WRONG - Throws error if null
-if ($array.Count -gt 0) { }
+## 3. Null Check Patterns
 
-# ✅ CORRECT - Check null first
-if ($array -and $array.Count -gt 0) { }
+### Always Check Before Access
 
-# ❌ WRONG
-$text.Length
+| ❌ Wrong | ✅ Correct |
+|----------|-----------|
+| `$array.Count -gt 0` | `$array -and $array.Count -gt 0` |
+| `$text.Length` | `if ($text) { $text.Length }` |
 
-# ✅ CORRECT
-if ($text) { $text.Length }
+---
+
+## 4. String Interpolation
+
+### Complex Expressions
+
+| ❌ Wrong | ✅ Correct |
+|----------|-----------|
+| `"Value: $($obj.prop.sub)"` | Store in variable first |
+
+**Pattern:**
+```
+$value = $obj.prop.sub
+Write-Output "Value: $value"
 ```
 
-### 4. String Interpolation
+---
 
-Using variables inside strings:
+## 5. Error Handling
 
-```powershell
-# ❌ WRONG - In complex expressions
-Write-Output "Duration: $($session.data.duration)"
+### ErrorActionPreference
 
-# ✅ CORRECT - Assign to variable first
-$duration = $session.data.duration
-Write-Output "Duration: $duration"
+| Value | Use |
+|-------|-----|
+| Stop | Development (fail fast) |
+| Continue | Production scripts |
+| SilentlyContinue | When errors expected |
 
-# ✅ ALTERNATIVE - Format operator
-Write-Output ("Duration: {0}" -f $session.data.duration)
-```
+### Try/Catch Pattern
 
-### 5. ErrorActionPreference
+- Don't return inside try block
+- Use finally for cleanup
+- Return after try/catch
 
-Always specify at the beginning of the script:
+---
 
-```powershell
-# Stop on error (development)
-$ErrorActionPreference = "Stop"
+## 6. File Paths
 
-# Continue on error (production hooks)
-$ErrorActionPreference = "Continue"
+### Windows Path Rules
 
-# Silently ignore errors
-$ErrorActionPreference = "SilentlyContinue"
-```
+| Pattern | Use |
+|---------|-----|
+| Literal path | `C:\Users\User\file.txt` |
+| Variable path | `Join-Path $env:USERPROFILE "file.txt"` |
+| Relative | `Join-Path $ScriptDir "data"` |
 
-### 6. Try/Catch/Finally
+**Rule:** Use Join-Path for cross-platform safety.
 
-Correct usage:
+---
 
-```powershell
-try {
-    # Risky code
-    $result = Some-RiskyOperation
-    
-    # DO NOT use return inside try block
-    # return $result  # ❌ WRONG
-}
-catch {
-    Write-Warning "Error: $_"
-    # Action on error
-}
-finally {
-    # Always runs - for cleanup
-}
+## 7. Array Operations
 
-# Return should be outside the try block
-return $result  # ✅ CORRECT
-```
+### Correct Patterns
 
-### 7. File Paths
+| Operation | Syntax |
+|-----------|--------|
+| Empty array | `$array = @()` |
+| Add item | `$array += $item` |
+| ArrayList add | `$list.Add($item) | Out-Null` |
 
-For Windows paths:
+---
 
-```powershell
-# ❌ WRONG - Linux style
-$path = "/home/user/file.txt"
+## 8. JSON Operations
 
-# ✅ CORRECT - Windows style
-$path = "C:\Users\User\file.txt"
+### CRITICAL: Depth Parameter
 
-# ✅ CORRECT - Cross-platform (use Join-Path)
-$path = Join-Path $env:USERPROFILE "Documents\file.txt"
+| ❌ Wrong | ✅ Correct |
+|----------|-----------|
+| `ConvertTo-Json` | `ConvertTo-Json -Depth 10` |
 
-# ✅ CORRECT - Escape inside double quotes
-$path = "$env:USERPROFILE\.claude\data"
-```
+**Rule:** Always specify `-Depth` for nested objects.
 
-### 8. Array Operations
+### File Operations
 
-```powershell
-# ❌ WRONG - When creating empty array
-$array = ()
+| Operation | Pattern |
+|-----------|---------|
+| Read | `Get-Content "file.json" -Raw | ConvertFrom-Json` |
+| Write | `$data | ConvertTo-Json -Depth 10 | Out-File "file.json" -Encoding UTF8` |
 
-# ✅ CORRECT
-$array = @()
+---
 
-# ❌ WRONG - Adding element to array
-$array.Add($item)  # This won't work!
+## 9. Common Errors
 
-# ✅ CORRECT
-$array += $item
-# or use ArrayList
-$list = [System.Collections.ArrayList]@()
-$list.Add($item) | Out-Null
-```
+| Error Message | Cause | Fix |
+|---------------|-------|-----|
+| "parameter 'or'" | Missing parentheses | Wrap cmdlets in () |
+| "Unexpected token" | Unicode character | Use ASCII only |
+| "Cannot find property" | Null object | Check null first |
+| "Cannot convert" | Type mismatch | Use .ToString() |
 
-### 9. JSON Operations
+---
+
+## 10. Script Template
 
 ```powershell
-# Reading
-$data = Get-Content "file.json" -Raw | ConvertFrom-Json
-
-# Writing - Depth is critical!
-$data | ConvertTo-Json -Depth 10 | Out-File "file.json" -Encoding UTF8
-
-# ❌ WRONG - Without specifying depth
-$data | ConvertTo-Json  # Nested objects will be lost!
-
-# ✅ CORRECT - Depth 10 is usually enough
-$data | ConvertTo-Json -Depth 10
-```
-
-### 10. Parameter Definition
-
-```powershell
-param(
-    # Mandatory parameter
-    [Parameter(Mandatory=$true)]
-    [string]$RequiredParam,
-    
-    # Optional with default value
-    [string]$OptionalParam = "default",
-    
-    # Optional with validation
-    [ValidateSet("Option1", "Option2")]
-    [string]$LimitedParam
-)
-```
-
-## Common Errors and Solutions
-
-### Error: "A parameter cannot be found that matches parameter name 'or'"
-
-**Cause:** Incorrect usage of the `-or` operator
-
-```powershell
-# ❌ Incorrect
-if (Test-Path "a" -or Test-Path "b") { }
-
-# ✅ Solution
-if ((Test-Path "a") -or (Test-Path "b")) { }
-```
-
-### Error: "Unexpected token" or "Missing terminator"
-
-**Cause:** Unicode characters or special symbols
-
-```powershell
-# ❌ Incorrect
-Write-Output "✅"
-
-# ✅ Solution
-Write-Output "[OK]"
-```
-
-### Error: "The property 'X' cannot be found on this object"
-
-**Cause:** Missing null check
-
-```powershell
-# ❌ Incorrect
-$data.property.subproperty
-
-# ✅ Solution
-if ($data -and $data.property) {
-    $data.property.subproperty
-}
-```
-
-### Error: "Cannot convert value to type System.String"
-
-**Cause:** Type mismatch
-
-```powershell
-# ❌ Incorrect
-[string]$value = $complexObject
-
-# ✅ Solution
-$value = $complexObject.ToString()
-# or
-$value = "$complexObject"
-```
-
-## Template: Secure PowerShell Script
-
-```powershell
-<#
-.SYNOPSIS
-    Script description
-.DESCRIPTION
-    Detailed description
-.NOTES
-    Author: 
-    Version: 1.0.0
-    Date: YYYY-MM-DD
-#>
-
-param(
-    [Parameter(Mandatory=$true)]
-    [string]$InputParam,
-    [string]$OptionalParam = "default"
-)
-
-# Strict mode - catches errors
+# Strict mode
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Continue"
 
-# Configuration
+# Paths
 $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$DataDir = "$env:USERPROFILE\.claude\data"
 
-# Ensure directories exist
-if (-not (Test-Path $DataDir)) {
-    New-Item -ItemType Directory -Path $DataDir -Force | Out-Null
-}
-
-# Main execution
+# Main
 try {
-    # Logic goes here
-    
-    Write-Output "[OK] Execution completed"
+    # Logic here
+    Write-Output "[OK] Done"
     exit 0
 }
 catch {
@@ -301,13 +161,6 @@ catch {
 }
 ```
 
-## Best Practices Summary
+---
 
-1. **Use parentheses** - For all operators
-2. **Do not use emojis** - Use ASCII characters
-3. **Perform null checks** - For every variable
-4. **Specify depth** - In JSON operations
-5. **Specify UTF8** - When writing files
-6. **Specify ErrorAction** - At script start
-7. **Use Try/Catch** - For critical operations
-8. **Use Join-Path** - For file paths
+> **Remember:** PowerShell has unique syntax rules. Parentheses, ASCII-only, and null checks are non-negotiable.

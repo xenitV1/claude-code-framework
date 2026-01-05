@@ -1,28 +1,43 @@
 ---
 name: documentation-templates
-description: Documentation templates for README, API docs, and code comments.
+description: Documentation templates and structure guidelines. README, API docs, code comments, and AI-friendly documentation.
 ---
 
 # Documentation Templates
 
-## README Template
+> Templates and structure guidelines for common documentation types.
+
+---
+
+## 1. README Structure
+
+### Essential Sections (Priority Order)
+
+| Section | Purpose |
+|---------|---------|
+| **Title + One-liner** | What is this? |
+| **Quick Start** | Running in <5 min |
+| **Features** | What can I do? |
+| **Configuration** | How to customize |
+| **API Reference** | Link to detailed docs |
+| **Contributing** | How to help |
+| **License** | Legal |
+
+### README Template
 
 ```markdown
 # Project Name
 
-Brief description of the project.
+Brief one-line description.
+
+## Quick Start
+
+[Minimum steps to run]
 
 ## Features
 
 - Feature 1
 - Feature 2
-
-## Quick Start
-
-\`\`\`bash
-npm install
-npm run dev
-\`\`\`
 
 ## Configuration
 
@@ -30,79 +45,149 @@ npm run dev
 |----------|-------------|---------|
 | PORT | Server port | 3000 |
 
-## API Documentation
+## Documentation
 
-See [API Docs](./docs/api.md)
-
-## Contributing
-
-1. Fork the repo
-2. Create feature branch
-3. Commit changes
-4. Open PR
+- [API Reference](./docs/api.md)
+- [Architecture](./docs/architecture.md)
 
 ## License
 
 MIT
 ```
 
-## JSDoc Template
+---
+
+## 2. API Documentation Structure
+
+### Per-Endpoint Template
+
+```markdown
+## GET /users/:id
+
+Get a user by ID.
+
+**Parameters:**
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| id | string | Yes | User ID |
+
+**Response:**
+- 200: User object
+- 404: User not found
+
+**Example:**
+[Request and response example]
+```
+
+---
+
+## 3. Code Comment Guidelines
+
+### JSDoc/TSDoc Template
 
 ```typescript
 /**
- * Creates a new user.
+ * Brief description of what the function does.
  * 
- * @param {Object} data - User data
- * @param {string} data.email - User email
- * @param {string} data.name - User name
- * @returns {Promise<User>} Created user
- * @throws {ValidationError} If data is invalid
+ * @param paramName - Description of parameter
+ * @returns Description of return value
+ * @throws ErrorType - When this error occurs
  * 
  * @example
- * const user = await createUser({
- *   email: 'test@example.com',
- *   name: 'Test User'
- * });
+ * const result = functionName(input);
  */
 ```
 
-## AI-Friendly Documentation (2025)
+### When to Comment
 
-### llms.txt Template
-Used by AI crawlers and agents to quickly understand project structure.
-```markdown
-# [Project Name]
-> Brief one-line objective.
+| ✅ Comment | ❌ Don't Comment |
+|-----------|-----------------|
+| Why (business logic) | What (obvious) |
+| Complex algorithms | Every line |
+| Non-obvious behavior | Self-explanatory code |
+| API contracts | Implementation details |
 
-## Core Files
-- [file_a.ts]: Main entry point.
-- [schema.sql]: Database structure.
+---
 
-## Context
-See [docs/architecture.md] for system design logic.
-```
-
-### Model Context Protocol (MCP) Integration
-Ensure documentation is indexable by MCP servers for Retrieval Augmented Generation (RAG).
-- Use clear H1-H3 headers.
-- Provide JSON/YAML examples for all data structures.
-- Use Mermaid diagrams for flow visualization.
-
-## Changelog Template
+## 4. Changelog Template (Keep a Changelog)
 
 ```markdown
 # Changelog
 
-## [1.2.0] - 2025-01-01
+## [Unreleased]
 ### Added
-- New feature X
+- New feature
 
+## [1.0.0] - 2025-01-01
+### Added
+- Initial release
 ### Changed
-- Updated dependency Y
-
+- Updated dependency
 ### Fixed
-- Bug in component Z
-
-## [1.1.0] - 2024-12-01
-...
+- Bug fix
 ```
+
+---
+
+## 5. Architecture Decision Record (ADR)
+
+```markdown
+# ADR-001: [Title]
+
+## Status
+Accepted / Deprecated / Superseded
+
+## Context
+Why are we making this decision?
+
+## Decision
+What did we decide?
+
+## Consequences
+What are the trade-offs?
+```
+
+---
+
+## 6. AI-Friendly Documentation (2025)
+
+### llms.txt Template
+
+For AI crawlers and agents:
+
+```markdown
+# Project Name
+> One-line objective.
+
+## Core Files
+- [src/index.ts]: Main entry
+- [src/api/]: API routes
+- [docs/]: Documentation
+
+## Key Concepts
+- Concept 1: Brief explanation
+- Concept 2: Brief explanation
+```
+
+### MCP-Ready Documentation
+
+For RAG indexing:
+- Clear H1-H3 hierarchy
+- JSON/YAML examples for data structures
+- Mermaid diagrams for flows
+- Self-contained sections
+
+---
+
+## 7. Structure Principles
+
+| Principle | Why |
+|-----------|-----|
+| **Scannable** | Headers, lists, tables |
+| **Examples first** | Show, don't just tell |
+| **Progressive detail** | Simple → Complex |
+| **Up to date** | Outdated = misleading |
+
+---
+
+> **Remember:** Templates are starting points. Adapt to your project's needs.

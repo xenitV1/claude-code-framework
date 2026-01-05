@@ -1,103 +1,160 @@
 ---
 name: server-management
-description: Server management procedures including PM2, monitoring, and log management. CRITICAL for production operations.
+description: Server management principles and decision-making. Process management, monitoring strategy, and scaling decisions. Teaches thinking, not commands.
 ---
 
 # Server Management
 
-## PM2 Commands
+> Server management principles for production operations.
+> **Learn to THINK, not memorize commands.**
 
-### Process Management
-```bash
-# Start application
-pm2 start ecosystem.config.js
+---
 
-# List processes
-pm2 list
+## 1. Process Management Principles
 
-# Restart (zero-downtime)
-pm2 reload app-name
+### Tool Selection
 
-# Stop
-pm2 stop app-name
+| Scenario | Tool |
+|----------|------|
+| **Node.js app** | PM2 (clustering, reload) |
+| **Any app** | systemd (Linux native) |
+| **Containers** | Docker/Podman |
+| **Orchestration** | Kubernetes, Docker Swarm |
 
-# Delete from PM2
-pm2 delete app-name
-```
+### Process Management Goals
 
-### Monitoring
-```bash
-# Real-time monitoring
-pm2 monit
+| Goal | What It Means |
+|------|---------------|
+| **Restart on crash** | Auto-recovery |
+| **Zero-downtime reload** | No service interruption |
+| **Clustering** | Use all CPU cores |
+| **Persistence** | Survive server reboot |
 
-# Process details
-pm2 show app-name
+---
 
-# View logs
-pm2 logs app-name --lines 100
+## 2. Monitoring Principles
 
-# Error logs only
-pm2 logs app-name --err
-```
+### What to Monitor
 
-### Cluster Mode
-```bash
-# Scale to 4 instances
-pm2 scale app-name 4
+| Category | Key Metrics |
+|----------|-------------|
+| **Availability** | Uptime, health checks |
+| **Performance** | Response time, throughput |
+| **Errors** | Error rate, types |
+| **Resources** | CPU, memory, disk |
 
-# Max instances (CPU cores)
-pm2 start app.js -i max
-```
+### Alert Severity Strategy
 
-## Ecosystem Config
+| Level | Response |
+|-------|----------|
+| **Critical** | Immediate action |
+| **Warning** | Investigate soon |
+| **Info** | Review daily |
 
-```javascript
-// ecosystem.config.js
-module.exports = {
-  apps: [{
-    name: 'app-name',
-    script: './dist/index.js',
-    instances: 'max',
-    exec_mode: 'cluster',
-    env: {
-      NODE_ENV: 'production'
-    },
-    max_memory_restart: '500M',
-    log_date_format: 'YYYY-MM-DD HH:mm:ss'
-  }]
-};
-```
+### Monitoring Tool Selection
 
-## Log Management
+| Need | Options |
+|------|---------|
+| Simple/Free | PM2 metrics, htop |
+| Full observability | Grafana, Datadog |
+| Error tracking | Sentry |
+| Uptime | UptimeRobot, Pingdom |
 
-```bash
-# Rotate logs
-pm2 install pm2-logrotate
+---
 
-# Configure rotation
-pm2 set pm2-logrotate:max_size 10M
-pm2 set pm2-logrotate:retain 7
-```
+## 3. Log Management Principles
 
-## Health Checks
+### Log Strategy
 
-```bash
-# Basic health check
-curl http://localhost:3000/health
+| Log Type | Purpose |
+|----------|---------|
+| **Application logs** | Debug, audit |
+| **Access logs** | Traffic analysis |
+| **Error logs** | Issue detection |
 
-# Check all processes
-pm2 list | grep -E "online|stopped|errored"
-```
+### Log Principles
 
-## Persistence
+1. **Rotate logs** to prevent disk fill
+2. **Structured logging** (JSON) for parsing
+3. **Appropriate levels** (error/warn/info/debug)
+4. **No sensitive data** in logs
 
-```bash
-# Save process list
-pm2 save
+---
 
-# Generate startup script
-pm2 startup
+## 4. Scaling Decisions
 
-# Restore after reboot
-pm2 resurrect
-```
+### When to Scale
+
+| Symptom | Solution |
+|---------|----------|
+| High CPU | Add instances (horizontal) |
+| High memory | Increase RAM or fix leak |
+| Slow response | Profile first, then scale |
+| Traffic spikes | Auto-scaling |
+
+### Scaling Strategy
+
+| Type | When to Use |
+|------|-------------|
+| **Vertical** | Quick fix, single instance |
+| **Horizontal** | Sustainable, distributed |
+| **Auto** | Variable traffic |
+
+---
+
+## 5. Health Check Principles
+
+### What Constitutes Healthy
+
+| Check | Meaning |
+|-------|---------|
+| **HTTP 200** | Service responding |
+| **Database connected** | Data accessible |
+| **Dependencies OK** | External services reachable |
+| **Resources OK** | CPU/memory not exhausted |
+
+### Health Check Implementation
+
+- Simple: Just return 200
+- Deep: Check all dependencies
+- Choose based on load balancer needs
+
+---
+
+## 6. Security Principles
+
+| Area | Principle |
+|------|-----------|
+| **Access** | SSH keys only, no passwords |
+| **Firewall** | Only needed ports open |
+| **Updates** | Regular security patches |
+| **Secrets** | Environment vars, not files |
+| **Audit** | Log access and changes |
+
+---
+
+## 7. Troubleshooting Priority
+
+When something's wrong:
+
+1. **Check if running** (process status)
+2. **Check logs** (error messages)
+3. **Check resources** (disk, memory, CPU)
+4. **Check network** (ports, DNS)
+5. **Check dependencies** (database, APIs)
+
+---
+
+## 8. Anti-Patterns
+
+| ❌ Don't | ✅ Do |
+|----------|-------|
+| Run as root | Use non-root user |
+| Ignore logs | Set up log rotation |
+| Skip monitoring | Monitor from day one |
+| Manual restarts | Auto-restart config |
+| No backups | Regular backup schedule |
+
+---
+
+> **Remember:** A well-managed server is boring. That's the goal.

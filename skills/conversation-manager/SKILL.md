@@ -275,4 +275,4 @@ What would you like to do now?
 3. **Be specific** - Instead of "wait a bit", say "~2 minutes"
 4. **Offer alternatives** - Show multiple paths, not just one option
 5. **Be proactive** - Suggest the next step
-6. **Use defaults** - Don't obsess over asking questions
+6. **Use defaults (EXCEPT Design)** - Don't ask about configs, BUT DO ask about Design Style.

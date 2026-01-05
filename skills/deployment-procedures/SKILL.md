@@ -1,274 +1,240 @@
 ---
 name: deployment-procedures
-description: Production deployment procedures including pre-deployment checklist, deployment workflow, post-deployment verification, and rollback procedures. CRITICAL skill for safe deployments.
+description: Production deployment principles and decision-making. Safe deployment workflows, rollback strategies, and verification. Teaches thinking, not scripts.
 ---
 
 # Deployment Procedures
 
-⚠️ **CRITICAL SKILL**: This skill handles production deployments. Always follow procedures carefully.
+> Deployment principles and decision-making for safe production releases.
+> **Learn to THINK, not memorize scripts.**
 
-## Overview
-This skill provides step-by-step procedures for safe production deployments.
+---
 
-## Pre-Deployment Checklist
+## ⚠️ How to Use This Skill
 
-Before ANY deployment, verify:
+This skill teaches **deployment principles**, not bash scripts to copy.
 
-```markdown
-## Pre-Deployment Checklist
+- Every deployment is unique
+- Understand the WHY behind each step
+- Adapt procedures to your platform
 
-### Code Quality
-- [ ] All tests passing (unit, integration, e2e)
+---
+
+## 1. Platform Selection
+
+### Decision Tree
+
+```
+What are you deploying?
+│
+├── Static site / JAMstack
+│   └── Vercel, Netlify, Cloudflare Pages
+│
+├── Simple web app
+│   ├── Managed → Railway, Render, Fly.io
+│   └── Control → VPS + PM2/Docker
+│
+├── Microservices
+│   └── Container orchestration
+│
+└── Serverless
+    └── Edge functions, Lambda
+```
+
+### Each Platform Has Different Procedures
+
+| Platform | Deployment Method |
+|----------|------------------|
+| **Vercel/Netlify** | Git push, auto-deploy |
+| **Railway/Render** | Git push or CLI |
+| **VPS + PM2** | SSH + manual steps |
+| **Docker** | Image push + orchestration |
+| **Kubernetes** | kubectl apply |
+
+---
+
+## 2. Pre-Deployment Principles
+
+### The 4 Verification Categories
+
+| Category | What to Check |
+|----------|--------------|
+| **Code Quality** | Tests passing, linting clean, reviewed |
+| **Build** | Production build works, no warnings |
+| **Environment** | Env vars set, secrets current |
+| **Safety** | Backup done, rollback plan ready |
+
+### Pre-Deployment Checklist
+
+- [ ] All tests passing
 - [ ] Code reviewed and approved
-- [ ] No linting errors
-- [ ] No TypeScript errors
-- [ ] No console.log statements
-
-### Build
 - [ ] Production build successful
-- [ ] Bundle size acceptable
-- [ ] No build warnings
-
-### Environment
-- [ ] All environment variables configured
-- [ ] Secrets up to date
-- [ ] Database migrations ready
-- [ ] Feature flags set correctly
-
-### Communication
-- [ ] Team notified of deployment
-- [ ] Stakeholders informed (if major)
-- [ ] Support team aware
-
-### Safety
+- [ ] Environment variables verified
+- [ ] Database migrations ready (if any)
 - [ ] Rollback plan documented
-- [ ] Database backup completed
-- [ ] Current version noted
-- [ ] Monitoring dashboard open
+- [ ] Team notified
+- [ ] Monitoring ready
+
+---
+
+## 3. Deployment Workflow Principles
+
+### The 5-Phase Process
+
+```
+1. PREPARE
+   └── Verify code, build, env vars
+
+2. BACKUP
+   └── Save current state before changing
+
+3. DEPLOY
+   └── Execute with monitoring open
+
+4. VERIFY
+   └── Health check, logs, key flows
+
+5. CONFIRM or ROLLBACK
+   └── All good? Confirm. Issues? Rollback.
 ```
 
-## Deployment Workflow
+### Phase Principles
 
-### Step 1: BACKUP
-```bash
-# Note current version
-pm2 list
-git log -1 --oneline
+| Phase | Principle |
+|-------|-----------|
+| **Prepare** | Never deploy untested code |
+| **Backup** | Can't rollback without backup |
+| **Deploy** | Watch it happen, don't walk away |
+| **Verify** | Trust but verify |
+| **Confirm** | Have rollback trigger ready |
 
-# Backup current deployment
-cp -r /app/current /backup/app-$(date +%Y%m%d-%H%M%S)
+---
 
-# Database backup (if applicable)
-pg_dump -h localhost -U dbuser dbname > backup-$(date +%Y%m%d).sql
-```
+## 4. Post-Deployment Verification
 
-### Step 2: BUILD
-```bash
-# Pull latest code
-git pull origin main
+### What to Verify
 
-# Install dependencies
-npm ci --production
+| Check | Why |
+|-------|-----|
+| **Health endpoint** | Service is running |
+| **Error logs** | No new errors |
+| **Key user flows** | Critical features work |
+| **Performance** | Response times acceptable |
 
-# Build application
-npm run build
+### Verification Window
 
-# Run migrations (if any)
-npm run migrate
-```
+- **First 5 minutes**: Active monitoring
+- **15 minutes**: Confirm stable
+- **1 hour**: Final verification
+- **Next day**: Review metrics
 
-### Step 3: DEPLOY
-```bash
-# Reload with zero-downtime
-pm2 reload ecosystem.config.js --update-env
+---
 
-# Or for Docker
-docker-compose pull
-docker-compose up -d
-```
+## 5. Rollback Principles
 
-### Step 4: VERIFY
-```bash
-# Check process status
-pm2 list
+### When to Rollback
 
-# Check health endpoint
-curl -s http://localhost:3000/health
+| Symptom | Action |
+|---------|--------|
+| Service down | Rollback immediately |
+| Critical errors | Rollback |
+| Performance >50% degraded | Consider rollback |
+| Minor issues | Fix forward if quick |
 
-# Check logs for errors
-pm2 logs app-name --lines 50
+### Rollback Strategy by Platform
 
-# Verify key endpoints
-curl -s http://localhost:3000/api/status
-```
+| Platform | Rollback Method |
+|----------|----------------|
+| **Vercel/Netlify** | Redeploy previous commit |
+| **Railway/Render** | Rollback in dashboard |
+| **VPS + PM2** | Restore backup, restart |
+| **Docker** | Previous image tag |
+| **K8s** | kubectl rollout undo |
 
-### Step 5: CONFIRM OR ROLLBACK
-```
-If issues detected → Execute Rollback Procedure
-If all good → Confirm deployment complete
-```
+### Rollback Principles
 
-## Post-Deployment Verification
+1. **Speed over perfection**: Rollback first, debug later
+2. **Don't compound errors**: One rollback, not multiple changes
+3. **Communicate**: Tell team what happened
+4. **Post-mortem**: Understand why after stable
 
-```bash
-#!/bin/bash
-# post-deploy-check.sh
+---
 
-echo "=== Post-Deployment Verification ==="
+## 6. Zero-Downtime Deployment
 
-# 1. Health check
-echo -n "Health Check: "
-STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/health)
-if [ "$STATUS" = "200" ]; then
-    echo "✅ PASS"
-else
-    echo "❌ FAIL (Status: $STATUS)"
-    exit 1
-fi
+### Strategies
 
-# 2. API Status
-echo -n "API Status: "
-API_STATUS=$(curl -s http://localhost:3000/api/status | jq -r '.status')
-if [ "$API_STATUS" = "ok" ]; then
-    echo "✅ PASS"
-else
-    echo "❌ FAIL"
-    exit 1
-fi
+| Strategy | How It Works |
+|----------|--------------|
+| **Rolling** | Replace instances one by one |
+| **Blue-Green** | Switch traffic between environments |
+| **Canary** | Gradual traffic shift |
 
-# 3. Check for errors in logs
-echo -n "Error Check: "
-ERRORS=$(pm2 logs app-name --lines 100 --nostream 2>&1 | grep -c "ERROR\|Error\|error")
-if [ "$ERRORS" -lt 5 ]; then
-    echo "✅ PASS ($ERRORS errors)"
-else
-    echo "⚠️ WARNING ($ERRORS errors detected)"
-fi
+### Selection Principles
 
-# 4. Memory usage
-echo -n "Memory Usage: "
-pm2 show app-name | grep "heap"
+| Scenario | Strategy |
+|----------|----------|
+| Standard release | Rolling |
+| High-risk change | Blue-green (easy rollback) |
+| Need validation | Canary (test with real traffic) |
 
-echo "=== Verification Complete ==="
-```
+---
 
-## Rollback Procedure
+## 7. Emergency Procedures
 
-### Quick Rollback
-```bash
-#!/bin/bash
-# rollback.sh
+### Service Down Priority
 
-echo "⚠️ Starting Rollback..."
+1. **Assess**: What's the symptom?
+2. **Quick fix**: Restart if unclear
+3. **Rollback**: If restart doesn't help
+4. **Investigate**: After stable
 
-# Stop current version
-pm2 stop app-name
+### Investigation Order
 
-# Restore previous version
-LATEST_BACKUP=$(ls -t /backup/ | head -1)
-rm -rf /app/current/*
-cp -r /backup/$LATEST_BACKUP/* /app/current/
+| Check | Common Issues |
+|-------|--------------|
+| **Logs** | Errors, exceptions |
+| **Resources** | Disk full, memory |
+| **Network** | DNS, firewall |
+| **Dependencies** | Database, APIs |
 
-# Restart
-pm2 start app-name
+---
 
-# Verify
-curl -s http://localhost:3000/health
+## 8. Anti-Patterns
 
-echo "✅ Rollback Complete"
-```
+| ❌ Don't | ✅ Do |
+|----------|-------|
+| Deploy on Friday | Deploy early in week |
+| Rush deployment | Follow the process |
+| Skip staging | Always test first |
+| Deploy without backup | Backup before deploy |
+| Walk away after deploy | Monitor for 15+ min |
+| Multiple changes at once | One change at a time |
 
-### Database Rollback
-```bash
-# Restore database (CAUTION: Destructive)
-psql -h localhost -U dbuser -d dbname < /backup/latest.sql
+---
 
-# Or run down migration
-npm run migrate:down
-```
+## 9. Decision Checklist
 
-## PM2 Commands Reference
+Before deploying:
 
-```bash
-# Process Management
-pm2 start ecosystem.config.js    # Start all apps
-pm2 reload app-name              # Zero-downtime restart
-pm2 restart app-name             # Hard restart
-pm2 stop app-name                # Stop app
-pm2 delete app-name              # Remove from PM2
+- [ ] **Platform-appropriate procedure?**
+- [ ] **Backup strategy ready?**
+- [ ] **Rollback plan documented?**
+- [ ] **Monitoring configured?**
+- [ ] **Team notified?**
+- [ ] **Time to monitor after?**
 
-# Monitoring
-pm2 list                         # List processes
-pm2 monit                        # Real-time monitoring
-pm2 logs app-name                # View logs
-pm2 show app-name                # Process details
+---
 
-# Cluster
-pm2 scale app-name 4             # Scale to 4 instances
+## 10. Best Practices
 
-# Persistence
-pm2 save                         # Save process list
-pm2 startup                      # Generate startup script
-```
+1. **Small, frequent deploys** over big releases
+2. **Feature flags** for risky changes
+3. **Automate** repetitive steps
+4. **Document** every deployment
+5. **Review** what went wrong after issues
+6. **Test rollback** before you need it
 
-## Emergency Procedures
+---
 
-### Service Completely Down
-```bash
-# 1. Check if process is running
-pm2 list
-
-# 2. Check system resources
-df -h && free -m && top -bn1 | head -20
-
-# 3. Check logs
-pm2 logs app-name --err --lines 200
-
-# 4. Attempt restart
-pm2 restart app-name
-
-# 5. If still down, rollback
-./rollback.sh
-
-# 6. Notify team
-# "🚨 Emergency rollback executed at $(date)"
-```
-
-### High CPU/Memory
-```bash
-# Identify issue
-pm2 monit
-
-# Scale down if needed
-pm2 scale app-name 1
-
-# Restart to clear memory
-pm2 restart app-name
-
-# Increase instances if load issue
-pm2 scale app-name +2
-```
-
-## Modern Deployment & AIOps (2025)
-
-### AI-Monitored Canary Release
-1. Shift **1%** traffic to 'Green' environment.
-2. AI monitor analyzes logs/metrics for **60 seconds**.
-3. If anomaly score > **threshold**, trigger auto-rollback.
-4. Else, increase traffic to **10%**, then **100%**.
-
-### Predictive Incident Management
-- Use AI to scan logs during deployment for "Silent Failures" (errors that don't trigger HTTP 500s but show logical drift).
-- **Auto-Mitigation:** AI can auto-scale instances if it predicts a traffic spike based on deployment-related latency increase.
-
-### Infrastructure-as-Code (2025)
-- **Pulumi/Terraform:** Use AI-generated, security-hardened templates with least-privilege IAM roles.
-
-## Best Practices
-
-1. **Never deploy on Fridays** (unless urgent)
-2. **Always have rollback plan** ready
-3. **Monitor for 15+ minutes** after deploy
-4. **Small, frequent deploys** over big releases
-5. **Use feature flags** for risky changes
-6. **Document all deployments** in changelog
+> **Remember:** Every deployment is a risk. Minimize risk through preparation, not speed.

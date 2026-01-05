@@ -1,56 +1,134 @@
 ---
 name: performance-profiling
-description: Performance profiling techniques for web applications including Core Web Vitals, bundle analysis, and runtime profiling.
+description: Performance profiling principles. Measurement, analysis, and optimization techniques.
 ---
 
 # Performance Profiling
 
-## Core Web Vitals
+> Measure, analyze, optimize - in that order.
+
+---
+
+## 1. Core Web Vitals
 
 ### Targets
-| Metric | Good | Poor |
-|--------|------|------|
-| LCP (Largest Contentful Paint) | < 2.5s | > 4.0s |
-| INP (Interaction to Next Paint) | < 200ms | > 500ms |
-| CLS (Cumulative Layout Shift) | < 0.1 | > 0.25 |
 
-### Measurement Commands
-```bash
-# Lighthouse CLI
-npx lighthouse https://example.com --output html
+| Metric | Good | Poor | Measures |
+|--------|------|------|----------|
+| **LCP** | < 2.5s | > 4.0s | Loading |
+| **INP** | < 200ms | > 500ms | Interactivity |
+| **CLS** | < 0.1 | > 0.25 | Stability |
 
-# Web Vitals library
-npm install web-vitals
+### When to Measure
+
+| Stage | Tool |
+|-------|------|
+| Development | Local Lighthouse |
+| CI/CD | Lighthouse CI |
+| Production | RUM (Real User Monitoring) |
+
+---
+
+## 2. Profiling Workflow
+
+### The 4-Step Process
+
+```
+1. BASELINE → Measure current state
+2. IDENTIFY → Find the bottleneck
+3. FIX → Make targeted change
+4. VALIDATE → Confirm improvement
 ```
 
-## Bundle Analysis
+### Profiling Tool Selection
 
-```bash
-# Next.js bundle analyzer
-ANALYZE=true npm run build
+| Problem | Tool |
+|---------|------|
+| Page load | Lighthouse |
+| Bundle size | Bundle analyzer |
+| Runtime | DevTools Performance |
+| Memory | DevTools Memory |
+| Network | DevTools Network |
 
-# Vite bundle analyzer
-npx vite-bundle-visualizer
+---
 
-# General webpack analyzer
-npx webpack-bundle-analyzer stats.json
-```
+## 3. Bundle Analysis
 
-## Runtime Profiling
+### What to Look For
 
-```bash
-# Node.js profiling
-node --prof app.js
-node --prof-process isolate-*.log > profile.txt
+| Issue | Indicator |
+|-------|-----------|
+| Large dependencies | Top of bundle |
+| Duplicate code | Multiple chunks |
+| Unused code | Low coverage |
+| Missing splits | Single large chunk |
 
-# Chrome DevTools
-# Performance tab → Record → Analyze flame chart
-```
+### Optimization Actions
 
-## Quick Wins
+| Finding | Action |
+|---------|--------|
+| Big library | Import specific modules |
+| Duplicate deps | Dedupe, update versions |
+| Route in main | Code split |
+| Unused exports | Tree shake |
 
-1. **Lazy load images**: Use `loading="lazy"`
-2. **Code splitting**: Dynamic imports
-3. **Compress assets**: Enable gzip/brotli
-4. **Cache headers**: Set proper Cache-Control
-5. **Optimize images**: Use WebP, proper sizing
+---
+
+## 4. Runtime Profiling
+
+### Performance Tab Analysis
+
+| Pattern | Meaning |
+|---------|---------|
+| Long tasks (>50ms) | UI blocking |
+| Many small tasks | Possible batching opportunity |
+| Layout/paint | Rendering bottleneck |
+| Script | JavaScript execution |
+
+### Memory Tab Analysis
+
+| Pattern | Meaning |
+|---------|---------|
+| Growing heap | Possible leak |
+| Large retained | Check references |
+| Detached DOM | Not cleaned up |
+
+---
+
+## 5. Common Bottlenecks
+
+### By Symptom
+
+| Symptom | Likely Cause |
+|---------|--------------|
+| Slow initial load | Large JS, render blocking |
+| Slow interactions | Heavy event handlers |
+| Jank during scroll | Layout thrashing |
+| Growing memory | Leaks, retained refs |
+
+---
+
+## 6. Quick Win Priorities
+
+| Priority | Action | Impact |
+|----------|--------|--------|
+| 1 | Enable compression | High |
+| 2 | Lazy load images | High |
+| 3 | Code split routes | High |
+| 4 | Cache static assets | Medium |
+| 5 | Optimize images | Medium |
+
+---
+
+## 7. Anti-Patterns
+
+| ❌ Don't | ✅ Do |
+|----------|-------|
+| Guess at problems | Profile first |
+| Micro-optimize | Fix biggest issue |
+| Optimize early | Optimize when needed |
+| Ignore real users | Use RUM data |
+
+---
+
+> **Remember:** The fastest code is code that doesn't run. Remove before optimizing.
