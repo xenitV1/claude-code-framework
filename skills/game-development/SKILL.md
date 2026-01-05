@@ -1,192 +1,181 @@
 ---
 name: game-development
-description: Core game development patterns and fundamentals applicable to all platforms. Use when working on game architecture, game loops, design patterns, or general game programming concepts.
+description: Core game development principles applicable to all platforms. Game loop, design patterns, optimization, and AI fundamentals.
 ---
 
 # Game Development Fundamentals
 
-> Core patterns and principles for game development across all platforms
-
-## Game Loop Architecture
-
-### Fixed Timestep Pattern
-```
-accumulator = 0
-while game_running:
-    accumulator += delta_time
-    
-    while accumulator >= FIXED_TIMESTEP:
-        update_physics(FIXED_TIMESTEP)
-        accumulator -= FIXED_TIMESTEP
-    
-    interpolation = accumulator / FIXED_TIMESTEP
-    render(interpolation)
-```
-
-**FIXED_TIMESTEP**: Usually 1/60 (16.67ms) or 1/50 (20ms)
+> Core principles for game development across all platforms.
+> **Learn to THINK, not memorize engine APIs.**
 
 ---
 
-## Design Patterns
+## 1. Game Loop Principles
 
-### 1. Entity Component System (ECS)
+### The Universal Pattern
+
 ```
-Entity: Just an ID
-Component: Data only (Position, Velocity, Sprite)
-System: Logic that processes components
-
-Example:
-- MovementSystem processes entities with Position + Velocity
-- RenderSystem processes entities with Position + Sprite
+Every game has:
+1. INPUT → Read player actions
+2. UPDATE → Process game logic (fixed timestep)
+3. RENDER → Draw the frame (interpolated)
 ```
 
-**Benefits**: Cache-friendly, scalable, decoupled
+### Fixed Timestep Principle
 
-### 2. State Machine
-```
-States: Idle, Walking, Jumping, Attacking
-Transitions: Input/conditions trigger state changes
-
-Each state handles:
-- Enter(): Setup when entering state
-- Update(): Per-frame logic
-- Exit(): Cleanup when leaving state
-```
-
-### 3. Object Pooling
-```
-Pre-allocate objects (bullets, particles, enemies)
-Instead of: new/destroy
-Use: pool.get() / pool.release()
-```
-
-**Critical for**: Mobile, WebGL, frequent spawning
-
-### 4. Observer Pattern
-```
-EventBus.emit("player_died", {score: 1000})
-EventBus.on("player_died", updateUI)
-EventBus.on("player_died", playSound)
-```
-
-### 5. Command Pattern
-```
-Commands are objects that encapsulate actions
-Use for: Input replay, undo/redo, network sync
-
-InputCommand { execute(), undo() }
-```
+- Physics/logic updates at fixed rate (e.g., 50Hz)
+- Rendering runs as fast as possible
+- Interpolate between states for smooth visuals
 
 ---
 
-## Core Systems
+## 2. Design Pattern Selection
 
-### Input Handling
+### When to Use Each Pattern
+
+| Pattern | Use When | Example |
+|---------|----------|---------|
+| **State Machine** | Discrete states with transitions | Player: Idle→Walk→Jump→Attack |
+| **Object Pooling** | Frequent create/destroy | Bullets, particles, enemies |
+| **Observer/Events** | Decoupled communication | Health→UI, Death→Audio |
+| **ECS** | Many similar entities | Thousands of units |
+| **Command** | Replay, undo, networking | Input recording, multiplayer |
+| **Behavior Tree** | Complex AI decisions | Enemy AI |
+
+### Selection Principles
+
+- Start simple (State Machine)
+- Add ECS only if performance demands
+- Use Events for cross-system communication
+- Pool anything spawned frequently
+
+---
+
+## 3. Core Systems Design
+
+### Input Abstraction
+
 ```
-Abstract input into actions:
-  "jump": [Keyboard.SPACE, Gamepad.A, Touch.TAP]
-  "move": [Keyboard.WASD, Gamepad.LEFT_STICK, Touch.JOYSTICK]
+Abstract input into ACTIONS, not keys:
+- "jump" → Space, Gamepad A, Touch tap
+- "move" → WASD, Left stick, Virtual joystick
 
-Process input at start of frame, before update
+Benefits: Multi-platform, rebindable
 ```
 
-### Collision Detection
-| Type | Use Case |
+### Collision Strategy
+
+| Type | Best For |
 |------|----------|
-| AABB | Rectangles, fast |
-| Circle | Round objects, cheap |
-| SAT | Complex polygons |
-| Spatial Hash | Many objects |
-| Quadtree | Large worlds |
+| **AABB** | Rectangles, fast |
+| **Circle** | Round objects, cheap |
+| **Spatial Hash** | Many objects, same size |
+| **Quadtree** | Large worlds, varying sizes |
 
 ### Save System
-```
-Serialize game state to JSON/binary
-Store: player progress, settings, unlocks
-Platforms: LocalStorage (web), PlayerPrefs (Unity), FileAccess (Godot)
-```
+
+| Platform | Storage |
+|----------|---------|
+| Web | LocalStorage, IndexedDB |
+| Mobile | PlayerPrefs, FileAccess |
+| PC | JSON/Binary files |
 
 ---
 
-## Performance Guidelines
+## 4. Performance Principles
 
 ### Frame Budget (60 FPS = 16.67ms)
-```
-Input:     1ms
-Physics:   3ms
-AI:        2ms
-Update:    4ms
-Render:    5ms
-Buffer:    1.67ms
-```
+
+| System | Budget |
+|--------|--------|
+| Input | 1ms |
+| Physics | 3ms |
+| AI | 2ms |
+| Game Logic | 4ms |
+| Rendering | 5ms |
+| Buffer | 1.67ms |
+
+### Optimization Priority
+
+1. **Algorithm** - O(n²) to O(n log n)
+2. **Batching** - Reduce draw calls
+3. **Pooling** - Avoid GC spikes
+4. **LOD** - Detail at distance
+5. **Culling** - Don't render invisible
 
 ### Memory Management
-- Pool frequently created/destroyed objects
-- Use sprite atlases/texture packing
+
+- Pool frequently spawned objects
+- Use sprite atlases
 - Stream large assets
 - Unload unused resources
 
-### Rendering Optimization
-- Batch draw calls
-- Use frustum culling
-- Implement LOD for 3D
-- Minimize state changes
+---
+
+## 5. AI Fundamentals
+
+### Selection by Complexity
+
+| AI Type | Complexity | Use Case |
+|---------|------------|----------|
+| **FSM** | Simple | 3-5 states, predictable |
+| **Behavior Tree** | Medium | Modular, designer-friendly |
+| **GOAP** | High | Emergent, planning |
+| **Utility AI** | High | Scoring-based decisions |
+
+### Common AI Behaviors
+
+- Patrol → Move between waypoints
+- Chase → Follow player
+- Attack → Engage when in range
+- Flee → Escape when low health
 
 ---
 
-## AI Fundamentals
+## 6. Audio Principles
 
-### Behavior Trees
-```
-Selector: Try children until one succeeds
-Sequence: Run children until one fails
-Decorator: Modify child behavior
+### Audio Categories
 
-Common nodes:
-- Wait, MoveTo, Attack, Patrol, Chase
-```
+| Category | Behavior |
+|----------|----------|
+| **Music** | Loop, crossfade |
+| **SFX** | One-shot, 3D positioned |
+| **UI** | Immediate, no 3D |
+| **Voice** | Priority, ducking |
 
-### Finite State Machine (FSM)
-```
-Simple AI: 3-5 states
-Complex AI: Hierarchical FSM (HFSM)
+### Best Practices
 
-States: Patrol → Alert → Chase → Attack → Flee
-```
-
-### Goal-Oriented Action Planning (GOAP)
-```
-AI has goals and actions with preconditions/effects
-Planner finds action sequence to achieve goal
-
-Example goal: "EnemyDead"
-Actions: GetWeapon → MoveTo → Attack
-```
+- Pool audio sources
+- 3D audio for immersion
+- Duck music during dialogue
+- Preload frequently used sounds
 
 ---
 
-## Audio System
+## 7. Anti-Patterns
 
-```
-Categories: Music, SFX, UI, Voice
-Features:
-- 3D positional audio
-- Audio pooling
-- Fade in/out
-- Ducking (lower music during dialogue)
-```
+| ❌ Don't | ✅ Do |
+|----------|-------|
+| Update everything every frame | Use events, dirty flags |
+| Create objects in hot loops | Object pooling |
+| SELECT * in game logic | Cache references |
+| Optimize without profiling | Profile first |
+| Mix input with logic | Abstract input layer |
 
 ---
 
-## Sub-Skills Reference
+## 8. Sub-Skills Reference
 
-For platform-specific patterns:
-- [PC Games](./pc-games/SKILL.md) - Unity, Godot, Unreal
-- [Web Games](./web-games/SKILL.md) - Phaser, Three.js, Babylon.js
-- [Mobile Games](./mobile-games/SKILL.md) - Touch, battery, stores
-- [Game Design](./game-design/SKILL.md) - GDD, balancing, psychology
-- [Multiplayer](./multiplayer/SKILL.md) - Networking patterns
-- [VR/AR](./vr-ar/SKILL.md) - Immersive experiences
-- [2D Games](./2d-games/SKILL.md) - Sprites, tilemaps, platformers
-- [3D Games](./3d-games/SKILL.md) - Meshes, shaders, 3D physics
+Platform-specific guidance:
+- PC Games → Engine selection, Steam
+- Web Games → Phaser, Three.js, WebGPU
+- Mobile Games → Touch, battery, stores
+- Game Design → GDD, balancing
+- Multiplayer → Networking patterns
+- VR/AR → Immersion, comfort
+- 2D Games → Sprites, tilemaps
+- 3D Games → Meshes, shaders
 
+---
+
+> **Remember:** Great games come from iteration, not perfection. Prototype fast, then polish.
