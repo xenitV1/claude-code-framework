@@ -10,11 +10,14 @@ These run automatically via `settings.json` hooks:
 |--------|------|---------|
 | [session_hooks.py](session_hooks.py) | SessionStart/End | Project detection, session tracking, dependency analysis |
 | [explorer_helper.py](explorer_helper.py) | SessionStart | Deep project discovery |
-| [dependency_scanner.py](dependency_scanner.py) | SessionStart | 🆕 File dependency analysis (imports, API calls) |
+| [lint_check.py](lint_check.py) | - | 🕵️ AI Quality Audit (Rich/V5) |
+| [dependency_scanner.py](dependency_scanner.py) | SessionStart | 🆕 Dependency Analysis |
 
 ## Utility Scripts
 
-| [lint_check.py](lint_check.py) | 🆕 AI-controlled quality audit (Ruff, ESLint, Security) |
+| Script | Purpose |
+|--------|---------|
+| [lint_check.py](lint_check.py) | 🕵️ AI-controlled quality audit (Rich Tables & Panels) |
 | [session_manager.py](session_manager.py) | Project state management |
 | [auto_preview.py](auto_preview.py) | Preview server control |
 | [setup.py](setup.py) | 🆕 Cross-platform installation script |
@@ -37,7 +40,7 @@ python session_manager.py status
 python auto_preview.py start
 python auto_preview.py stop
 
-# Quality Audit (AI-controlled)
+# Quality Audit (AI-controlled with Rich UI)
 python lint_check.py <file_path>
 ```
 

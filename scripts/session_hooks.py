@@ -373,6 +373,8 @@ def load_discovery_structure(project_path: str, import_counts: dict = None) -> s
     Args:
         project_path: Path to the project
         import_counts: Dict mapping file paths to list of files that import them
+    
+    Handles both regular files and collapsed directories (shown as summary strings).
     """
     project_name = Path(project_path).name
     safe_name = "".join(c if c.isalnum() or c in '-_' else '_' for c in project_name)
@@ -384,6 +386,7 @@ def load_discovery_structure(project_path: str, import_counts: dict = None) -> s
     try:
         report = json.loads(discovery_file.read_text(encoding="utf-8"))
         structure = report.get("structure", {})
+        scan_stats = report.get("scan_stats", {})
 
         if not structure:
             return ""
@@ -393,32 +396,28 @@ def load_discovery_structure(project_path: str, import_counts: dict = None) -> s
             lines = []
             prefix = "  " * indent
             for key, value in sorted(data.items()):
-                full_path = f"{current_path}/{key}" if current_path else key
+                # Remove trailing slash from directory names for path building
+                clean_key = key.rstrip('/')
+                full_path = f"{current_path}/{clean_key}" if current_path else clean_key
                 # Normalize path separators for matching
                 normalized_path = full_path.replace("\\", "/")
                 
                 if value == "file":
+                    # Regular file
                     line = f"{prefix}{key}"
                     # Check if this file has dependents
                     if import_counts:
-                        # Try different path formats to match
                         dependents = None
-                        
-                        # Paths to try matching
                         paths_to_check = [
-                            normalized_path,  # Full path: src/constants/index.ts
-                            normalized_path.replace('.tsx', '').replace('.ts', ''),  # Without extension
+                            normalized_path,
+                            normalized_path.replace('.tsx', '').replace('.ts', ''),
                         ]
-                        
-                        # Also try parent directory if this is index.ts
                         if key in ('index.ts', 'index.tsx'):
                             parent_path = '/'.join(normalized_path.split('/')[:-1])
                             paths_to_check.append(parent_path)
                         
                         for path_key, deps in import_counts.items():
                             path_key_normalized = path_key.replace("\\\\", "/")
-                            
-                            # Check if any of our paths match
                             for check_path in paths_to_check:
                                 if (path_key_normalized == check_path or 
                                     path_key_normalized.endswith('/' + check_path) or
@@ -426,12 +425,10 @@ def load_discovery_structure(project_path: str, import_counts: dict = None) -> s
                                     path_key_normalized.endswith(key)):
                                     dependents = deps
                                     break
-                            
                             if dependents:
                                 break
                         
                         if dependents and len(dependents) > 0:
-                            # Show max 3 file names + count if more
                             dep_names = [Path(d).name for d in dependents[:3]]
                             suffix = f" ← {', '.join(dep_names)}"
                             if len(dependents) > 3:
@@ -439,19 +436,35 @@ def load_discovery_structure(project_path: str, import_counts: dict = None) -> s
                             line += suffix
                     
                     lines.append(line)
+                
+                elif isinstance(value, str):
+                    # Collapsed directory with summary (e.g., "[52 files: .tsx, .ts]")
+                    # Key ends with "/" to indicate it's a directory
+                    dir_name = key if key.endswith('/') else key + '/'
+                    lines.append(f"{prefix}{dir_name} {value}")
+                
                 elif isinstance(value, dict):
+                    # Regular directory - recurse
                     lines.append(f"{prefix}{key}/")
                     lines.extend(format_tree(value, full_path, indent + 1))
+            
             return lines
 
         tree_lines = format_tree(structure)
+        
+        # Add stats note if available
+        stats_note = ""
+        if scan_stats:
+            files = scan_stats.get('files_included', 0)
+            collapsed = scan_stats.get('dirs_collapsed', 0)
+            skipped = scan_stats.get('dirs_skipped', 0)
+            if collapsed > 0 or skipped > 0:
+                stats_note = f"\n> 📊 Showing {files} files. {collapsed} dirs summarized, {skipped} dirs excluded (node_modules, etc.)\n"
 
         return f"""## 📂 Project Structure
 
 > **Legend:** `file.ts ← A.tsx, B.tsx` = This file is **imported by** A.tsx and B.tsx.
-> Changing this file will affect those files.
->
-> ⚠️ **Note:** If a file has no ← annotation but you see imports in the actual code, this dependency is not yet tracked or is incomplete in CODEBASE.md.
+> Directories with `[N files: ...]` are summarized to reduce size.{stats_note}
 
 ```
 {chr(10).join(tree_lines)}
@@ -463,8 +476,8 @@ def load_discovery_structure(project_path: str, import_counts: dict = None) -> s
         return ""
 
 
-def scan_file_dependencies(project_path: str, max_files: int = 200) -> tuple:
-    """Scan project files for dependencies.
+def scan_file_dependencies(project_path: str) -> tuple:
+    """Scan ALL project files for dependencies (no limit).
     
     Returns:
         tuple: (markdown_summary, reverse_deps_dict)
@@ -475,7 +488,8 @@ def scan_file_dependencies(project_path: str, max_files: int = 200) -> tuple:
     root = Path(project_path).resolve()
     
     SCANNABLE_EXTENSIONS = {'.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.py', '.vue', '.svelte'}
-    SKIP_DIRS = {'node_modules', '.git', '.next', 'dist', 'build', '__pycache__', 'venv', '.venv'}
+    SKIP_DIRS = {'node_modules', '.git', '.next', 'dist', 'build', '__pycache__', 'venv', '.venv', 
+                 '.turbo', 'coverage', '.nyc_output', 'playwright-report', 'test-results'}
     
     summary = {
         "total_files": 0,
@@ -485,7 +499,6 @@ def scan_file_dependencies(project_path: str, max_files: int = 200) -> tuple:
     }
     
     file_imports = {}  # file -> list of imports
-    file_count = 0
     
     try:
         for file_path in root.rglob("*"):
@@ -495,10 +508,6 @@ def scan_file_dependencies(project_path: str, max_files: int = 200) -> tuple:
                 continue
             if any(skip_dir in file_path.parts for skip_dir in SKIP_DIRS):
                 continue
-            
-            file_count += 1
-            if file_count > max_files:
-                break
             
             try:
                 content = file_path.read_text(encoding='utf-8', errors='ignore')
@@ -646,7 +655,7 @@ def scan_file_dependencies(project_path: str, max_files: int = 200) -> tuple:
     
     # Generate markdown
     if summary["total_files"] == 0:
-        return ""
+        return "", {}
     
     md_lines = ["## 📊 File Dependencies\n"]
     md_lines.append(f"> Scanned {summary['total_files']} files\n")
@@ -678,18 +687,12 @@ def scan_file_dependencies(project_path: str, max_files: int = 200) -> tuple:
 
 
 def generate_context_markdown(session_info: Dict, analysis: Dict, os_info: Dict[str, str]) -> str:
-    """Generate markdown context for AI to read."""
+    """Generate streamlined markdown context for AI - focused on structure and dependencies."""
     project_name = session_info.get("projectName", "Unknown")
     framework = analysis.get("framework", "Unknown")
-    platform = analysis.get("platform", "Unknown")
     project_type = analysis.get("projectType", "Unknown")
     project_path = session_info.get("projectPath", "")
-
     os_name = os_info.get("name", "Unknown")
-    os_shell = os_info.get("shell", "Unknown")
-
-    # Load clean code skill
-    clean_code_content = load_clean_code_skill()
 
     # Scan file dependencies first to get reverse deps
     dependency_content, reverse_deps = scan_file_dependencies(project_path)
@@ -697,65 +700,30 @@ def generate_context_markdown(session_info: Dict, analysis: Dict, os_info: Dict[
     # Load discovery structure with dependency annotations
     structure_content = load_discovery_structure(project_path, reverse_deps)
 
-    # Safe string conversion - handle None values
-    def safe_upper(val: str) -> str:
-        if val is None or val == 'Unknown':
-            return 'Unknown'
-        return str(val).upper()
-
     md = f"""# CODEBASE.md
 
-> **Auto-generated project context file.** Refreshed on every session start.
->
-> **Purpose:** Provides Claude AI with project structure, OS info, and coding standards automatically.
+> **Auto-generated project context.** Refreshed on every session start.
 
 ---
 
-# 📁 Project Context
-
-**Project:** `{project_name}`
-**Framework:** `{framework or 'Unknown'}`
-**Type:** `{project_type or 'Unknown'}`
-**Path:** `{project_path}`
-**Detected:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
-
----
-
-## 🖥️ Operating System
+## 📁 Project Info
 
 | Property | Value |
 |----------|-------|
+| **Project** | `{project_name}` |
+| **Framework** | `{framework or 'Unknown'}` |
+| **Type** | `{project_type or 'Unknown'}` |
 | **OS** | {os_name} |
-| **Shell** | {os_shell} |
-
----
-
-## ⚡ Terminal Commands (Current OS)
-
-{get_os_commands(os_info)}
-## 🎯 Project Environment
-
-| Property | Value |
-|----------|-------|
-| **Project Type** | {safe_upper(project_type)} |
-| **Framework** | {safe_upper(framework)} |
-| **Platform** | {safe_upper(platform)} |
-
----
-
-## 📋 Quick Project Commands
-
-{get_project_commands(project_type, framework)}
+| **Path** | `{project_path}` |
 
 ---
 
 {structure_content}
 {dependency_content}
-{clean_code_content}
 
 ---
 
-*This file is auto-generated by Maestro session hooks. Do not edit manually.*
+*Auto-generated by Maestro session hooks.*
 """
     return md
 
