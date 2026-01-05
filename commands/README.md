@@ -8,6 +8,7 @@ Slash commands for common development workflows.
 |---------|-------------|------|
 | [/create](create.md) | Create new application | IMPLEMENT |
 | [/enhance](enhance.md) | Add features to existing app | IMPLEMENT |
+| [/orchestrate](orchestrate.md) | Multi-agent coordination | ORCHESTRATE |
 | [/preview](preview.md) | Start/stop preview server | UTILITY |
 | [/status](status.md) | Show project and agent status | UTILITY |
 | [/brainstorm](brainstorm.md) | Structured idea exploration | BRAINSTORM |
@@ -20,6 +21,7 @@ Slash commands for common development workflows.
 ```
 /create e-commerce app with product listing
 /enhance add dark mode
+/orchestrate multi-agent review of authentication
 /preview start
 /status
 /brainstorm authentication options
@@ -52,5 +54,6 @@ Commands map to behavioral modes:
 
 - **BRAINSTORM**: Explore options before deciding
 - **IMPLEMENT**: Write code, build features
+- **ORCHESTRATE**: Coordinate multiple agents
 - **DEBUG**: Investigate problems systematically
 - **SHIP**: Deploy with safety checks
