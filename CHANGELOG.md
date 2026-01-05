@@ -5,6 +5,115 @@ All notable changes to Maestro will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-01-05
+
+### 🎨 Major Design Philosophy Overhaul
+
+### Added
+- **NO AI MEMORY STYLES** 🚫
+  - New absolute rule: Only use styles from Maestro skill files
+  - Prohibition against using "Aurora Glass", "Cyberpunk", "Swiss", etc. from AI training data
+  - All design decisions must come from skill files, not memory
+- **PURPLE BAN** 🟣
+  - Mandatory "Purple Check" before delivering any design
+  - No purple/violet hex codes (#8B5CF6, #A855F7, etc.) allowed
+  - No "purple" in gradient names
+  - Replace with Teal/Cyan/Emerald alternatives
+- **NO TEMPLATE LAYOUTS** 📐
+  - Forbidden patterns: Hero → 3-column features → CTA → Footer
+  - Forbidden: Centered hero with 2 buttons, Symmetric 3-card grid
+  - Required: Asymmetric layouts, Bento grid (mixed sizes), Overlapping elements
+  - Full-width sections alternating with constrained, Unusual navigation
+- **NO MODERNS SaaS CLICHÉS** ⚖️
+  - New "Anti-Safe Harbor" rules
+  - Forbidden: Standard Hero Split (Left Text / Right Visual)
+  - Forbidden: 70/30 splits (pseudo-radical)
+  - Forbidden: Bento Grids (unless for complex data)
+  - Forbidden: Mesh/Aurora Gradients, Glassmorphism (standard)
+  - Forbidden: Deep Cyan / Fintech Blue (the "safe" escape)
+  - Required: Experimental layouts, Massive typography, Brutalist/Neo-Retro styles
+- **Full Skill Chain Loading** 🔗
+  - Mandatory procedure: Read ALL skills AND their references before starting
+  - Check agent's "skills:" field in frontmatter
+  - For EACH skill listed: Open SKILL.md, read ALL content, check for references
+  - If references exist: READ THOSE TOO (e.g., color-system.md, ux-psychology.md)
+  - ONLY AFTER reading FULL CHAIN → Start working
+- **READ → UNDERSTAND → APPLY** 🧠
+  - Reading is NOT enough - must UNDERSTAND PRINCIPLES and PURPOSE
+  - Before coding, declare: "🧠 CHECKPOINT: [Agent] + [Skills read] + [3 principles I'll apply]"
+- **Frontend Design Reference Files** 📁
+  - 7 new reference documents in `skills/frontend-design/`:
+    - `animation-guide.md` - Motion, timing, easing principles
+    - `color-system.md` - Color theory, emotion mapping
+    - `decision-trees.md` - Context-specific decision templates
+    - `motion-graphics.md` - Lottie, GSAP, SVG, 3D, Particles
+    - `typography-system.md` - Font pairing, scale decisions
+    - `ux-psychology.md` - Hick's Law, Fitts' Law, Trust, Emotion
+    - `visual-effects.md` - Glassmorphism, shadows, gradients
+
+### Changed
+- **CLAUDE.md** - Complete rewrite with new philosophy
+  - Replaced "⚠️ CRITICAL: Use Maestro System" with "🔴 ABSOLUTE RULE: USE MAESTRO - NO EXCEPTIONS"
+  - Removed: Quick Start Commands, Agent list, Skills list, Hook Configuration sections
+  - Added: Comprehensive rule tables, mindset sections, proof of understanding checkpoints
+- **CODEBASE.md** - Streamlined structure
+  - Removed: OS commands, Clean Code standards section
+  - Simplified: Project structure, File dependencies
+  - More concise, reference-focused
+- **README.md** - Updated counts
+  - Agents: 18 → 17
+  - Skills: 50 → 69
+  - Scripts: 7 (with Visual Dashboard note)
+- **All Agents (17 files)** - Comprehensive updates
+  - Added: "CRITICAL: CLARIFY BEFORE CODING" sections
+  - Added: "Your Mindset" sections
+  - Added: Decision Frameworks / Decision Trees
+  - Added: Anti-Patterns sections
+  - Less code examples, more principles
+  - "Teaches thinking, not copying" emphasis
+- **All Skills (50 files)** - Restructured
+  - Added: "⚠️ How to Use This Skill" - teaches decision-making, not code copying
+  - Added: Decision trees instead of fixed patterns
+  - Reduced code examples, increased principle coverage
+  - Templates: ~300-400 lines shorter each (more concise)
+  - Game dev skills: ~300+ lines simplified
+  - mobile-typography: -723 lines
+  - modern-design-system: -631 lines
+- **Frontend Specialist Agent** - Largest update
+  - Added: 🧠 DEEP DESIGN THINKING (MANDATORY - BEFORE ANY DESIGN)
+  - Added: The MODERN CLICHÉ SCAN (ANTI-SAFE HARBOR)
+  - Added: TOPOLOGICAL HYPOTHESIS selection
+  - Added: 🎨 DESIGN COMMITMENT (required output block)
+  - Added: 🧠 THE MAESTRO AUDITOR (FINAL GATEKEEPER)
+  - Added: Automatic Rejection Triggers table
+- **Scripts** - Enhanced
+  - `explorer_helper.py`: Smart filtering with EXCLUDE_DIRS, COLLAPSE_DIRS, SmartTreeGenerator
+  - `lint_check.py`: Rich UI with tables, panels, progress spinners
+- **Commands** - New orchestrate command
+  - Added `/orchestrate` command for multi-agent coordination
+  - Added "ORCHESTRATE" behavioral mode
+
+### Removed
+- **`agents/api-designer.md`** - Functionality migrated to backend-specialist
+- **`docs/RESOURCES.md`** - No longer needed
+- **`maestro-release-v007.txt`** - Old release file
+
+### Philosophy Changes
+- From: "Here are some patterns you can use"
+- To: "THINK about the problem, don't copy patterns"
+- From: Code-heavy documentation
+- To: Principle-heavy, decision-making focused
+- From: Generic design defaults
+- To: Context-specific, ask-before-assuming approach
+
+### Summary
+- 76 files changed
+- 9,131 insertions(+)
+- 15,395 deletions(-)
+- Net: -6,264 lines (more concise, principle-focused content)
+
+---
+
 ## [0.0.7] - 2026-01-02
 
 ### Added
@@ -220,7 +329,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-[Unreleased]: https://github.com/xenitV1/claude-code-maestro/compare/v0.0.7...HEAD
+[Unreleased]: https://github.com/xenitV1/claude-code-maestro/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/xenitV1/claude-code-maestro/compare/v0.0.7...v0.2.0
 [0.0.7]: https://github.com/xenitV1/claude-code-maestro/compare/v0.0.6...v0.0.7
 [0.0.6]: https://github.com/xenitV1/claude-code-maestro/compare/v0.0.5...v0.0.6
 [0.0.5]: https://github.com/xenitV1/claude-code-maestro/compare/v0.0.4...v0.0.5
