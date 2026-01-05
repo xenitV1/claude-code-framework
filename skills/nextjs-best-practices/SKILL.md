@@ -1,124 +1,202 @@
 ---
 name: nextjs-best-practices
-description: Next.js 14+ best practices with App Router, Server Components, and modern patterns.
+description: Next.js App Router principles. Server Components, data fetching, routing patterns.
 ---
 
 # Next.js Best Practices
 
-## App Router Structure
+> Principles for Next.js App Router development.
+
+---
+
+## 1. Server vs Client Components
+
+### Decision Tree
+
+```
+Does it need...?
+│
+├── useState, useEffect, event handlers
+│   └── Client Component ('use client')
+│
+├── Direct data fetching, no interactivity
+│   └── Server Component (default)
+│
+└── Both? 
+    └── Split: Server parent + Client child
+```
+
+### By Default
+
+| Type | Use |
+|------|-----|
+| **Server** | Data fetching, layout, static content |
+| **Client** | Forms, buttons, interactive UI |
+
+---
+
+## 2. Data Fetching Patterns
+
+### Fetch Strategy
+
+| Pattern | Use |
+|---------|-----|
+| **Default** | Static (cached at build) |
+| **Revalidate** | ISR (time-based refresh) |
+| **No-store** | Dynamic (every request) |
+
+### Data Flow
+
+| Source | Pattern |
+|--------|---------|
+| Database | Server Component fetch |
+| API | fetch with caching |
+| User input | Client state + server action |
+
+---
+
+## 3. Routing Principles
+
+### File Conventions
+
+| File | Purpose |
+|------|---------|
+| `page.tsx` | Route UI |
+| `layout.tsx` | Shared layout |
+| `loading.tsx` | Loading state |
+| `error.tsx` | Error boundary |
+| `not-found.tsx` | 404 page |
+
+### Route Organization
+
+| Pattern | Use |
+|---------|-----|
+| Route groups `(name)` | Organize without URL |
+| Parallel routes `@slot` | Multiple same-level pages |
+| Intercepting `(.)` | Modal overlays |
+
+---
+
+## 4. API Routes
+
+### Route Handlers
+
+| Method | Use |
+|--------|-----|
+| GET | Read data |
+| POST | Create data |
+| PUT/PATCH | Update data |
+| DELETE | Remove data |
+
+### Best Practices
+
+- Validate input with Zod
+- Return proper status codes
+- Handle errors gracefully
+- Use Edge runtime when possible
+
+---
+
+## 5. Performance Principles
+
+### Image Optimization
+
+- Use next/image component
+- Set priority for above-fold
+- Provide blur placeholder
+- Use responsive sizes
+
+### Bundle Optimization
+
+- Dynamic imports for heavy components
+- Route-based code splitting (automatic)
+- Analyze with bundle analyzer
+
+---
+
+## 6. Metadata
+
+### Static vs Dynamic
+
+| Type | Use |
+|------|-----|
+| Static export | Fixed metadata |
+| generateMetadata | Dynamic per-route |
+
+### Essential Tags
+
+- title (50-60 chars)
+- description (150-160 chars)
+- Open Graph images
+- Canonical URL
+
+---
+
+## 7. Caching Strategy
+
+### Cache Layers
+
+| Layer | Control |
+|-------|---------|
+| Request | fetch options |
+| Data | revalidate/tags |
+| Full route | route config |
+
+### Revalidation
+
+| Method | Use |
+|--------|-----|
+| Time-based | `revalidate: 60` |
+| On-demand | `revalidatePath/Tag` |
+| No cache | `no-store` |
+
+---
+
+## 8. Server Actions
+
+### Use Cases
+
+- Form submissions
+- Data mutations
+- Revalidation triggers
+
+### Best Practices
+
+- Mark with 'use server'
+- Validate all inputs
+- Return typed responses
+- Handle errors
+
+---
+
+## 9. Anti-Patterns
+
+| ❌ Don't | ✅ Do |
+|----------|-------|
+| 'use client' everywhere | Server by default |
+| Fetch in client components | Fetch in server |
+| Skip loading states | Use loading.tsx |
+| Ignore error boundaries | Use error.tsx |
+| Large client bundles | Dynamic imports |
+
+---
+
+## 10. Project Structure
 
 ```
 app/
-├── layout.tsx          # Root layout
-├── page.tsx            # Home page (/)
-├── loading.tsx         # Loading UI
-├── error.tsx           # Error UI
-├── not-found.tsx       # 404 page
-├── dashboard/
-│   ├── layout.tsx      # Dashboard layout
-│   └── page.tsx        # /dashboard
+├── (marketing)/     # Route group
+│   └── page.tsx
+├── (dashboard)/
+│   ├── layout.tsx   # Dashboard layout
+│   └── page.tsx
 ├── api/
-│   └── users/
-│       └── route.ts    # /api/users
+│   └── [resource]/
+│       └── route.ts
 └── components/
-    └── Header.tsx
+    └── ui/
 ```
 
-## Server vs Client Components
+---
 
-```tsx
-// Server Component (default)
-async function UserProfile({ userId }: { userId: string }) {
-  const user = await db.user.findUnique({ where: { id: userId } });
-  return <div>{user.name}</div>;
-}
-
-// Client Component
-'use client';
-
-import { useState } from 'react';
-
-export function Counter() {
-  const [count, setCount] = useState(0);
-  return <button onClick={() => setCount(c => c + 1)}>{count}</button>;
-}
-```
-
-## Data Fetching
-
-```tsx
-// Server Component fetching
-async function Posts() {
-  const posts = await fetch('https://api.example.com/posts', {
-    next: { revalidate: 60 } // ISR: revalidate every 60s
-  }).then(r => r.json());
-  
-  return <PostList posts={posts} />;
-}
-```
-
-## API Routes
-
-```typescript
-// app/api/users/route.ts
-import { NextRequest, NextResponse } from 'next/server';
-
-export async function GET(request: NextRequest) {
-  const users = await db.user.findMany();
-  return NextResponse.json(users);
-}
-
-export async function POST(request: NextRequest) {
-  const body = await request.json();
-  const user = await db.user.create({ data: body });
-  return NextResponse.json(user, { status: 201 });
-}
-```
-
-## Metadata
-
-```tsx
-// Static metadata
-export const metadata = {
-  title: 'My App',
-  description: 'Welcome to my app'
-};
-
-// Dynamic metadata
-export async function generateMetadata({ params }: Props) {
-  const post = await getPost(params.id);
-  return { title: post.title };
-}
-```
-
-## Loading & Error States
-
-```tsx
-// loading.tsx
-export default function Loading() {
-  return <div className="animate-pulse">Loading...</div>;
-}
-
-// error.tsx
-'use client';
-
-export default function Error({ error, reset }: { 
-  error: Error; 
-  reset: () => void 
-}) {
-  return (
-    <div>
-      <h2>Something went wrong!</h2>
-      <button onClick={reset}>Try again</button>
-    </div>
-  );
-}
-```
-
-## Best Practices
-
-1. **Server Components by default** - Only use 'use client' when needed
-2. **Colocate files** - Keep related files together
-3. **Use loading.tsx** - Better UX with loading states
-4. **Optimize images** - Use next/image
-5. **Route groups** - (marketing), (dashboard) for organization
+> **Remember:** Server Components are the default for a reason. Start there, add client only when needed.
