@@ -2,19 +2,28 @@
 
 ## [0.2.5] - 2026-01-06
 
-### 🔄 Auto-Update System
+### 🔄 Manual Update System (`/up` Command)
 
 **Added:**
 - `scripts/auto_update.py` - Safe GitHub sync with backup/rollback
-- `scripts/test_platform.py` - Cross-platform compatibility test
-- Automatic update check on session start (every 6 hours)
-- Local change protection (stash/commit/discard)
-- Remote file deletion handling (`git clean -fd`)
+- `commands/up.md` - New `/up` slash command for manual updates
+- `sync` command - Sync repo files to `~/.claude` directory
+- `update_notification.txt` - Created in user's current directory after update
+- Local change protection (stash/commit/discard options)
+- Remote file deletion handling
+- Dynamic path support (cross-platform)
 
 **Changed:**
 - Updated script count: 7 → 8
-- `session_hooks.py` - Added `check_for_updates()` integration
+- `session_hooks.py` - Added update helper functions
 - `setup.py` - Added `auto_update.py` to install list
+
+**Usage:**
+```bash
+/up              # Check and apply updates
+python auto_update.py sync    # Sync files to ~/.claude
+python auto_update.py check   # Check for updates only
+```
 
 ---
 

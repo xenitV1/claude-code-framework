@@ -20,7 +20,7 @@
 
 > **Legend:** `file.ts ← A.tsx, B.tsx` = This file is **imported by** A.tsx and B.tsx.
 > Directories with `[N files: ...]` are summarized to reduce size.
-> 📊 Showing 20 files. 3 dirs summarized, 1 dirs excluded (node_modules, etc.)
+> 📊 Showing 21 files. 3 dirs summarized, 1 dirs excluded (node_modules, etc.)
 
 
 ```
@@ -44,19 +44,20 @@ docs/ [1 files: 1 .md]
 scripts/
   README.md
   auto_preview.py
+  auto_update.py
   dependency_scanner.py
   explorer_helper.py
   lint_check.py
   session_hooks.py
   session_manager.py
   setup.py
-skills/ [69 files: 69 .md]
+skills/ [78 files: 78 .md]
 ```
 
 
 ## 📊 File Dependencies
 
-> Scanned 7 files
+> Scanned 8 files
 
 ### API Endpoints Used
 
@@ -76,10 +77,11 @@ modelName
 
 | File | Imported by |
 |------|-------------|
-| `rich/console` | 2 files |
-| `rich/table` | 2 files |
-| `rich/panel` | 2 files |
-| `rich/progress` | 2 files |
+| `rich/console` | 3 files |
+| `rich/panel` | 3 files |
+| `rich/table` | 3 files |
+| `rich/progress` | 3 files |
+| `rich/prompt` | 2 files |
 
 
 ---

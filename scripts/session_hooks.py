@@ -774,6 +774,115 @@ python -m pytest                   # Run tests
     return ""
 
 
+def auto_update_maestro(repo_dir: str, cwd: str = None) -> bool:
+    """Automatically update Maestro from GitHub (silent, no prompts).
+
+    Args:
+        repo_dir: Path to the Maestro repository
+        cwd: Current working directory for notification file
+
+    Returns:
+        True if update was successful
+    """
+    try:
+        import subprocess
+        import sys
+        from pathlib import Path
+
+        auto_update_script = Path(repo_dir) / "scripts" / "auto_update.py"
+
+        if not auto_update_script.exists():
+            debug_log("auto_update.py not found")
+            return False
+
+        # Build command with optional --cwd argument
+        cmd = [sys.executable, str(auto_update_script), "update", "--force", "--silent"]
+        if cwd:
+            cmd.extend(["--cwd", cwd])
+
+        # Run auto_update.py with --force and --silent flags
+        result = subprocess.run(
+            cmd,
+            cwd=repo_dir,
+            capture_output=True,
+            text=True,
+            timeout=120
+        )
+
+        if result.returncode == 0:
+            debug_log("Maestro updated successfully")
+            return True
+        else:
+            debug_log(f"Auto-update failed: {result.stderr}")
+            return False
+
+    except Exception as e:
+        debug_log(f"Auto-update error: {e}")
+        return False
+
+
+def check_for_updates(repo_dir: str, cwd: str = None, silent: bool = True) -> bool:
+    """Check for Maestro updates from GitHub and auto-update if available.
+
+    Args:
+        repo_dir: Path to the Maestro repository
+        cwd: Current working directory for notification file
+        silent: If True (default), run auto-update without prompts
+
+    Returns:
+        True if updates were applied
+    """
+    try:
+        import subprocess
+
+        debug_log("Checking for updates...")
+
+        # Check for updates using git fetch
+        result = subprocess.run(
+            ["git", "fetch", "origin"],
+            cwd=repo_dir,
+            capture_output=True,
+            text=True,
+            timeout=30
+        )
+
+        if result.returncode != 0:
+            debug_log(f"Git fetch failed: {result.stderr}")
+            return False
+
+        # Get commits behind
+        result = subprocess.run(
+            ["git", "rev-list", "--count", "HEAD..origin/main"],
+            cwd=repo_dir,
+            capture_output=True,
+            text=True,
+            timeout=10
+        )
+
+        if result.returncode != 0:
+            debug_log("Git rev-list failed")
+            return False
+
+        behind = result.stdout.strip()
+        try:
+            behind_count = int(behind)
+        except ValueError:
+            debug_log(f"Invalid behind count: {behind}")
+            return False
+
+        # If updates available, run auto-update
+        if behind_count > 0:
+            debug_log(f"Updates available: {behind_count} commits behind")
+            return auto_update_maestro(repo_dir, cwd)
+
+        debug_log("Already up to date")
+        return False
+
+    except Exception as e:
+        debug_log(f"Update check error: {e}")
+        return False
+
+
 def session_start(project_path: str, silent: bool = False):
     """Session start."""
     debug_log(f"SESSION_START called: project_path={project_path}, silent={silent}")
@@ -781,6 +890,14 @@ def session_start(project_path: str, silent: bool = False):
     # Detect OS
     os_info = get_os_info()
     debug_log(f"OS detected: {os_info['name']}")
+
+    # Check for Maestro updates (only if we're in a git repo)
+    try:
+        repo_dir = Path(__file__).parent.parent
+        if (repo_dir / ".git").exists():
+            check_for_updates(str(repo_dir), silent)
+    except Exception as e:
+        debug_log(f"Update check failed: {e}")
 
     # Create project-based data directory
     project_dir = ensure_project_data_dir(project_path)

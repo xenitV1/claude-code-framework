@@ -21,6 +21,110 @@ These run automatically via `settings.json` hooks:
 | [session_manager.py](session_manager.py) | Project state management |
 | [auto_preview.py](auto_preview.py) | Preview server control |
 | [setup.py](setup.py) | 🆕 Cross-platform installation script |
+| [auto_update.py](auto_update.py) | 🔄 **NEW** Safe GitHub auto-update system |
+
+## 🔄 Manual Update System (`/up` Command)
+
+## 🔄 Auto-Update System
+
+### Overview
+
+The `auto_update.py` script provides **safe, automated updates** from GitHub with:
+
+- ✅ **Update detection** - Compares local vs remote commits
+- ✅ **Local change protection** - Stash/commit/discard options before update
+- ✅ **File sync** - Handles remote file deletions safely
+- ✅ **Automatic backup** - Creates backup before update
+- ✅ **Rollback** - Automatic rollback on failure
+- ✅ **Rich UI** - Beautiful terminal output
+
+### Usage
+
+```bash
+# Check for updates
+python auto_update.py check
+
+# Update from GitHub (interactive)
+python auto_update.py update
+
+# Force update (discards local changes)
+python auto_update.py update --force
+
+# Sync repo files to ~/.claude directory
+python auto_update.py sync
+
+# Or use the /up slash command in Claude CLI
+/up
+```
+
+### What It Does
+
+1. **Pre-Update Checks:**
+   - Compares local commit with GitHub origin/main
+   - Detects local changes (modified, new, deleted files)
+   - Shows what will be updated/deleted
+
+2. **Local Change Handling:**
+   - Asks what to do with local changes:
+     - `stash` - Save changes temporarily (restorable after update)
+     - `commit` - Commit changes first (update cancelled)
+     - `discard` - Remove local changes
+
+3. **File Synchronization:**
+   - Pulls latest changes with `git pull --rebase`
+   - **Removes deleted files** (`git clean -fd`)
+   - Re-runs setup.py for reinstallation
+
+4. **Backup & Rollback:**
+   - Creates timestamped backup in `.maestro_backup/`
+   - Stores metadata for rollback
+   - Auto-rollback on failure
+
+5. **Notification:**
+   - Creates `update_notification.txt` in current directory
+   - Shows what files were updated/synced
+
+### Safety Features
+
+| Feature | Description |
+|---------|-------------|
+| **Pre-flight check** | Shows all changes before applying |
+| **Stash support** | Safely preserve local work |
+| **Backup** | Full backup before any destructive operation |
+| **Rollback** | Auto-restore on failure |
+| **Confirmation prompts** | Explicit approval for destructive actions |
+| **Notification file** | `update_notification.txt` created after sync |
+
+### Example Output
+
+```
+╭─ Update Available ─────────────────────────────────────╮
+│                                                        │
+│  Property      │ Value                                 │
+│  ────────────  │ ───────────────────────────────────── │
+│  Current       │ v0.2.4                                 │
+│  Latest        │ v0.2.5                                 │
+│  Behind        │ 3 commits                             │
+│  Local Changes │ 2 files                                │
+│                                                        │
+╰────────────────────────────────────────────────────────╯
+
+Files to update: 15
+  • CLAUDE.md
+  • agents/mobile-developer.md
+  • skills/mobile-design/...
+
+Files to be deleted locally: 2
+  • scripts/old_script.py
+  • agents/deprecated.md
+
+Found 2 local change(s):
+  [Modified] agents/custom.md
+  [Added] data/test.json
+
+How would you like to proceed? [Y/n]: y
+Choose option [stash/commit/discard] [stash]: stash
+```
 
 ## Usage
 
@@ -227,7 +331,7 @@ Duration: 0:45:23
 
 ---
 
-**Last Updated:** 2026-01-01
-**Version:** 2.0
+**Last Updated:** 2026-01-06
+**Version:** 2.1
 **Claude Code:** v2.0.64
 

@@ -81,6 +81,7 @@ def get_all_scripts() -> List[str]:
         "explorer_helper.py",
         "dependency_scanner.py",
         "auto_preview.py",
+        "auto_update.py",
         "session_manager.py",
         "lint_check.py",
     ]
@@ -126,7 +127,7 @@ def show_features():
     table.add_column("Description", style="white")
     table.add_column("Count", justify="right", style="green")
 
-    table.add_row("Scripts", "Automation hooks & utilities", "7")
+    table.add_row("Scripts", "Automation hooks & utilities", "8")
     table.add_row("Agents", "Specialized AI personas", "17")
     table.add_row("Skills", "Knowledge resources & patterns", "78")
     table.add_row("Commands", "Slash commands for Claude", "10")
@@ -180,6 +181,37 @@ def setup_scripts(repo_dir: Path, claude_dir: Path, progress=None) -> Dict[str, 
 
         if progress:
             progress.update(progress.task_ids[0], advance=1)
+
+    return results
+
+
+def setup_maestro_files(repo_dir: Path, claude_dir: Path) -> bool:
+    """Copy Maestro core files (agents, commands, skills, CHANGELOG, CLAUDE)."""
+    results = {}
+
+    # Directories to copy
+    dirs_to_copy = ["agents", "commands", "skills"]
+    for dir_name in dirs_to_copy:
+        src_dir = repo_dir / dir_name
+        dst_dir = claude_dir / dir_name
+        if src_dir.exists():
+            if dst_dir.exists():
+                shutil.rmtree(dst_dir)
+            shutil.copytree(src_dir, dst_dir)
+            results[dir_name] = True
+        else:
+            results[dir_name] = False
+
+    # Root files to copy
+    files_to_copy = ["CHANGELOG.md", "CLAUDE.md"]
+    for file_name in files_to_copy:
+        src_file = repo_dir / file_name
+        dst_file = claude_dir / file_name
+        if src_file.exists():
+            shutil.copy2(src_file, dst_file)
+            results[file_name] = True
+        else:
+            results[file_name] = False
 
     return results
 
