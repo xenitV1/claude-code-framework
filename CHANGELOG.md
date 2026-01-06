@@ -2,11 +2,11 @@
 
 ## [0.2.5] - 2026-01-06
 
-### 🔄 Manual Update System (`/up` Command)
+### 🔄 Manual Update System (`/maestro` Command)
 
 **Added:**
 - `scripts/auto_update.py` - Safe GitHub sync with backup/rollback
-- `commands/up.md` - New `/up` slash command for manual updates
+- `commands/maestro.md` - New `/maestro` slash command for manual updates
 - `sync` command - Sync repo files to `~/.claude` directory
 - `update_notification.txt` - Created in user's current directory after update
 - Local change protection (stash/commit/discard options)
@@ -20,7 +20,7 @@
 
 **Usage:**
 ```bash
-/up              # Check and apply updates
+/maestro              # Check and apply updates
 python auto_update.py sync    # Sync files to ~/.claude
 python auto_update.py check   # Check for updates only
 ```

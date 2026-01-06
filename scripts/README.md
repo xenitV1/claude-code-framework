@@ -23,7 +23,7 @@ These run automatically via `settings.json` hooks:
 | [setup.py](setup.py) | 🆕 Cross-platform installation script |
 | [auto_update.py](auto_update.py) | 🔄 **NEW** Safe GitHub auto-update system |
 
-## 🔄 Manual Update System (`/up` Command)
+## 🔄 Manual Update System (`/maestro` Command)
 
 ## 🔄 Auto-Update System
 
@@ -53,8 +53,8 @@ python auto_update.py update --force
 # Sync repo files to ~/.claude directory
 python auto_update.py sync
 
-# Or use the /up slash command in Claude CLI
-/up
+# Or use the /maestro slash command in Claude CLI
+/maestro
 ```
 
 ### What It Does

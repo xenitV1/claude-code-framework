@@ -2,7 +2,7 @@
 description: Check and apply Maestro updates from GitHub. Run to sync latest agents, skills, and scripts.
 ---
 
-# /up - Maestro Update
+# /maestro - Maestro Update
 
 $ARGUMENTS
 
@@ -25,9 +25,9 @@ Check for Maestro updates from GitHub and apply them.
 ## Usage
 
 ```bash
-/up              # Interactive update (confirms before applying)
-/up --force      # Force update without prompts
-/up check        # Only check if updates available
+/maestro              # Interactive update (confirms before applying)
+/maestro --force      # Force update without prompts
+/maestro check        # Only check if updates available
 ```
 
 ---
@@ -108,8 +108,7 @@ After update, `update_notification.txt` is created in your current directory:
 - `skills/` - All skill files
 - `scripts/` - Helper scripts
 - `commands/` - Slash commands
-- `CLAUDE.md`, `CHANGELOG.md`
-- Settings examples
+- `CLAUDE.md`, `CHANGELOG.md`, `Makefile`
 
 ---
 
