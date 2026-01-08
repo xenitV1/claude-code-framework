@@ -82,7 +82,6 @@ def get_all_scripts() -> List[str]:
         "dependency_scanner.py",
         "auto_preview.py",
         "session_manager.py",
-        "lint_check.py",
     ]
 
 
@@ -114,11 +113,11 @@ def show_features():
     """Show features table."""
     if not RICH_AVAILABLE:
         print("\nFeatures:")
-        print("  - 15 Specialized Agents")
-        print("  - 40+ Skills & Patterns")
-        print("  - Token Usage Tracking")
-        print("  - Error Learning System")
-        print("  - Smart Commit Messages")
+        print("  - 17 Specialized Agents")
+        print("  - 36 Modular Skills")
+        print("  - Zero-Context Script Execution")
+        print("  - Native Agent Orchestration")
+        print("  - Project Detection")
         return
 
     table = Table(title="What Gets Installed", show_header=True, header_style="bold magenta")
@@ -126,7 +125,7 @@ def show_features():
     table.add_column("Description", style="white")
     table.add_column("Count", justify="right", style="green")
 
-    table.add_row("Scripts", "Automation hooks & utilities", "7")
+    table.add_row("Scripts", "Automation hooks & utilities", "6")
     table.add_row("Agents", "Specialized AI personas", "17")
     table.add_row("Skills", "Knowledge resources & patterns", "78")
     table.add_row("Commands", "Slash commands for Claude", "10")
