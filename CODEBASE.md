@@ -12,7 +12,7 @@
 | **Framework** | `Unknown` |
 | **Type** | `Unknown` |
 | **OS** | Windows |
-| **Path** | `C:\claude` |
+| **Path** | `c:\claude` |
 
 ---
 
@@ -20,13 +20,30 @@
 
 > **Legend:** `file.ts ← A.tsx, B.tsx` = This file is **imported by** A.tsx and B.tsx.
 > Directories with `[N files: ...]` are summarized to reduce size.
-> 📊 Showing 20 files. 3 dirs summarized, 1 dirs excluded (node_modules, etc.)
+> 📊 Showing 145 files. 1 dirs summarized, 1 dirs excluded (node_modules, etc.)
 
 
 ```
 .claude/
   settings.local.json
-agents/ [17 files: 17 .md]
+agents/
+  README.md
+  backend-specialist.md
+  database-architect.md
+  debugger.md
+  devops-engineer.md
+  documentation-writer.md
+  explorer-agent.md
+  frontend-specialist.md
+  game-developer.md
+  mobile-developer.md
+  orchestrator.md
+  penetration-tester.md
+  performance-optimizer.md
+  project-planner.md
+  security-auditor.md
+  seo-specialist.md
+  test-engineer.md
 commands/
   README.md
   brainstorm.md
@@ -46,17 +63,186 @@ scripts/
   auto_preview.py
   dependency_scanner.py
   explorer_helper.py
-  lint_check.py
   session_hooks.py
   session_manager.py
   setup.py
-skills/ [69 files: 69 .md]
+  verify_all.py
+skills/
+  README.md
+  api-patterns/
+    SKILL.md
+    api-style.md
+    auth.md
+    documentation.md
+    graphql.md
+    rate-limiting.md
+    response.md
+    rest.md
+    security-testing.md
+    trpc.md
+    versioning.md
+  app-builder/
+    SKILL.md
+    agent-coordination.md
+    feature-building.md
+    project-detection.md
+    scaffolding.md
+    tech-stack.md
+    templates/
+      SKILL.md
+      astro-static/
+        TEMPLATE.md
+      chrome-extension/
+        TEMPLATE.md
+      cli-tool/
+        TEMPLATE.md
+      electron-desktop/
+        TEMPLATE.md
+      express-api/
+        TEMPLATE.md
+      flutter-app/
+        TEMPLATE.md
+      monorepo-turborepo/
+        TEMPLATE.md
+      nextjs-fullstack/
+        TEMPLATE.md
+      nextjs-saas/
+        TEMPLATE.md
+      nextjs-static/
+        TEMPLATE.md
+      python-fastapi/
+        TEMPLATE.md
+      react-native-app/
+        TEMPLATE.md
+  architecture/
+    SKILL.md
+    context-discovery.md
+    examples.md
+    pattern-selection.md
+    patterns-reference.md
+    trade-off-analysis.md
+  bash-linux/
+    SKILL.md
+  behavioral-modes/
+    SKILL.md
+  brainstorming/
+    SKILL.md
+    dynamic-questioning.md
+  clean-code/
+    SKILL.md
+  code-review-checklist/
+    SKILL.md
+  database-design/
+    SKILL.md
+    database-selection.md
+    indexing.md
+    migrations.md
+    optimization.md
+    orm-selection.md
+    schema-design.md
+  deployment-procedures/
+    SKILL.md
+  documentation-templates/
+    SKILL.md
+  frontend-design/
+    SKILL.md
+    animation-guide.md
+    color-system.md
+    decision-trees.md
+    motion-graphics.md
+    scripts/
+      ux_audit.py
+    typography-system.md
+    ux-psychology.md
+    visual-effects.md
+  game-development/
+    2d-games/
+      SKILL.md
+    3d-games/
+      SKILL.md
+    SKILL.md
+    game-design/
+      SKILL.md
+    mobile-games/
+      SKILL.md
+    multiplayer/
+      SKILL.md
+    pc-games/
+      SKILL.md
+    vr-ar/
+      SKILL.md
+    web-games/
+      SKILL.md
+  geo-fundamentals/
+    SKILL.md
+  lint-and-validate/
+    SKILL.md
+  mcp-builder/
+    SKILL.md
+  mobile-design/
+    SKILL.md
+    decision-trees.md
+    mobile-backend.md
+    mobile-color-system.md
+    mobile-debugging.md
+    mobile-design-thinking.md
+    mobile-navigation.md
+    mobile-performance.md
+    mobile-testing.md
+    mobile-typography.md
+    platform-android.md
+    platform-ios.md
+    scripts/
+      mobile_audit.py
+    touch-psychology.md
+  nextjs-best-practices/
+    SKILL.md
+  nodejs-best-practices/
+    SKILL.md
+  parallel-agents/
+    SKILL.md
+  performance-profiling/
+    SKILL.md
+    scripts/
+      lighthouse_audit.py
+  plan-writing/
+    SKILL.md
+  powershell-windows/
+    SKILL.md
+  python-patterns/
+    SKILL.md
+  react-patterns/
+    SKILL.md
+  red-team-tactics/
+    SKILL.md
+  security-checklist/
+    SKILL.md
+  seo-fundamentals/
+    SKILL.md
+  server-management/
+    SKILL.md
+  systematic-debugging/
+    SKILL.md
+  tailwind-patterns/
+    SKILL.md
+  tdd-workflow/
+    SKILL.md
+  testing-patterns/
+    SKILL.md
+  vulnerability-scanner/
+    SKILL.md
+    scripts/
+      security_scan.py
+  webapp-testing/
+    SKILL.md
+    scripts/
+      playwright_runner.py
 ```
 
 
 ## 📊 File Dependencies
 
-> Scanned 7 files
+> Scanned 12 files
 
 ### API Endpoints Used
 
@@ -76,10 +262,7 @@ modelName
 
 | File | Imported by |
 |------|-------------|
-| `rich/console` | 2 files |
-| `rich/table` | 2 files |
-| `rich/panel` | 2 files |
-| `rich/progress` | 2 files |
+| `tempfile` | 2 files |
 
 
 ---
