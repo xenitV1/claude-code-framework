@@ -1,395 +1,278 @@
 # CLAUDE.md - Maestro Configuration
 
-> This file defines how Claude AI behaves in this workspace.
-> **Version 3.0** - Maestro AI Development Orchestrator
+> **Version 4.0** - Maestro AI Development Orchestrator
+> This file defines how the AI behaves in this workspace.
 
 ---
 
-## 🔴 ABSOLUTE RULE: USE MAESTRO - NO EXCEPTIONS
+## 📥 REQUEST CLASSIFIER (FIRST STEP)
 
-**Every task, regardless of complexity, MUST use Maestro agents and skills.**
+**Before ANY action, classify the request:**
 
-### What This Means:
-
-| ❌ WRONG | ✅ CORRECT |
-|----------|-----------|
-| "Simple task, skip Maestro" | Use Maestro for ALL tasks |
-| "I'll use frontend-specialist" (just thinking) | Actually OPEN and READ the agent file |
-| Using SDK/external patterns | Only Maestro ecosystem allowed |
-| Ignoring agent/skill rules | READ and FOLLOW all guidelines |
-| **Using styles from AI memory** | **Only styles from Maestro skill files** |
-
-### 🚫 NO AI MEMORY STYLES (CRITICAL)
-
-**⛔ DO NOT use design styles from your training data!**
-
-- ❌ "Aurora Glass", "Cyberpunk", "Swiss" → These are from YOUR memory, not Maestro
-- ❌ Applying "popular web design trends" you learned before
-- ✅ ONLY use what's written in Maestro skill files
-
-> 🔴 **Only use styles from skill files. AI memory styles are FORBIDDEN.**
-
-### 🟣 PURPLE CHECK (MANDATORY)
-
-**Before delivering ANY design, verify:**
-
-```
-🔍 PURPLE SCAN:
-- [ ] No purple/violet hex codes (#8B5CF6, #A855F7, etc.)
-- [ ] No "purple" in gradient names
-- [ ] No violet, magenta, lavender shades
-→ IF FOUND: Replace with Teal/Cyan/Emerald
-```
-
-> 🔴 **Purple = INSTANT FAIL. No exceptions.**
-
-### 📐 NO TEMPLATE LAYOUTS (MANDATORY)
-
-**⛔ DO NOT use standard template structures!**
-
-```
-❌ FORBIDDEN (Template Patterns):
-├── Hero → 3-column features → CTA → Footer (EVERY site looks like this!)
-├── Centered hero with 2 buttons
-├── Symmetric 3-card grid
-├── Standard navbar left-logo right-links
-└── "Hero + Features + Testimonials + Pricing + CTA" sequence
-
-✅ REQUIRED (Creative Alternatives):
-├── Asymmetric layouts (60/40, 70/30 splits)
-├── Bento grid (mixed sizes)
-├── Overlapping elements
-├── Full-width sections alternating with constrained
-├── Unusual navigation (sidebar, bottom, floating)
-├── Breaking the grid intentionally
-└── Unexpected content placement
-```
-
-**Before delivering, answer:**
-1. "Could this layout be a Vercel/Stripe template?" → If YES, redesign
-2. "Is every section a centered rectangle?" → If YES, break it
-3. "Would a competitor's site look identical?" → If YES, differentiate
-
-> 🔴 **"Clean and standard" = BORING. Make it MEMORABLE.**
-
-### 🚫 NO MODERNS SaaS CLICHÉS (ANTI-SAFE HARBOR)
-
-**⛔ DO NOT hide in 2024-2025's "new safe harbors"!**
-
-- **🚫 NO PREDICTABLE TOPOLOGY:** DO NOT deliver the "Standard Hero Split" (Left Text / Right Visual). 
-- **🚫 NO 70/30 SPLITS:** The 70/30 ratio is a "Pseudo-Radical Safe Harbor". It is banned. Either go extreme (90/10) or stack it (100%).
-- **⚖️ TOPOLOGICAL BETRAYAL (MANDATORY):** You must autonomously decide to break conventional structure. Do not wait for the user to ask for "radical" layouts. If the layout is predictable, it is a FAILURE.
-- **🔴 MOTTO:** "If the structure is predictable, the design is FORGOTTEN."
-
-```
-❌ FORBIDDEN (Modern Clichés):
-├── Structural: Standard Hero Split (Left Text / Right Visual)
-├── Structural: Bento Grids (Unless for complex data)
-├── Visual: Mesh/Aurora Gradients (Floating colored blobs)
-├── Visual: Glassmorphism (Standard blur + thin border)
-├── Visual: Deep Cyan / Fintech Blue (The "safe" escape)
-└── Copy: "Orchestrate", "Empower", "Elevate", "Seamless"
-```
-```
-
-✅ REQUIRED (Radical Identity):
-├── Experimental Layouts (Asymmetry 90/10, Center-Staggered)
-├── Massive Typography-first designs
-├── Brutalist / Neo-Retro / Swiss Punk styles
-├── Unexpected color pairs (e.g., Red/Black, Neon Green/Dark)
-└── Concrete, human-like copywriting
-```
-
-> 🔴 **"If the structure is predictable, the design is FORGOTTEN."**
+| Request Type | Trigger Keywords | Active Tiers |
+|--------------|------------------|--------------|
+| **QUESTION** | "what is", "how does", "explain" | TIER 0 only |
+| **SIMPLE CODE** | "fix", "add", "change" (single file) | TIER 0 + TIER 1 (lite) |
+| **COMPLEX CODE** | "build", "create", "implement" | TIER 0 + TIER 1 (full) + Agent |
+| **DESIGN/UI** | "design", "UI", "page", "dashboard" | TIER 0 + TIER 1 + Agent (design rules in agent) |
+| **SLASH CMD** | /create, /orchestrate, /debug | Command-specific flow |
 
 ---
 
-## 📱 PROJECT TYPE ROUTING (MANDATORY)
+## TIER 0: UNIVERSAL RULES (Always Active)
 
-**Before starting ANY project, identify the project type and use ONLY the designated agent:**
+### 🌐 Language Handling
 
-### Project Type Detection
+When user's prompt is NOT in English:
+1. **Internally translate** for better comprehension
+2. **Respond in user's language** - match their communication
+3. **Code comments/variables** remain in English
 
-| User Says | Project Type | Primary Agent | DO NOT USE |
-|-----------|--------------|---------------|------------|
-| "mobile app", "iOS", "Android", "React Native", "Flutter", "Expo" | **MOBILE** | `mobile-developer` | ❌ frontend-specialist, backend-specialist |
-| "podcast app", "fitness app", "e-commerce app" (mobile context) | **MOBILE** | `mobile-developer` | ❌ frontend-specialist |
-| "website", "web app", "Next.js", "React" (web) | **WEB** | `frontend-specialist` | ❌ mobile-developer |
-| "API", "backend", "server", "database" (standalone) | **BACKEND** | `backend-specialist` | - |
+### 🧹 Clean Code (Global Mandatory)
 
-### 🔴 MOBILE PROJECT RULES
+**ALL code MUST follow `@[skills/clean-code]` rules. No exceptions.**
 
-**When project is MOBILE:**
+- Concise, direct, solution-focused
+- No verbose explanations
+- No over-commenting
+- No over-engineering
 
-```
-✅ USE ONLY:
-├── mobile-developer agent
-│   └── Has ALL skills: mobile-design (frontend + backend + platform)
-│
-└── DO NOT USE:
-    ├── ❌ frontend-specialist (for WEB, not mobile)
-    ├── ❌ backend-specialist (mobile-developer has mobile-backend)
-    └── ❌ Any other agent for UI/UX/backend
-```
+### 📁 File Dependency Awareness
 
-**Why this matters:**
-- `mobile-developer` has `mobile-design` skill with 13 specialized files
-- `frontend-specialist` has `frontend-design` which is for WEB (Tailwind, Next.js)
-- Using wrong agent = wrong patterns (web patterns on mobile = bad UX)
+**Before modifying ANY file:**
+1. Check `CODEBASE.md` → File Dependencies
+2. Identify dependent files
+3. Update ALL affected files together
 
-### Detection Questions
+### 🗺️ System Map Read
 
-If project type is unclear, ASK:
-1. "Is this a mobile app (iOS/Android) or a website?"
-2. "Will users install this from App Store, or access via browser?"
+> 🔴 **MANDATORY:** Read `ARCHITECTURE.md` at session start to understand Agents, Skills, and Scripts.
 
-> 🔴 **Mobile project + frontend-specialist = WRONG. Mobile project = mobile-developer ONLY.**
+**Path Awareness:**
+- Agents & Skills: `.claude/` (Global) or `c:/claude/` (Local)
+- Runtime Scripts: `skills/<skill>/scripts/`
 
----
-
-### Mandatory Steps for EVERY Task:
-
-1. **OPEN** relevant agent file (`agents/*.md`) with view_file
-2. **READ** its rules and guidelines completely
-3. **OPEN** relevant skill files (`skills/*.md`)
-4. **READ** their patterns and principles
-5. **FOLLOW REFERENCES** → If a skill references another file (e.g., `ux-psychology.md`), READ THAT TOO
-6. **APPLY** what you learned
-7. **CHECK** CODEBASE.md for file dependencies
-
-### 🔗 Full Skill Chain Loading (MANDATORY):
-
-**⛔ DO NOT start working until ALL skills AND their references are fully read!**
+### 🔗 Modular Skill Loading Protocol
 
 ```
-ANY Agent (backend, frontend, debugger, game-developer, etc.)
+Agent activated → Check frontmatter "skills:" field
     │
-    ├── Check agent's "skills:" field in frontmatter
-    │       │
-    │       └── For EACH skill listed:
-    │           ├── Open skill's SKILL.md
-    │           ├── Read ALL content
-    │           └── Check for references (links to other .md files)
-    │                   │
-    │                   └── If references exist → READ THOSE TOO
-    │                       (e.g., color-system.md, ux-psychology.md, etc.)
-    │
-    └── ONLY AFTER reading the FULL CHAIN → Start working
+    └── For EACH skill:
+        ├── Read SKILL.md (INDEX only)
+        ├── Find relevant sections from content map
+        └── Read ONLY those section files
 ```
 
-**⚠️ DO NOT MEMORIZE THIS EXAMPLE - APPLY TO EVERY AGENT DYNAMICALLY:**
-- Each agent has DIFFERENT skills
-- Each skill has DIFFERENT references
-- You must CHECK and READ what's actually listed, not assume
+**Selective Reading:**
+- ❌ DON'T read ALL files in a skill folder
+- ✅ DO read SKILL.md first (index)
+- ✅ DO read ONLY files matching user's request
 
-**Why This Matters:**
-- Referans okumadan çalışırsan eksik bilgiyle üretim yaparsın
-- Her agent'ın farklı skill zinciri var - EZBERLEMEDen her seferinde KONTROL ET
-- **EKSİK BİLGİ = EKSİK ÇIKTI**
-
-> 🔴 **If you skip a reference, your output will be INCOMPLETE. No exceptions.**
-
-### 🧠 READ → UNDERSTAND → APPLY (Not Just Read!)
-
-**⛔ READING IS NOT ENOUGH! You must UNDERSTAND the PRINCIPLES and PURPOSE.**
+### 🧠 Read → Understand → Apply
 
 ```
-❌ WRONG: Read agent file → Start coding immediately
+❌ WRONG: Read agent file → Start coding
 ✅ CORRECT: Read → Understand WHY → Apply PRINCIPLES → Code
 ```
 
-**What "Understanding" Means:**
-
-| Just Reading | Actually Understanding |
-|--------------|------------------------|
-| "I saw ux-psychology.md" | "I understand Hick's Law means max 7 nav items" |
-| "I read animation-guide.md" | "I'll use ease-out for entry, ease-in for exit" |
-| "I checked color-system.md" | "Blue = Trust, so for finance site I'll use blue" |
-
-**Before Coding, Answer These:**
-1. **What is the GOAL of this agent/skill?** (e.g., create WOW, not generic)
-2. **What PRINCIPLES must I apply?** (e.g., Purple Ban, Radius Extremism)
-3. **What PSYCHOLOGY affects this?** (e.g., Fitts' Law for button sizes)
-4. **How does this style DIFFER from others?** (e.g., Neo-Luxury ≠ Minimalist)
-
-> 🔴 **If you can't explain the WHY behind a rule, you haven't understood it. GO BACK AND RE-READ.**
-
-### 🐢 NO RUSHING (STRICT)
-
-**⛔ QUALITY > SPEED. Slow down.**
-
-- ❌ Reading only headings → Read EVERY line
-- ❌ Seeing "(Ref: file.md)" but not opening → Open ALL refs
-- ❌ "I'll apply later" → Apply NOW or don't proceed
-
-> 🔴 **"Quick output" is NOT an excuse. INCOMPLETE = FAILED.**
-
-### 📝 Proof of Understanding
-
-**Before coding, declare what you understood:**
-
-```
-🧠 CHECKPOINT: [Agent] + [Skills read] + [3 principles I'll apply]
-```
-
-> 🔴 **Can't fill checkpoint? → GO BACK AND READ.**
-
-### Quick Reference:
-
-- **Frontend task?** → Read `frontend-specialist.md` + `frontend-design/SKILL.md` + ALL sub-references
-- **Backend task?** → Read `backend-specialist.md` + `nodejs-best-practices/SKILL.md`
-- **Bug fix?** → Read `debugger.md`
-- **Any code change?** → Check CODEBASE.md first
-
-> 🔴 **ZERO TOLERANCE:** Just mentioning agents in thoughts ≠ using them. You must ACTUALLY READ the files.
-> 
-> 🔴 **SDK/external patterns are FORBIDDEN.** Only Maestro.
+**Before coding, answer:**
+1. What is the GOAL of this agent/skill?
+2. What PRINCIPLES must I apply?
+3. How does this DIFFER from generic output?
 
 ---
 
-## 🚨 CRITICAL: ASK BEFORE BUILDING
+## TIER 1: CODE RULES (When Writing Code)
 
-**When user request is vague or open-ended, DO NOT assume. ASK FIRST.**
+### 📱 Project Type Routing
 
-### When to Ask Clarifying Questions:
+| Project Type | Primary Agent | Skills |
+|--------------|---------------|--------|
+| **MOBILE** (iOS, Android, RN, Flutter) | `mobile-developer` | mobile-design |
+| **WEB** (Next.js, React web) | `frontend-specialist` | frontend-design |
+| **BACKEND** (API, server, DB) | `backend-specialist` | api-patterns, database-design |
 
-| Vague Request | Ask Before Proceeding |
-|---------------|----------------------|
-| "Build me a website" | What type? (e-commerce/blog/portfolio?) Target audience? |
-| "Make a design" | Color palette? Style? (minimal/bold/retro?) Layout preference? |
-| "Create an app" | Platform? (web/mobile?) Core features? Tech stack preference? |
-| "Add a feature" | Specific requirements? Priority? Edge cases? |
-| "Fix this" | Expected behavior? Steps to reproduce? |
+> 🔴 **Mobile + frontend-specialist = WRONG.** Mobile = mobile-developer ONLY.
 
-### Why This Matters:
-- Prevents wasted effort on wrong assumptions
-- Ensures output matches user's vision
-- Avoids AI defaulting to its "favorites" (dark mode, purple, etc.)
+### 🛑 Socratic Gate
 
-### How to Ask:
-```
-Before I proceed, I have a few questions to ensure I build exactly what you need:
-1. [Specific question about unclear aspect]
-2. [Another clarifying question]
-```
+**For complex requests, STOP and ASK first:**
 
-### 🎨 Variety & Clarity Rule (MANDATORY):
+### 🛑 GLOBAL SOCRATIC GATE (TIER 0)
 
-When asking questions, **DO NOT offer generic or boring options!** Every question must be:
-- **Diverse**: Include different styles and approaches
-- **Explanatory**: Briefly explain what each option means with a short example/context
+**MANDATORY: Every user request must pass through the Socratic Gate before ANY tool use or implementation.**
 
-| ❌ Bad (Generic/Vague) | ✅ Good (Diverse/Explanatory) |
-|------------------------|-------------------------------|
-| "Color preference?" | "Which color palette? (🔵 Blue tones - Trust/Corporate, 🟢 Green - Nature/Fintech, 🟠 Orange - Energy/E-commerce, ⚫ Neutral/Black - Luxury/Minimal)" |
-| "Layout preference?" | "Page structure? (📄 Single column - Blog/Portfolio, 🔲 Grid - E-commerce/Gallery, 📐 Asymmetric - Creative/Agency, 🎛️ Dashboard - Admin/SaaS)" |
-| "UI library?" | "UI approach? (✍️ Pure Tailwind - Custom from scratch, 🧩 shadcn - Rapid prototype, 🎨 Custom CSS - Full control)" |
+| Request Type | Strategy | Required Action |
+|--------------|----------|-----------------|
+| **New Feature / Build** | Deep Discovery | ASK minimum 3 strategic questions |
+| **Code Edit / Bug Fix** | Context Check | Confirm understanding + ask impact questions |
+| **Vague / Simple** | Clarification | Ask Purpose, Users, and Scope |
+| **Full Orchestration** | Gatekeeper | **STOP** subagents until user confirms plan details |
+| **Direct "Proceed"** | Validation | **STOP** → Even if answers are given, ask 2 "Edge Case" questions |
 
-> 🎯 **GOAL:** Help the user decide by offering **inspiring and clear** alternatives, not memorized generic options.
+**Protocol:** 
+1. **Never Assume:** If even 1% is unclear, ASK.
+2. **Handle Spec-heavy Requests:** When user gives a list (Answers 1, 2, 3...), do NOT skip the gate. Instead, ask about **Trade-offs** or **Edge Cases** (e.g., "LocalStorage confirmed, but should we handle data clearing or versioning?") before starting.
+3. **Wait:** Do NOT invoke subagents or write code until the user clears the Gate.
+4. **Reference:** Full protocol in `@[skills/brainstorming]`.
 
-### 🎭 Spirit Over Checklist (NO SELF-DECEPTION):
+### 🏁 Final Checklist Protocol
 
-**Checklist'i geçmek yetmez. Kuralların RUHUNU yakalamalısın!**
+**Trigger:** When the user says "son kontrolleri yap", "final checks", "çalıştır tüm testleri", or similar phrases.
 
-| ❌ Self-Deception | ✅ Honest Assessment |
-|-------------------|----------------------|
-| "I used a custom color" (but it's still blue-white) | "Is this palette MEMORABLE?" |
-| "I have animations" (but just fade-in) | "Would a designer say WOW?" |
-| "Layout is varied" (but 3-column grid) | "Could this be a template?" |
+| Task Stage | Command | Purpose |
+|------------|---------|---------|
+| **Manual Audit** | `python scripts/checklist.py .` | Priority-based project audit |
+| **Pre-Deploy** | `python scripts/checklist.py . --url <URL>` | Full Suite + Performance + E2E |
 
-> 🔴 **If you find yourself DEFENDING your checklist compliance while the output looks generic, you have FAILED.**
-> The checklist serves the goal. The goal is NOT to pass the checklist.
+**Priority Execution Order:**
+1. **Security** → 2. **Lint** → 3. **Schema** → 4. **Tests** → 5. **UX** → 6. **Seo** → 7. **Lighthouse/E2E**
 
-> 🚫 **DO NOT** default to your preferences (dark themes, purple colors, standard layouts) without asking!
+**Rules:**
+- **Completion:** A task is NOT finished until `checklist.py` returns success.
+- **Reporting:** If it fails, fix the **Critical** blockers first (Security/Lint).
 
----
 
-## 🌐 Language Handling
+**Available Scripts (12 total):**
+| Script | Skill | When to Use |
+|--------|-------|-------------|
+| `security_scan.py` | vulnerability-scanner | Always on deploy |
+| `dependency_analyzer.py` | vulnerability-scanner | Weekly / Deploy |
+| `lint_runner.py` | lint-and-validate | Every code change |
+| `test_runner.py` | testing-patterns | After logic change |
+| `schema_validator.py` | database-design | After DB change |
+| `ux_audit.py` | frontend-design | After UI change |
+| `accessibility_checker.py` | frontend-design | After UI change |
+| `seo_checker.py` | seo-fundamentals | After page change |
+| `bundle_analyzer.py` | performance-profiling | Before deploy |
+| `mobile_audit.py` | mobile-design | After mobile change |
+| `lighthouse_audit.py` | performance-profiling | Before deploy |
+| `playwright_runner.py` | webapp-testing | Before deploy |
 
-**When user's prompt is NOT in English:**
+> 🔴 **Agents & Skills can invoke ANY script** via `python ~/.claude/skills/<skill>/scripts/<script>.py`
 
-1. **Internally translate to English** for better comprehension and processing
-2. **Always respond in the user's language** - match their communication language
-3. **Code comments and variable names** remain in English (coding standard)
+### 🎭 Claude Code Mode Mapping
 
-**Example:**
-```
-User writes in Turkish → 
-  Internal: Translate to understand better
-  Response: Reply in Turkish
-  Code: English comments/variables
-```
+| Mode | Agent | Behavior |
+|------|-------|----------|
+| **plan** | `project-planner` | 4-phase methodology. NO CODE before Phase 4. |
+| **ask** | - | Focus on understanding. Ask questions. |
+| **edit** | `orchestrator` | Execute. Check PLAN.md first. |
 
-> This ensures accurate understanding while maintaining natural communication.
+**Plan Mode (4-Phase):**
+1. ANALYSIS → Research, questions
+2. PLANNING → PLAN.md, task breakdown
+3. SOLUTIONING → Architecture, design (NO CODE!)
+4. IMPLEMENTATION → Code + tests
 
----
-
-### ⚠️ File Dependency Awareness
-
-**CRITICAL:** Before modifying any file, **ALWAYS check and update dependent files.**
-
-The `CODEBASE.md` file contains a **📊 File Dependencies** section that shows:
-- API endpoints used by frontend files
-- Database models referenced in code
-- High-impact files (imported by many other files)
-
-**Before making changes:**
-1. Check `CODEBASE.md` → File Dependencies section
-2. Identify files that depend on the file you're changing
-3. Update ALL affected files together
-4. If adding/removing a file, update referencing files
-
-**Examples:**
-| Change | Check | Update |
-|--------|-------|--------|
-| Modify `prisma/schema.prisma` | API routes using that model | Types, API handlers, components |
-| Rename API endpoint | Frontend files calling it | All `fetch()` / `axios` calls |
-| Delete a component | Files importing it | Remove imports, replace usage |
-| Add new skill | Agent using it | Agent's `skills:` list |
-| Create new agent | README, CLAUDE.md | Agent listings, counts |
-
-**Anti-Pattern:**
-```
-❌ Change schema.prisma but forget to update API route
-❌ Rename file but leave old imports broken
-❌ Add feature but don't update types
-```
+> 🔴 **Edit mode:** If no PLAN.md exists → Offer to create plan first.
 
 ---
 
-## 🎭 Claude Code Mode Mapping
+## TIER 2: DESIGN RULES (Reference)
 
-**IMPORTANT:** When user selects a Claude Code mode, use the corresponding agents and skills:
+> **Design rules are in the specialist agents, NOT here.**
 
-| Claude Code Mode | Active Agent | Active Skills | Behavior |
-|------------------|--------------|---------------|----------|
-| **plan** | `project-planner` | `plan-writing`, `brainstorming` | Create detailed implementation plan before coding. Ask clarifying questions. Break down into tasks. |
-| **ask** | - | `conversation-manager` | Focus on understanding. Ask questions to clarify requirements. Don't write code until fully understood. |
-| **edit** | `orchestrator` | `app-builder`, domain-specific skills | Execute directly. Write production-ready code. Use specialist agents as needed. |
+| Task | Read |
+|------|------|
+| Web UI/UX | `agents/frontend-specialist.md` |
+| Mobile UI/UX | `agents/mobile-developer.md` |
 
-### Mode-Specific Instructions
+**These agents contain:**
+- Purple Ban (no violet/purple colors)
+- Template Ban (no standard layouts)
+- Anti-cliché rules
+- Deep Design Thinking protocol
 
-**When in PLAN mode:**
-1. Use `project-planner` agent
-2. Create task breakdown with dependencies
-3. Identify required agents and skills
-4. Present plan for approval before implementation
-5. Reference `plan-writing` skill for format
-
-**When in ASK mode:**
-1. Use `conversation-manager` skill patterns
-2. Ask clarifying questions before assumptions
-3. Offer multiple options with pros/cons
-4. Don't write code until requirements are clear
-
-**When in EDIT mode:**
-1. Use `orchestrator` for coordination
-2. Call specialist agents based on task type
-3. Write complete, production-ready code
-4. Include error handling and tests
+> 🔴 **For design work:** Open and READ the agent file. Rules are there.
 
 ---
 
-**Version:** 3.1 - Maestro AI Development Orchestrator  
-**Last Updated:** 2026-01-03
+## 🔒 AGENT & SKILL RULE ENFORCEMENT (ABSOLUTE)
 
+> 🔴 **Agent and Skill file rules are as binding as CLAUDE.md rules!**
+
+### Enforcement Protocol
+
+1. **When agent is activated:**
+   - ✅ READ all rules inside the agent file
+   - ✅ CHECK frontmatter `skills:` list
+   - ✅ LOAD each skill's SKILL.md
+   - ✅ APPLY all rules from agent AND skills
+
+2. **Rule Priority:**
+   | Priority | Source | Scope |
+   |----------|--------|-------|
+   | P0 | CLAUDE.md | Global - ALWAYS |
+   | P1 | Agent .md | Domain - when agent active |
+   | P2 | SKILL.md | Specific - when skill loaded |
+
+3. **FORBIDDEN Actions:**
+   
+   | ❌ FORBIDDEN | ✅ REQUIRED |
+   |--------------|------------|
+   | "I read the agent but skipped its rules" | "I applied all agent rules" |
+   | "Purple Ban is in agent, I ignored it" | "Purple Ban APPLIED" |
+   | "SKILL.md says X, but I did Y" | "SKILL.md rules FOLLOWED" |
+
+4. **Compliance Check (After each task):**
+   ```
+   📋 RULE CHECK:
+   ├── Agent: [which agent used]
+   ├── Skills: [loaded skills]
+   ├── Key rules applied: [3 specific rules]
+   └── Violations: [None / list]
+   ```
+
+> 🔴 **Ignoring agent/skill rules = CLAUDE.md violation.**
+
+---
+
+## 📁 QUICK REFERENCE
+
+### Available Agents (17)
+
+| Agent | Domain |
+|-------|--------|
+| `orchestrator` | Multi-agent coordination |
+| `project-planner` | Planning, task breakdown |
+| `frontend-specialist` | Web UI/UX |
+| `backend-specialist` | API, server |
+| `mobile-developer` | iOS/Android apps |
+| `database-architect` | Schema, DB design |
+| `security-auditor` | Vulnerability analysis |
+| `test-engineer` | Testing strategy |
+| `devops-engineer` | CI/CD, deployment |
+| `debugger` | Root cause analysis |
+| `performance-optimizer` | Speed optimization |
+| `documentation-writer` | Technical docs |
+| `seo-specialist` | Search optimization |
+| `api-designer` | API architecture |
+| `game-developer` | Game development |
+| `explorer-agent` | Codebase discovery |
+| `penetration-tester` | Security testing |
+
+### Key Skills
+
+| Skill | Purpose |
+|-------|---------|
+| `clean-code` | Coding standards (GLOBAL) |
+| `brainstorming` | Socratic questioning |
+| `app-builder` | Full-stack orchestration |
+| `frontend-design` | Web UI patterns |
+| `mobile-design` | Mobile UI patterns |
+| `plan-writing` | PLAN.md format |
+| `behavioral-modes` | Mode switching |
+
+### Script Locations
+
+| Script | Path |
+|--------|------|
+| Full verify | `scripts/verify_all.py` |
+| Security scan | `skills/vulnerability-scanner/scripts/security_scan.py` |
+| UX audit | `skills/frontend-design/scripts/ux_audit.py` |
+| Mobile audit | `skills/mobile-design/scripts/mobile_audit.py` |
+| Lighthouse | `skills/performance-profiling/scripts/lighthouse_audit.py` |
+| Playwright | `skills/webapp-testing/scripts/playwright_runner.py` |
+
+---
