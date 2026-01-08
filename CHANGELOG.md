@@ -1,22 +1,71 @@
 # Maestro Changelog
 
-## [0.2.5] - 2026-01-06
+## [0.3.0] - 2026-01-09
 
-### 🔄 Auto-Update System
+### 🏗️ Modular Architecture Overhaul
 
-**Added:**
-- `scripts/auto_update.py` - Safe GitHub sync with backup/rollback
-- `scripts/test_platform.py` - Cross-platform compatibility test
-- Automatic update check on session start (every 6 hours)
-- Local change protection (stash/commit/discard)
-- Remote file deletion handling (`git clean -fd`)
+SKILL.md files have been streamlined and content moved to modular structure.
 
-**Changed:**
-- Updated script count: 7 → 8
-- `session_hooks.py` - Added `check_for_updates()` integration
-- `setup.py` - Added `auto_update.py` to install list
+### Added
+
+#### 🔧 allowed-tools System
+- **`allowed-tools: Read, Grep, Glob`** → When a skill is active, Claude can ONLY use these tools. Can read/search files but cannot modify them. Provides read-only security.
+
+#### 📁 New Files
+- **`/plan` command** → Planning-only mode without writing code. Triggers project-planner agent. Added because Claude Code CLI's built-in Plan tool was bypassing Maestro system.
+- **`ARCHITECTURE.md`** → Complete system architecture document. Agent, skill, script relationships.
+- **`docs/` directory** → Official Claude Code reference documents (`claude-code-reference.md`, `aget-skills.md`).
+- **`skills/i18n-localization/`** → New skill for multi-language support (internationalization).
+- **`skills/bash-linux/`** → Bash terminal skill for macOS/Linux users.
+- **22+ new modular files** → SKILL.md files streamlined, details moved to separate .md files (Progressive Disclosure).
+
+#### 🐍 Python Scripts (Zero-Context Execution)
+
+Python scripts added under skills. **How it works:**
+1. Claude does NOT read the script into context (token savings)
+2. Claude EXECUTES the script directly (`python scripts/xyz.py`)
+3. Only script OUTPUT enters context
+4. Result: Consistent, tested, fast execution
+
+| Skill | Script | Purpose |
+|-------|--------|---------|
+| `webapp-testing` | `playwright_runner.py` | Headless browser tests |
+| `frontend-design` | `accessibility_checker.py` | WCAG compliance check |
+| `frontend-design` | `ux_audit.py` | UX standards audit |
+| `mobile-design` | `mobile_audit.py` | Touch target, ergonomics check |
+| `performance-profiling` | `lighthouse_audit.py` | Core Web Vitals measurement |
+| `vulnerability-scanner` | `security_scan.py` | Security vulnerability scanning |
+| `geo-fundamentals` | `scripts/` | GEO metrics analysis |
+| `seo-fundamentals` | `scripts/` | SEO scoring scripts |
+| `database-design` | `scripts/` | Schema validation |
+| `lint-and-validate` | `scripts/` | Multi-linter runner |
+| `testing-patterns` | `scripts/` | Test coverage analysis |
+
+### Changed
+- **`orchestrator.md`** (+174 lines) → Mandatory PLAN.md check, Socratic Gate (3 questions), Conflict Resolution
+- **`project-planner.md`** (+268 lines) → ROOT PLAN concept, 10-point planning framework
+- **`orchestrate.md`** → Minimum 3 agent rule (1 agent = delegation, 3+ = orchestration), EXIT GATE
+- **`CLAUDE.md`** (-117 lines net) → Streamlined, modular script references added
+- **42 SKILL.md files** → Long content moved to separate files, Progressive Disclosure applied
+
+### Removed
+
+| File | Why Removed |
+|------|-------------|
+| `scripts/lint_check.py` | `npm run lint && npx tsc --noEmit` native commands are faster and dependency-free |
+| `skills/api-security-testing/` | Consolidated under `api-patterns/security-testing.md` |
+| `skills/artifacts-builder/` | Became redundant with built-in Claude Code artifacts feature |
+| `skills/conversation-manager/` | Integrated into orchestrator agent, separate skill unnecessary |
+| `skills/git-worktrees/` | Rarely used, standard git commands sufficient |
+| 12 template files | `skills/templates/` → moved to `app-builder/templates/` (single location) |
+
+### Summary
+- 56 files changed + 47 new files + 16 deleted files
+- Skills now modular: SKILL.md (main) + separate .md files + scripts/
+- Zero-Context Execution: Python scripts run without consuming context
 
 ---
+
 
 ## [0.2.4] - 2026-01-06
 
@@ -396,8 +445,8 @@
 
 ---
 
-[Unreleased]: https://github.com/xenitV1/claude-code-maestro/compare/v0.2.5...HEAD
-[0.2.5]: https://github.com/xenitV1/claude-code-maestro/compare/v0.2.4...v0.2.5
+[Unreleased]: https://github.com/xenitV1/claude-code-maestro/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/xenitV1/claude-code-maestro/compare/v0.2.4...v0.3.0
 [0.2.4]: https://github.com/xenitV1/claude-code-maestro/compare/v0.2.0...v0.2.4
 [0.2.0]: https://github.com/xenitV1/claude-code-maestro/compare/v0.0.7...v0.2.0
 [0.0.7]: https://github.com/xenitV1/claude-code-maestro/compare/v0.0.6...v0.0.7
