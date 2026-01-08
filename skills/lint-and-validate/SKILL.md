@@ -1,17 +1,12 @@
 ---
 name: lint-and-validate
 description: Automatic quality control, linting, and static analysis procedures. Use after every code modification to ensure syntax correctness and project standards. Triggers onKeywords: lint, format, check, validate, types, static analysis.
+allowed-tools: Read, Glob, Grep, Bash
 ---
 
 # Lint and Validate Skill
 
 > **MANDATORY:** Run appropriate validation tools after EVERY code change. Do not finish a task until the code is error-free.
-
-### Automated Quality Audit (V2)
-Maestro includes a comprehensive audit script that covers style, logic, and security:
-```bash
-python scripts/lint_check.py <file_path>
-```
 
 ### Procedures by Ecosystem
 
@@ -27,7 +22,7 @@ python scripts/lint_check.py <file_path>
 
 ## The Quality Loop
 1. **Write/Edit Code**
-2. **Run Audit:** `python scripts/lint_check.py <path>`
+2. **Run Audit:** `npm run lint && npx tsc --noEmit`
 3. **Analyze Report:** Check the "FINAL AUDIT REPORT" section.
 4. **Fix & Repeat:** Submitting code with "FINAL AUDIT" failures is NOT allowed.
 
@@ -38,3 +33,13 @@ python scripts/lint_check.py <file_path>
 
 ---
 **Strict Rule:** No code should be committed or reported as "done" without passing these checks.
+
+---
+
+## Scripts
+
+| Script | Purpose | Command |
+|--------|---------|---------|
+| `scripts/lint_runner.py` | Unified lint check | `python scripts/lint_runner.py <project_path>` |
+| `scripts/type_coverage.py` | Type coverage analysis | `python scripts/type_coverage.py <project_path>` |
+
