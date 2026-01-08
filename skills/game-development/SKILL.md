@@ -1,6 +1,7 @@
 ---
 name: game-development
 description: Core game development principles applicable to all platforms. Game loop, design patterns, optimization, and AI fundamentals.
+allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
 # Game Development Fundamentals
