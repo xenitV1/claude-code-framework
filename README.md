@@ -2,6 +2,9 @@
 
 > **AI Development Orchestrator** - Transform Claude into a powerful development team with specialized agents, intelligent skills, and automated workflows.
 
+> [!WARNING]
+> **Before Installation:** The `README.md` files in `agents/`, `skills/`, `commands/`, `scripts/` directories are for GitHub developers only. **Delete these files before using the project.** Claude Code CLI may read them as agents or skills, which can interfere with proper system operation.
+
 [![Agents](https://img.shields.io/badge/Agents-17-blue)](#-agents)
 [![Skills](https://img.shields.io/badge/Skills-78-green)](#-skills)
 [![Commands](https://img.shields.io/badge/Commands-10-orange)](#-commands)
@@ -20,6 +23,22 @@
 - 🔄 **Project Detection** - Automatically detects project type and tech stack
 - 🧩 **Native Agent Orchestration** - Coordinate multiple agents using Claude Code's Agent Tool
 - 🧠 **Synthesis Reporting** - Automatically combines multi-agent outputs into cohesive reports
+
+---
+
+## 🧠 The Maestro Philosophy: Principles > Memory
+
+Maestro fundamentally shifts AI development from **Probabilistic Guesswork** to **Deterministic Engineering**.
+
+| Feature | Standard AI / Claude CLI | Maestro Architecture |
+| :--- | :--- | :--- |
+| **Source of Truth** | Training Data (Average of the Internet) | **Active Principles** (`SKILL.md` files) |
+| **Decision Making** | "It usually looks like this" (Imitation) | **"Hick's Law requires this"** (Reasoning) |
+| **Validation** | Visual Guesswork | **Runtime Scripts** (Math-verified Contrast/Touch targets) |
+| **Context** | Single Long Core Prompt | **Modular Loading** (Only relevant skills loaded) |
+| **Output** | Generic / Safe Patterns ("Blue Buttons") | **Radical / Specific Designs** (Asymmetric, Custom) |
+
+> 🚫 **We don't trust AI memory.** We trust **verified principles** and **runtime validation**.
 
 ---
 
