@@ -111,9 +111,6 @@ claude --debug
 
 Look for `Found 1 hook matchers` in the debug output.
 
-### Troubleshooting
-
-If hooks aren't working, see **[HOOKS-TROUBLESHOOTING.md](HOOKS-TROUBLESHOOTING.md)** for detailed solutions.
 
 ---
 
@@ -443,53 +440,7 @@ Hooks are configured in `settings.json`:
 | Behavioral Modes | 6 |
 | Hook Scripts | 2 (session_hooks, explorer_helper) |
 
----
 
-## 🔧 Troubleshooting
-
-### ❌ Hooks Not Working?
-
-If your `SessionStart` or `SessionEnd` hooks are not triggering, you likely need to add the `matcher` property to your hook configuration.
-
-**See [HOOKS-TROUBLESHOOTING.md](HOOKS-TROUBLESHOOTING.md) for detailed solutions.**
-
-**Quick Fix:**
-
-❌ **Wrong (won't work):**
-```json
-"SessionStart": [
-  {
-    "command": "python script.py"
-  }
-]
-```
-
-✅ **Correct (will work):**
-```json
-"SessionStart": [
-  {
-    "matcher": "startup",
-    "hooks": [
-      {
-        "type": "command",
-        "command": "python script.py"
-      }
-    ]
-  }
-]
-```
-
-**Debug your hooks:**
-```bash
-claude --debug
-```
-
-Check the debug log at `~/.claude/debug/[session-id].txt` and look for:
-- `Found 1 hook matchers` ✅ (not `Found 0` ❌)
-
-For complete troubleshooting guide, see **[HOOKS-TROUBLESHOOTING.md](HOOKS-TROUBLESHOOTING.md)**.
-
----
 
 ## 📄 License
 
