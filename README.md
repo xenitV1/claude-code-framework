@@ -454,7 +454,20 @@ Contributions are welcome! Please read the documentation in each directory's REA
 
 ---
 
+## ⭐ Star History
+
+<a href="https://star-history.com/#xenitV1/claude-code-maestro&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=xenitV1/claude-code-maestro&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=xenitV1/claude-code-maestro&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=xenitV1/claude-code-maestro&type=Date" />
+ </picture>
+</a>
+
+---
+
 <p align="center">
   <b>🎼 Maestro - Built with ❤️ for AI-assisted development</b><br/>
   <a href="https://x.com/xenit_v0">@xenit_v0</a>
 </p>
+
