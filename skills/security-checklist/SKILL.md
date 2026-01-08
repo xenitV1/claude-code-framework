@@ -1,6 +1,7 @@
 ---
 name: security-checklist
 description: Security audit checklist covering OWASP Top 10, authentication, and secure coding practices.
+allowed-tools: Read, Glob, Grep
 ---
 
 # Security Checklist

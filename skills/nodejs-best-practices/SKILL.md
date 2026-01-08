@@ -1,6 +1,7 @@
 ---
 name: nodejs-best-practices
 description: Node.js development principles and decision-making. Framework selection, async patterns, security, and architecture. Teaches thinking, not copying.
+allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
 # Node.js Best Practices
@@ -292,25 +293,6 @@ node --test src/**/*.test.ts
 ├── Good coverage reporting
 └── Watch mode available
 ```
-
----
-
-## 9. ORM Selection (2025)
-
-### Decision Factors
-
-| ORM | Best For |
-|-----|----------|
-| **Drizzle** | Edge, performance, SQL-like syntax |
-| **Prisma** | Full features, great DX, schema-first |
-| **Raw SQL** | Complex queries, maximum control |
-
-### Selection Questions
-
-1. Deploying to edge? → Drizzle
-2. Need migrations UI? → Prisma
-3. Complex queries? → Consider raw + builder
-4. Team familiarity? → Factor in learning curve
 
 ---
 

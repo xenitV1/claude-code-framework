@@ -1,6 +1,7 @@
 ---
 name: tailwind-patterns
 description: Tailwind CSS principles. Responsive design, dark mode, utility patterns.
+allowed-tools: Read, Write, Edit, Glob, Grep
 ---
 
 # Tailwind Patterns

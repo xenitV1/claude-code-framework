@@ -1,6 +1,7 @@
 ---
 name: plan-writing
 description: Structured task planning with clear breakdowns, dependencies, and verification criteria. Use when implementing features, refactoring, or any multi-step work.
+allowed-tools: Read, Glob, Grep
 ---
 
 # Plan Writing
@@ -26,6 +27,11 @@ This skill provides a framework for breaking down work into clear, actionable ta
 - Dependencies identified
 - Parallel work where possible
 - Critical path highlighted
+- **Phase X: Verification is always LAST**
+
+### 4. Mandatory Root Location
+- Plan must be saved as `PLAN.md` in the PROJECT ROOT.
+- **NEVER** inside `.claude/` or temp folders.
 
 ## Plan Template
 
@@ -68,6 +74,60 @@ This skill provides a framework for breaking down work into clear, actionable ta
 ### Phase 4: Cleanup
 - [ ] **Task 4.1**: Code review
 - [ ] **Task 4.2**: Documentation update
+
+### Phase X: Final System Verification (MANDATORY)
+> 🔴 **STOP! Do not mark project as done until this checklist is clean.**
+
+> 🔴 **SCRIPT EXECUTION REQUIRED! Run these commands, don't just check boxes!**
+
+#### 1. Pre-Build Checks (EXECUTE THESE!)
+
+```bash
+# MANDATORY: Lint & Code Quality (from ~/.claude/ directory)
+# MANDATORY: Lint & Type Check (use project's native tools)
+npm run lint        # ESLint
+npx tsc --noEmit    # TypeScript check
+
+# MANDATORY: Security Scan
+python ~/.claude/skills/vulnerability-scanner/scripts/security_scan.py .
+# → No "🔴 Critical issues" allowed!
+```
+
+#### 2. Runtime Verification (If applicable)
+
+```bash
+# MANDATORY UX Audit
+python ~/.claude/skills/frontend-design/scripts/ux_audit.py .
+
+# Mobile audit (for mobile projects)
+python ~/.claude/skills/mobile-design/scripts/mobile_audit.py .
+
+# Performance audit (for web projects)
+python ~/.claude/skills/performance-profiling/scripts/lighthouse_audit.py http://localhost:3000
+
+# E2E tests (if Playwright available)
+python ~/.claude/skills/webapp-testing/scripts/playwright_runner.py http://localhost:3000 --screenshot
+```
+
+#### 3. Rule Compliance (Manual Check)
+- [ ] No Purple/Violet hex codes?
+- [ ] No Standard Templates used?
+- [ ] Socratic Gate was respected?
+
+#### 4. User Acceptance
+- [ ] Does it meet the ORIGINAL simplified goal?
+
+#### 5. Phase X Completion Marker
+```markdown
+# Add to PLAN.md after ALL checks pass:
+## ✅ PHASE X COMPLETE
+- Lint: ✅ Pass
+- Security: ✅ No critical issues  
+- Build: ✅ Success
+- Date: [Date]
+```
+
+> 🔴 **EXIT GATE:** No Phase X marker = Project NOT complete.
 
 ## Notes
 [Any important considerations]

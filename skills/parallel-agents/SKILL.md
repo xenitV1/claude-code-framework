@@ -1,6 +1,7 @@
 ---
 name: parallel-agents
 description: Native multi-agent orchestration using Claude Code's Agent Tool. Use when multiple independent tasks can run with different domain expertise or when comprehensive analysis requires multiple perspectives.
+allowed-tools: Read, Glob, Grep
 ---
 
 # Native Parallel Agents

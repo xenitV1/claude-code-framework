@@ -1,97 +1,101 @@
 # 📚 Maestro Skills
 
-Knowledge resources that agents reference for domain expertise. Skills are not directly callable - they provide documentation and patterns.
+Knowledge resources that agents reference for domain expertise. Skills are modular with separate .md files and scripts/.
 
-## Skill Categories
+## Skill Categories (36 Skills)
 
 ### 🏗️ Architecture & Patterns
 | Skill | Description |
 |-------|-------------|
-| architecture | 🆕 Architectural decision framework, ADR, trade-offs |
-| api-patterns | REST/GraphQL patterns |
+| architecture | Architectural decision framework, ADR, trade-offs |
+| api-patterns | REST/GraphQL/tRPC patterns (modular files) |
 | react-patterns | React component patterns |
-| mobile-patterns | Mobile development patterns |
 | python-patterns | Python best practices |
-| nodejs-best-practices | Node.js patterns |
+| nodejs-best-practices | Node.js 23 patterns |
 | nextjs-best-practices | Next.js 15 & React 19 patterns |
 | tailwind-patterns | Tailwind CSS v4 Oxide |
-| frontend-design | 2025 Precision: 8-point grid, Golden Ratio |
 
-### 📈 Marketing
+### 🎨 Frontend & Design
 | Skill | Description |
 |-------|-------------|
-| geo-fundamentals | **GEO** - Generative Engine Optimization for AI search |
-| seo-fundamentals | **SEO** - E-E-A-T, Core Web Vitals, 2025 updates |
+| frontend-design | 2025 Precision: 8-point grid, Golden Ratio |
+| mobile-design | Mobile UX, touch psychology, accessibility |
+
+### 📈 Marketing & SEO
+| Skill | Description |
+|-------|-------------|
+| geo-fundamentals | GEO - Generative Engine Optimization |
+| seo-fundamentals | SEO - E-E-A-T, Core Web Vitals |
 
 ### 🔧 Workflows
 | Skill | Description |
 |-------|-------------|
-| app-builder | Application building orchestration |
-| conversation-manager | User communication protocol |
+| app-builder | Application building orchestration + templates/ |
 | behavioral-modes | AI operational modes (brainstorm, implement, debug) |
-| clean-code | **CRITICAL** - Concise, direct coding - no over-engineering |
+| clean-code | CRITICAL - Concise, direct coding |
 | plan-writing | Implementation planning |
-| brainstorming | Structured ideation |
+| brainstorming | Structured ideation + dynamic-questioning.md |
 | tdd-workflow | Test-driven development |
-| lint-and-validate | **🆕 AI Quality Audit** - Style, logic, security (Ruff, ESLint, Bandit) |
+| lint-and-validate | AI Quality Audit (scripts/) |
+| parallel-agents | Multi-agent coordination |
 
-### 📋 Checklists
+### 🗄️ Database
 | Skill | Description |
 |-------|-------------|
-| code-review-checklist | Code review guidelines |
+| database-design | Schema design + modular files + scripts/ |
+
+### 🌍 Internationalization
+| Skill | Description |
+|-------|-------------|
+| i18n-localization | 🆕 Multi-language support |
+
+### 🖥️ Terminal
+| Skill | Description |
+|-------|-------------|
+| powershell-windows | Windows PowerShell patterns |
+| bash-linux | 🆕 Linux/macOS Bash patterns |
+
+### 🛡️ Security
+| Skill | Description |
+|-------|-------------|
+| vulnerability-scanner | DAST, SAST, SCA tools (scripts/) |
+| red-team-tactics | MITRE ATT&CK, exploitation |
 | security-checklist | Security audit checklist |
-| deployment-procedures | Deployment safety |
 
-### 🎨 Templates (12)
-| Template | Description |
-|----------|-------------|
-| [nextjs-fullstack](templates/nextjs-fullstack/) | Full-stack Next.js + Prisma |
-| [nextjs-saas](templates/nextjs-saas/) | SaaS + Stripe + NextAuth |
-| [nextjs-static](templates/nextjs-static/) | Static site / landing page |
-| [express-api](templates/express-api/) | REST API with Express |
-| [python-fastapi](templates/python-fastapi/) | FastAPI + SQLAlchemy |
-| [react-native-app](templates/react-native-app/) | Expo mobile app |
-| [flutter-app](templates/flutter-app/) | Flutter + Riverpod |
-| [electron-desktop](templates/electron-desktop/) | Desktop app with Electron |
-| [chrome-extension](templates/chrome-extension/) | Chrome Extension MV3 |
-| [cli-tool](templates/cli-tool/) | Node.js CLI tool |
-| [monorepo-turborepo](templates/monorepo-turborepo/) | Turborepo monorepo |
-| [astro-static](templates/astro-static/) | Astro content site |
-
-### �️ Security (NEW)
-| Skill | Description |
-|-------|-------------|
-| vulnerability-scanner | 🆕 DAST, SAST, SCA tools, CI/CD integration |
-| red-team-tactics | 🆕 MITRE ATT&CK, exploitation, lateral movement |
-| api-security-testing | 🆕 OWASP API Top 10, JWT, OAuth, GraphQL |
-
-### �🛠️ Operations
+### 🛠️ Operations
 | Skill | Description |
 |-------|-------------|
 | server-management | Server administration |
 | deployment-procedures | Safe deployment |
-| performance-profiling | Performance analysis |
+| performance-profiling | Performance analysis (scripts/) |
 | systematic-debugging | Debugging methodology |
-| mobile-ux-patterns | Touch gestures, haptics, accessibility |
-| mobile-typography | 🆕 Mobile type scale, responsive typography |
-| git-worktrees | Multi-project workflow |
-| parallel-agents | Multi-agent coordination |
 
-## Skill Format
+### 🎮 Game Development
+| Skill | Description |
+|-------|-------------|
+| game-development | Hub + 8 sub-skills (2D, 3D, mobile, PC, web, VR/AR, multiplayer, design) |
 
-Each skill is in its own directory with a `SKILL.md` file:
+### 🧪 Testing
+| Skill | Description |
+|-------|-------------|
+| testing-patterns | Testing strategies (scripts/) |
+| webapp-testing | Playwright browser testing (scripts/) |
+| code-review-checklist | Code review guidelines |
+
+## Skill Format (v0.3.0)
 
 ```
 skills/
 ├── api-patterns/
-│   └── SKILL.md
-├── react-patterns/
-│   └── SKILL.md
-└── templates/
-    ├── nextjs-fullstack/
-    │   └── TEMPLATE.md
-    └── express-api/
-        └── TEMPLATE.md
+│   ├── SKILL.md              # Main skill file
+│   ├── rest.md               # Modular reference
+│   ├── graphql.md
+│   └── scripts/              # Zero-context execution
+│       └── api_validator.py
+└── app-builder/
+    ├── SKILL.md
+    └── templates/            # Project templates
+        └── nextjs-fullstack/
 ```
 
-## Total: 41 Skills
+## Total: 36 Skills + 11 scripts/ directories
