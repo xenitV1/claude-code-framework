@@ -129,26 +129,6 @@ clean:
 	@echo "Done!"
 
 # ==================
-# Utilities
-# ==================
-
-token-stats:
-	@$(PYTHON) scripts/token_tracker.py summary
-
-commit:
-	@$(PYTHON) scripts/git_commit_helper.py suggest
-
-commit-copy:
-	@$(PYTHON) scripts/git_commit_helper.py suggest --copy
-
-validate-commit:
-	@read -p "Enter commit message: " msg; \
-	$(PYTHON) scripts/git_commit_helper.py validate "$$msg"
-
-git-stats:
-	@$(PYTHON) scripts/git_commit_helper.py stats
-
-# ==================
 # Quick Actions
 # ==================
 
@@ -159,5 +139,3 @@ quick-install:
 .PHONY: interactive-install
 interactive-install:
 	@$(PYTHON) scripts/setup.py --interactive
-
-
