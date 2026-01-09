@@ -206,11 +206,11 @@ flowchart LR
     UserCmd -->|Bash Command| Execute[Execute Command]
     Execute --> Ready
     
-    UserCmd -->|Exit| SessionEnd[SessionEnd Hook<br/>Save Session]
-    SessionEnd --> End([Exit])
+    UserCmd -->|Exit| Stop[Stop Hook<br/>Save Session]
+    Stop --> End([Exit])
     
     style SessionStart fill:#4CAF50,color:#fff
-    style SessionEnd fill:#9C27B0,color:#fff
+    style Stop fill:#9C27B0,color:#fff
 ```
 
 **Key Features:**
@@ -309,7 +309,7 @@ Python automation scripts that provide intelligent hooks:
 ### Hook Scripts (Automatic)
 | Script | Hook | Purpose |
 |--------|------|---------|
-| `session_hooks.py` | SessionStart/End | Project detection, session tracking |
+| `session_hooks.py` | SessionStart/Stop | Project detection, session tracking |
 | `explorer_helper.py` | SessionStart | Deep project discovery |
 
 ### Utility Scripts (Manual)
@@ -400,7 +400,7 @@ Hooks are configured in `settings.json`:
         }]
       }
     ],
-    "SessionEnd": [
+    "Stop": [
       {
         "matcher": "",
         "hooks": [{

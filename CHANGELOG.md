@@ -14,6 +14,10 @@
 - **`seo_checker.py`** → Improved page detection: Only analyzes files in `pages/`, `app/`, `routes/` directories
 - Both scripts now skip config files, tests, utilities, and node_modules
 
+#### SessionEnd Hook Deprecated (Issue #3)
+- **`SessionEnd`** hook replaced with **`Stop`** per Claude Code CLI 2.1.2+ requirements
+- Updated: `settings.example.unix.json`, `settings.example.windows.json`, `README.md`, docs
+
 ### Added
 
 #### Game Development Enhancement

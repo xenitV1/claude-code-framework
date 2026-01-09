@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 Session Hooks - Session start and end management
-Unified script for SessionStart and SessionEnd hooks.
+Unified script for SessionStart and Stop hooks.
 
 Usage:
     python session_hooks.py start [project_path]

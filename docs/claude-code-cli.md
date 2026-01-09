@@ -388,7 +388,7 @@ Hooks are organized by matchers, where each matcher can have multiple hooks:
 | `SubagentStop` | Runs when a Claude Code subagent has finished responding |
 | `PreCompact` | Runs before Claude Code runs a compact operation |
 | `SessionStart` | Runs when Claude Code starts or resumes a session |
-| `SessionEnd` | Runs when a Claude Code session ends |
+| `Stop` | Runs when Claude Code finishes responding |
 
 ### Common Tool Matchers
 
