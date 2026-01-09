@@ -1,91 +1,98 @@
 ---
 name: game-development
-description: Core game development principles applicable to all platforms. Game loop, design patterns, optimization, and AI fundamentals.
+description: Game development orchestrator. Routes to platform-specific skills based on project needs.
 allowed-tools: Read, Write, Edit, Glob, Grep, Bash
 ---
 
-# Game Development Fundamentals
+# Game Development
 
-> Core principles for game development across all platforms.
-> **Learn to THINK, not memorize engine APIs.**
+> **Orchestrator skill** that provides core principles and routes to specialized sub-skills.
 
 ---
 
-## 1. Game Loop Principles
+## When to Use This Skill
 
-### The Universal Pattern
+You are working on a game development project. This skill teaches the PRINCIPLES of game development and directs you to the right sub-skill based on context.
+
+---
+
+## Sub-Skill Routing
+
+### Platform Selection
+
+| If the game targets... | Use Sub-Skill |
+|------------------------|---------------|
+| Web browsers (HTML5, WebGL) | `game-development/web-games` |
+| Mobile (iOS, Android) | `game-development/mobile-games` |
+| PC (Steam, Desktop) | `game-development/pc-games` |
+| VR/AR headsets | `game-development/vr-ar` |
+
+### Dimension Selection
+
+| If the game is... | Use Sub-Skill |
+|-------------------|---------------|
+| 2D (sprites, tilemaps) | `game-development/2d-games` |
+| 3D (meshes, shaders) | `game-development/3d-games` |
+
+### Specialty Areas
+
+| If you need... | Use Sub-Skill |
+|----------------|---------------|
+| GDD, balancing, player psychology | `game-development/game-design` |
+| Multiplayer, networking | `game-development/multiplayer` |
+| Visual style, asset pipeline, animation | `game-development/game-art` |
+| Sound design, music, adaptive audio | `game-development/game-audio` |
+
+---
+
+## Core Principles (All Platforms)
+
+### 1. The Game Loop
+
+Every game, regardless of platform, follows this pattern:
 
 ```
-Every game has:
-1. INPUT → Read player actions
-2. UPDATE → Process game logic (fixed timestep)
-3. RENDER → Draw the frame (interpolated)
+INPUT  → Read player actions
+UPDATE → Process game logic (fixed timestep)
+RENDER → Draw the frame (interpolated)
 ```
 
-### Fixed Timestep Principle
-
-- Physics/logic updates at fixed rate (e.g., 50Hz)
-- Rendering runs as fast as possible
+**Fixed Timestep Rule:**
+- Physics/logic: Fixed rate (e.g., 50Hz)
+- Rendering: As fast as possible
 - Interpolate between states for smooth visuals
 
 ---
 
-## 2. Design Pattern Selection
-
-### When to Use Each Pattern
+### 2. Pattern Selection Matrix
 
 | Pattern | Use When | Example |
 |---------|----------|---------|
-| **State Machine** | Discrete states with transitions | Player: Idle→Walk→Jump→Attack |
-| **Object Pooling** | Frequent create/destroy | Bullets, particles, enemies |
-| **Observer/Events** | Decoupled communication | Health→UI, Death→Audio |
-| **ECS** | Many similar entities | Thousands of units |
-| **Command** | Replay, undo, networking | Input recording, multiplayer |
+| **State Machine** | 3-5 discrete states | Player: Idle→Walk→Jump |
+| **Object Pooling** | Frequent spawn/destroy | Bullets, particles |
+| **Observer/Events** | Cross-system communication | Health→UI updates |
+| **ECS** | Thousands of similar entities | RTS units, particles |
+| **Command** | Undo, replay, networking | Input recording |
 | **Behavior Tree** | Complex AI decisions | Enemy AI |
 
-### Selection Principles
-
-- Start simple (State Machine)
-- Add ECS only if performance demands
-- Use Events for cross-system communication
-- Pool anything spawned frequently
+**Decision Rule:** Start with State Machine. Add ECS only when performance demands.
 
 ---
 
-## 3. Core Systems Design
+### 3. Input Abstraction
 
-### Input Abstraction
+Abstract input into ACTIONS, not raw keys:
 
 ```
-Abstract input into ACTIONS, not keys:
-- "jump" → Space, Gamepad A, Touch tap
-- "move" → WASD, Left stick, Virtual joystick
-
-Benefits: Multi-platform, rebindable
+"jump"  → Space, Gamepad A, Touch tap
+"move"  → WASD, Left stick, Virtual joystick
 ```
 
-### Collision Strategy
-
-| Type | Best For |
-|------|----------|
-| **AABB** | Rectangles, fast |
-| **Circle** | Round objects, cheap |
-| **Spatial Hash** | Many objects, same size |
-| **Quadtree** | Large worlds, varying sizes |
-
-### Save System
-
-| Platform | Storage |
-|----------|---------|
-| Web | LocalStorage, IndexedDB |
-| Mobile | PlayerPrefs, FileAccess |
-| PC | JSON/Binary files |
+**Why:** Enables multi-platform, rebindable controls.
 
 ---
 
-## 4. Performance Principles
-
-### Frame Budget (60 FPS = 16.67ms)
+### 4. Performance Budget (60 FPS = 16.67ms)
 
 | System | Budget |
 |--------|--------|
@@ -96,86 +103,64 @@ Benefits: Multi-platform, rebindable
 | Rendering | 5ms |
 | Buffer | 1.67ms |
 
-### Optimization Priority
-
-1. **Algorithm** - O(n²) to O(n log n)
-2. **Batching** - Reduce draw calls
-3. **Pooling** - Avoid GC spikes
-4. **LOD** - Detail at distance
-5. **Culling** - Don't render invisible
-
-### Memory Management
-
-- Pool frequently spawned objects
-- Use sprite atlases
-- Stream large assets
-- Unload unused resources
+**Optimization Priority:**
+1. Algorithm (O(n²) → O(n log n))
+2. Batching (reduce draw calls)
+3. Pooling (avoid GC spikes)
+4. LOD (detail by distance)
+5. Culling (skip invisible)
 
 ---
 
-## 5. AI Fundamentals
+### 5. AI Selection by Complexity
 
-### Selection by Complexity
-
-| AI Type | Complexity | Use Case |
+| AI Type | Complexity | Use When |
 |---------|------------|----------|
-| **FSM** | Simple | 3-5 states, predictable |
+| **FSM** | Simple | 3-5 states, predictable behavior |
 | **Behavior Tree** | Medium | Modular, designer-friendly |
-| **GOAP** | High | Emergent, planning |
+| **GOAP** | High | Emergent, planning-based |
 | **Utility AI** | High | Scoring-based decisions |
 
-### Common AI Behaviors
+---
 
-- Patrol → Move between waypoints
-- Chase → Follow player
-- Attack → Engage when in range
-- Flee → Escape when low health
+### 6. Collision Strategy
+
+| Type | Best For |
+|------|----------|
+| **AABB** | Rectangles, fast checks |
+| **Circle** | Round objects, cheap |
+| **Spatial Hash** | Many similar-sized objects |
+| **Quadtree** | Large worlds, varying sizes |
 
 ---
 
-## 6. Audio Principles
+## Anti-Patterns (Universal)
 
-### Audio Categories
-
-| Category | Behavior |
-|----------|----------|
-| **Music** | Loop, crossfade |
-| **SFX** | One-shot, 3D positioned |
-| **UI** | Immediate, no 3D |
-| **Voice** | Priority, ducking |
-
-### Best Practices
-
-- Pool audio sources
-- 3D audio for immersion
-- Duck music during dialogue
-- Preload frequently used sounds
-
----
-
-## 7. Anti-Patterns
-
-| ❌ Don't | ✅ Do |
-|----------|-------|
+| Don't | Do |
+|-------|-----|
 | Update everything every frame | Use events, dirty flags |
 | Create objects in hot loops | Object pooling |
-| SELECT * in game logic | Cache references |
+| Cache nothing | Cache references |
 | Optimize without profiling | Profile first |
 | Mix input with logic | Abstract input layer |
 
 ---
 
-## 8. Sub-Skills Reference
+## Routing Examples
 
-Platform-specific guidance:
-- PC Games → Engine selection, Steam
-- Web Games → Phaser, Three.js, WebGPU
-- Mobile Games → Touch, battery, stores
-- Game Design → GDD, balancing
-- Multiplayer → Networking patterns
-- VR/AR → Immersion, comfort
-- 2D Games → Sprites, tilemaps
-- 3D Games → Meshes, shaders
+### Example 1: "I want to make a browser-based 2D platformer"
+→ Start with `game-development/web-games` for framework selection
+→ Then `game-development/2d-games` for sprite/tilemap patterns
+→ Reference `game-development/game-design` for level design
+
+### Example 2: "Mobile puzzle game for iOS and Android"
+→ Start with `game-development/mobile-games` for touch input and stores
+→ Use `game-development/game-design` for puzzle balancing
+
+### Example 3: "Multiplayer VR shooter"
+→ `game-development/vr-ar` for comfort and immersion
+→ `game-development/3d-games` for rendering
+→ `game-development/multiplayer` for networking
 
 ---
 
