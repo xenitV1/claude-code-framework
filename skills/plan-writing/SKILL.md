@@ -29,231 +29,124 @@ This skill provides a framework for breaking down work into clear, actionable ta
 - Critical path highlighted
 - **Phase X: Verification is always LAST**
 
-### 4. Mandatory Root Location
-- Plan must be saved as `PLAN.md` in the PROJECT ROOT.
-- **NEVER** inside `.claude/` or temp folders.
+### 4. Dynamic Naming in Project Root
+- Plan files are saved as `{task-slug}.md` in the PROJECT ROOT
+- Name derived from task (e.g., "add auth" → `auth-feature.md`)
+- **NEVER** inside `.claude/`, `docs/`, or temp folders
 
-## Plan Template
+## Planning Principles (NOT Templates!)
 
-```markdown
-# Implementation Plan: [Feature Name]
+> 🔴 **NO fixed templates. Each plan is UNIQUE to the task.**
 
-## Overview
-[Brief description of what we're building]
+### Principle 1: Keep It SHORT
 
-## Success Criteria
-- [ ] [Measurable outcome 1]
-- [ ] [Measurable outcome 2]
+| ❌ Wrong | ✅ Right |
+|----------|----------|
+| 50 tasks with sub-sub-tasks | 5-10 clear tasks max |
+| Every micro-step listed | Only actionable items |
+| Verbose descriptions | One-line per task |
 
-## Prerequisites
-- [x] [Already completed prereq]
-- [ ] [Pending prereq]
+> **Rule:** If plan is longer than 1 page, it's too long. Simplify.
+
+---
+
+### Principle 2: Be SPECIFIC, Not Generic
+
+| ❌ Wrong | ✅ Right |
+|----------|----------|
+| "Set up project" | "Run `npx create-next-app`" |
+| "Add authentication" | "Install next-auth, create `/api/auth/[...nextauth].ts`" |
+| "Style the UI" | "Add Tailwind classes to `Header.tsx`" |
+
+> **Rule:** Each task should have a clear, verifiable outcome.
+
+---
+
+### Principle 3: Dynamic Content Based on Project Type
+
+**For NEW PROJECT:**
+- What tech stack? (decide first)
+- What's the MVP? (minimal features)
+- What's the file structure?
+
+**For FEATURE ADDITION:**
+- Which files are affected?
+- What dependencies needed?
+- How to verify it works?
+
+**For BUG FIX:**
+- What's the root cause?
+- What file/line to change?
+- How to test the fix?
+
+---
+
+### Principle 4: Scripts Are Project-Specific
+
+> 🔴 **DO NOT copy-paste script commands. Choose based on project type.**
+
+| Project Type | Relevant Scripts |
+|--------------|------------------|
+| Frontend/React | `ux_audit.py`, `accessibility_checker.py` |
+| Backend/API | `api_validator.py`, `security_scan.py` |
+| Mobile | `mobile_audit.py` |
+| Database | `schema_validator.py` |
+| Full-stack | Mix of above based on what you touched |
+
+**Wrong:** Adding all scripts to every plan
+**Right:** Only scripts relevant to THIS task
+
+---
+
+### Principle 5: Verification is Simple
+
+| ❌ Wrong | ✅ Right |
+|----------|----------|
+| "Verify the component works correctly" | "Run `npm run dev`, click button, see toast" |
+| "Test the API" | "curl localhost:3000/api/users returns 200" |
+| "Check styles" | "Open browser, verify dark mode toggle works" |
+
+---
+
+## Plan Structure (Flexible, Not Fixed!)
+
+```
+# [Task Name]
+
+## Goal
+One sentence: What are we building/fixing?
 
 ## Tasks
+- [ ] Task 1: [Specific action] → Verify: [How to check]
+- [ ] Task 2: [Specific action] → Verify: [How to check]
+- [ ] Task 3: [Specific action] → Verify: [How to check]
 
-### Phase 1: Setup
-- [ ] **Task 1.1**: [Description]
-  - Files: `path/to/file.ts`
-  - Verify: [How to verify]
-  
-- [ ] **Task 1.2**: [Description]
-  - Files: `path/to/file.ts`
-  - Depends on: Task 1.1
-  - Verify: [How to verify]
-
-### Phase 2: Implementation
-- [ ] **Task 2.1**: [Description]
-  - Files: `path/to/file.ts`
-  - Verify: [How to verify]
-
-### Phase 3: Testing
-- [ ] **Task 3.1**: Write unit tests
-  - Files: `path/to/file.test.ts`
-  - Verify: All tests pass
-
-### Phase 4: Cleanup
-- [ ] **Task 4.1**: Code review
-- [ ] **Task 4.2**: Documentation update
-
-### Phase X: Final System Verification (MANDATORY)
-> 🔴 **STOP! Do not mark project as done until this checklist is clean.**
-
-> 🔴 **SCRIPT EXECUTION REQUIRED! Run these commands, don't just check boxes!**
-
-#### 1. Pre-Build Checks (EXECUTE THESE!)
-
-```bash
-# MANDATORY: Lint & Code Quality (from ~/.claude/ directory)
-# MANDATORY: Lint & Type Check (use project's native tools)
-npm run lint        # ESLint
-npx tsc --noEmit    # TypeScript check
-
-# MANDATORY: Security Scan
-python ~/.claude/skills/vulnerability-scanner/scripts/security_scan.py .
-# → No "🔴 Critical issues" allowed!
+## Done When
+- [ ] [Main success criteria]
 ```
 
-#### 2. Runtime Verification (If applicable)
-
-```bash
-# MANDATORY UX Audit
-python ~/.claude/skills/frontend-design/scripts/ux_audit.py .
-
-# Mobile audit (for mobile projects)
-python ~/.claude/skills/mobile-design/scripts/mobile_audit.py .
-
-# Performance audit (for web projects)
-python ~/.claude/skills/performance-profiling/scripts/lighthouse_audit.py http://localhost:3000
-
-# E2E tests (if Playwright available)
-python ~/.claude/skills/webapp-testing/scripts/playwright_runner.py http://localhost:3000 --screenshot
-```
-
-#### 3. Rule Compliance (Manual Check)
-- [ ] No Purple/Violet hex codes?
-- [ ] No Standard Templates used?
-- [ ] Socratic Gate was respected?
-
-#### 4. User Acceptance
-- [ ] Does it meet the ORIGINAL simplified goal?
-
-#### 5. Phase X Completion Marker
-```markdown
-# Add to PLAN.md after ALL checks pass:
-## ✅ PHASE X COMPLETE
-- Lint: ✅ Pass
-- Security: ✅ No critical issues  
-- Build: ✅ Success
-- Date: [Date]
-```
-
-> 🔴 **EXIT GATE:** No Phase X marker = Project NOT complete.
+> **That's it.** No phases, no sub-sections unless truly needed.
+> Keep it minimal. Add complexity only when required.
 
 ## Notes
 [Any important considerations]
 ```
 
-## Task Description Format
+---
 
-Good task descriptions include:
+## Best Practices (Quick Reference)
 
-```markdown
-- [ ] **Create UserService class**
-  - Files: `src/services/UserService.ts`
-  - Actions:
-    - Create new file
-    - Add constructor with UserRepository dependency
-    - Implement findById method
-    - Implement create method
-  - Verify: TypeScript compiles, unit tests pass
-  - Time: ~5 min
-```
-
-## Example: API Endpoint Implementation
-
-```markdown
-# Implementation Plan: Add User Profile Endpoint
-
-## Overview
-Add GET /api/users/:id/profile endpoint to return user profile data.
-
-## Success Criteria
-- [ ] Endpoint returns 200 with profile data for valid user
-- [ ] Endpoint returns 404 for non-existent user
-- [ ] Endpoint requires authentication
-- [ ] Response matches API specification
-
-## Tasks
-
-### Phase 1: Schema & Types
-- [ ] **1.1**: Define ProfileResponse type
-  - Files: `src/types/profile.ts`
-  - Verify: TypeScript compiles
-
-- [ ] **1.2**: Add profile fields to User model if needed
-  - Files: `prisma/schema.prisma`
-  - Verify: `npx prisma validate`
-
-### Phase 2: Service Layer
-- [ ] **2.1**: Add getProfile method to UserService
-  - Files: `src/services/UserService.ts`
-  - Verify: Unit test passes
-
-- [ ] **2.2**: Write unit test for getProfile
-  - Files: `src/services/UserService.test.ts`
-  - Verify: Test runs and passes
-
-### Phase 3: API Layer
-- [ ] **3.1**: Create profile route handler
-  - Files: `src/routes/users.ts`
-  - Verify: Endpoint accessible
-
-- [ ] **3.2**: Add authentication middleware
-  - Files: `src/routes/users.ts`
-  - Verify: Returns 401 without token
-
-- [ ] **3.3**: Write integration test
-  - Files: `src/routes/users.test.ts`
-  - Verify: All scenarios covered
-
-### Phase 4: Documentation
-- [ ] **4.1**: Update OpenAPI spec
-  - Files: `docs/openapi.yaml`
-  - Verify: Swagger UI shows endpoint
-
-## Estimated Time
-Total: ~30 minutes
-```
-
-## Verification Methods
-
-### Code Verification
-```bash
-# TypeScript compiles
-npm run typecheck
-
-# Tests pass
-npm test
-
-# Lint passes
-npm run lint
-
-# Build succeeds
-npm run build
-```
-
-### Runtime Verification
-```bash
-# Endpoint responds
-curl http://localhost:3000/api/users/1/profile
-
-# Manual testing
-# Open browser, test functionality
-```
-
-## Best Practices
-
-1. **Start with the end** - Define success criteria first
-2. **Think in phases** - Group related tasks
-3. **Include verification** - Every task should be checkable
-4. **Note dependencies** - Identify blockers
-5. **Keep it visible** - Update as you progress
-6. **Timebox tasks** - 2-5 min per task ideal
+1. **Start with goal** - What are we building/fixing?
+2. **Max 10 tasks** - If more, break into multiple plans
+3. **Each task verifiable** - Clear "done" criteria
+4. **Project-specific** - No copy-paste templates
+5. **Update as you go** - Mark `[x]` when complete
 
 ---
 
-## Technical Design & RFC (2025)
-For complex changes, use an RFC (Request for Comments) structure:
-1. **Background:** Why is this change needed?
-2. **Proposal:** High-level architectural decision.
-3. **Trade-offs:** What are the alternatives?
-4. **Security:** Prompt injection risks, data privacy.
-5. **AI Risks:** Hallucimation mitigation, model drift considerations.
-
 ## When to Use
 
-- Before starting any feature
-- When refactoring code
-- During sprint planning
-- When onboarding others
-- When work seems overwhelming
+- New project from scratch
+- Adding a feature
+- Fixing a bug (if complex)
+- Refactoring multiple files
