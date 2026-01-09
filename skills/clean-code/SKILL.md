@@ -85,6 +85,29 @@ priority: CRITICAL
 
 ---
 
+## 🔴 Before Editing ANY File (THINK FIRST!)
+
+**Before changing a file, ask yourself:**
+
+| Question | Why |
+|----------|-----|
+| **What imports this file?** | They might break |
+| **What does this file import?** | Interface changes |
+| **What tests cover this?** | Tests might fail |
+| **Is this a shared component?** | Multiple places affected |
+
+**Quick Check:**
+```
+File to edit: UserService.ts
+└── Who imports this? → UserController.ts, AuthController.ts
+└── Do they need changes too? → Check function signatures
+```
+
+> 🔴 **Rule:** Edit the file + all dependent files in the SAME task.
+> 🔴 **Never leave broken imports or missing updates.**
+
+---
+
 ## Summary
 
 | Do | Don't |
@@ -100,42 +123,79 @@ priority: CRITICAL
 
 ---
 
+## 🔴 Self-Check Before Completing (MANDATORY)
+
+**Before saying "task complete", verify:**
+
+| Check | Question |
+|-------|----------|
+| ✅ **Goal met?** | Did I do exactly what user asked? |
+| ✅ **Files edited?** | Did I modify all necessary files? |
+| ✅ **Code works?** | Did I test/verify the change? |
+| ✅ **No errors?** | Lint and TypeScript pass? |
+| ✅ **Nothing forgotten?** | Any edge cases missed? |
+
+> 🔴 **Rule:** If ANY check fails, fix it before completing.
+
+---
+
 ## Verification Scripts (MANDATORY)
 
-> 🔴 **CRITICAL:** Before completing ANY coding task, run the appropriate verification scripts.
+> 🔴 **CRITICAL:** Each agent runs ONLY their own skill's scripts after completing work.
 
-### Available Scripts
+### Agent → Script Mapping
 
-| Script | When to Use | Command |
-|--------|-------------|---------|
-| **Security Scan** | After ANY code changes | `python ~/.claude/skills/vulnerability-scanner/scripts/security_scan.py .` |
-| **Lint Check** | After writing code | `python ~/.claude/skills/lint-and-validate/scripts/lint_runner.py .` |
-| **Type Coverage** | TypeScript/Python types | `python ~/.claude/skills/lint-and-validate/scripts/type_coverage.py .` |
-| **API Validator** | After API/endpoint work | `python ~/.claude/skills/api-patterns/scripts/api_validator.py .` |
-| **UX Audit** | After frontend work | `python ~/.claude/skills/frontend-design/scripts/ux_audit.py .` |
-| **A11y Check** | After UI components | `python ~/.claude/skills/frontend-design/scripts/accessibility_checker.py .` |
-| **SEO Check** | After page creation | `python ~/.claude/skills/seo-fundamentals/scripts/seo_checker.py .` |
-| **GEO Check** | AI citation readiness | `python ~/.claude/skills/geo-fundamentals/scripts/geo_checker.py .` |
-| **Mobile Audit** | After mobile/responsive | `python ~/.claude/skills/mobile-design/scripts/mobile_audit.py .` |
-| **Schema Validate** | After DB changes | `python ~/.claude/skills/database-design/scripts/schema_validator.py .` |
-| **Test Runner** | After any feature | `python ~/.claude/skills/testing-patterns/scripts/test_runner.py .` |
-| **Lighthouse** | Web performance | `python ~/.claude/skills/performance-profiling/scripts/lighthouse_audit.py <url>` |
-| **Playwright** | E2E testing | `python ~/.claude/skills/webapp-testing/scripts/playwright_runner.py <url>` |
-| **i18n Check** | Hardcoded strings & translations | `python ~/.claude/skills/i18n-localization/scripts/i18n_checker.py .` |
+| Agent | Script | Command |
+|-------|--------|---------|
+| **frontend-specialist** | UX Audit | `python ~/.claude/skills/frontend-design/scripts/ux_audit.py .` |
+| **frontend-specialist** | A11y Check | `python ~/.claude/skills/frontend-design/scripts/accessibility_checker.py .` |
+| **backend-specialist** | API Validator | `python ~/.claude/skills/api-patterns/scripts/api_validator.py .` |
+| **mobile-developer** | Mobile Audit | `python ~/.claude/skills/mobile-design/scripts/mobile_audit.py .` |
+| **database-architect** | Schema Validate | `python ~/.claude/skills/database-design/scripts/schema_validator.py .` |
+| **security-auditor** | Security Scan | `python ~/.claude/skills/vulnerability-scanner/scripts/security_scan.py .` |
+| **seo-specialist** | SEO Check | `python ~/.claude/skills/seo-fundamentals/scripts/seo_checker.py .` |
+| **seo-specialist** | GEO Check | `python ~/.claude/skills/geo-fundamentals/scripts/geo_checker.py .` |
+| **performance-optimizer** | Lighthouse | `python ~/.claude/skills/performance-profiling/scripts/lighthouse_audit.py <url>` |
+| **test-engineer** | Test Runner | `python ~/.claude/skills/testing-patterns/scripts/test_runner.py .` |
+| **test-engineer** | Playwright | `python ~/.claude/skills/webapp-testing/scripts/playwright_runner.py <url>` |
+| **Any agent** | Lint Check | `python ~/.claude/skills/lint-and-validate/scripts/lint_runner.py .` |
+| **Any agent** | Type Coverage | `python ~/.claude/skills/lint-and-validate/scripts/type_coverage.py .` |
+| **Any agent** | i18n Check | `python ~/.claude/skills/i18n-localization/scripts/i18n_checker.py .` |
 
-### Usage Rules
+> ❌ **WRONG:** `test-engineer` running `ux_audit.py`
+> ✅ **CORRECT:** `frontend-specialist` running `ux_audit.py`
 
-1. **Frontend work?** → Run: `ux_audit.py`, `accessibility_checker.py`
-2. **API/Backend?** → Run: `security_scan.py`, `lint_runner.py`, `api_validator.py`
-3. **Database changes?** → Run: `schema_validator.py`
-4. **Any code?** → Run: `security_scan.py` (always)
-5. **Multi-language app?** → Run: `i18n_checker.py`
-6. **Web project complete?** → Run: `lighthouse_audit.py`, `playwright_runner.py`
+---
 
-### Script Output Handling
+### 🔴 Script Output Handling (READ → SUMMARIZE → ASK)
 
-- ✅ **Pass** → Continue with next task
-- ❌ **Fail** → Fix issues before proceeding
-- ⚠️ **Warning** → Document in PLAN.md, fix if time permits
+**When running a validation script, you MUST:**
 
-> 🔴 **EXIT GATE:** Do NOT mark any coding task complete without running at least `security_scan.py`.
+1. **Run the script** and capture ALL output
+2. **Parse the output** - identify errors, warnings, and passes
+3. **Summarize to user** in this format:
+
+```markdown
+## Script Results: [script_name.py]
+
+### ❌ Errors Found (X items)
+- [File:Line] Error description 1
+- [File:Line] Error description 2
+
+### ⚠️ Warnings (Y items)
+- [File:Line] Warning description
+
+### ✅ Passed (Z items)
+- Check 1 passed
+- Check 2 passed
+
+**Should I fix the X errors?**
+```
+
+4. **Wait for user confirmation** before fixing
+5. **After fixing** → Re-run script to confirm
+
+> 🔴 **VIOLATION:** Running script and ignoring output = FAILED task.
+> 🔴 **VIOLATION:** Auto-fixing without asking = Not allowed.
+> 🔴 **Rule:** Always READ output → SUMMARIZE → ASK → then fix.
+
