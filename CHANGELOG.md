@@ -1,5 +1,47 @@
 # Maestro Changelog
 
+## [0.3.1] - 2026-01-09
+
+### Fixed
+
+#### Windows Console Encoding
+- **13 Python scripts** updated to remove emoji characters causing `UnicodeEncodeError` on Windows cp1254 consoles
+- Added `sys.stdout.reconfigure(encoding='utf-8', errors='replace')` for UTF-8 safety
+- Affected scripts: `i18n_checker.py`, `type_coverage.py`, `geo_checker.py`, `playwright_runner.py`, `security_scan.py`, `api_validator.py`, `lighthouse_audit.py`, `session_manager.py`, `session_hooks.py`, `explorer_helper.py`, `auto_preview.py`, `dependency_scanner.py`, `setup.py`
+
+#### SEO/GEO Script Bugs
+- **`geo_checker.py`** → Complete rewrite: Now only analyzes public web pages (HTML/JSX/TSX), not markdown documentation files
+- **`seo_checker.py`** → Improved page detection: Only analyzes files in `pages/`, `app/`, `routes/` directories
+- Both scripts now skip config files, tests, utilities, and node_modules
+
+### Added
+
+#### Game Development Enhancement
+- **`game-development/game-art/SKILL.md`** → Visual style selection, asset pipelines, color theory, animation principles
+- **`game-development/game-audio/SKILL.md`** → Sound design, music integration, adaptive audio, 3D audio
+- Both skills use decision trees and principle tables (no code examples)
+
+#### GEO Checker 2025 Updates (Research-Based)
+- **Entity Recognition** → Checks for Organization, LocalBusiness, Brand schema
+- **Original Statistics/Data** → Detects percentages, dollar amounts, research citations
+- **Direct Answer Patterns** → Detects LLM-friendly content ("is defined as", "refers to", etc.)
+
+#### Dynamic Plan File Naming
+- **`project-planner.md`** → Plan files now named dynamically: `docs/PLAN-{task-slug}.md`
+- **`commands/plan.md`** → Updated with naming convention and examples
+- Allows multiple plan files per project
+
+### Changed
+- **`game-development/SKILL.md`** → Restructured as orchestrator with sub-skill routing tables
+- **`game-developer.md`** → Added `game-art` and `game-audio` to skills list (now 12 sub-skills)
+- **`tailwind-patterns/SKILL.md`** → Complete rewrite for Tailwind v4 (2025): CSS-first config, container queries, OKLCH colors
+
+### Removed
+- **`security-checklist/`** → Merged into `vulnerability-scanner/checklists.md`
+- Updated `security-auditor.md` and `penetration-tester.md` agent skills accordingly
+
+---
+
 ## [0.3.0] - 2026-01-09
 
 ### 🏗️ Modular Architecture Overhaul
@@ -445,7 +487,8 @@ Python scripts added under skills. **How it works:**
 
 ---
 
-[Unreleased]: https://github.com/xenitV1/claude-code-maestro/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/xenitV1/claude-code-maestro/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/xenitV1/claude-code-maestro/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/xenitV1/claude-code-maestro/compare/v0.2.4...v0.3.0
 [0.2.4]: https://github.com/xenitV1/claude-code-maestro/compare/v0.2.0...v0.2.4
 [0.2.0]: https://github.com/xenitV1/claude-code-maestro/compare/v0.0.7...v0.2.0

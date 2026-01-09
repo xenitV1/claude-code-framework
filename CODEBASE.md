@@ -20,7 +20,7 @@
 
 > **Legend:** `file.ts ← A.tsx, B.tsx` = This file is **imported by** A.tsx and B.tsx.
 > Directories with `[N files: ...]` are summarized to reduce size.
-> 📊 Showing 145 files. 1 dirs summarized, 1 dirs excluded (node_modules, etc.)
+> 📊 Showing 155 files. 1 dirs summarized, 1 dirs excluded (node_modules, etc.)
 
 
 ```
@@ -52,12 +52,13 @@ commands/
   deploy.md
   enhance.md
   orchestrate.md
+  plan.md
   preview.md
   status.md
   test.md
 data/
   README.md
-docs/ [1 files: 1 .md]
+docs/ [3 files: 3 .md]
 scripts/
   README.md
   auto_preview.py
@@ -66,7 +67,6 @@ scripts/
   session_hooks.py
   session_manager.py
   setup.py
-  verify_all.py
 skills/
   README.md
   api-patterns/
@@ -78,6 +78,8 @@ skills/
     rate-limiting.md
     response.md
     rest.md
+    scripts/
+      api_validator.py
     security-testing.md
     trpc.md
     versioning.md
@@ -140,6 +142,8 @@ skills/
     optimization.md
     orm-selection.md
     schema-design.md
+    scripts/
+      schema_validator.py
   deployment-procedures/
     SKILL.md
   documentation-templates/
@@ -151,6 +155,7 @@ skills/
     decision-trees.md
     motion-graphics.md
     scripts/
+      accessibility_checker.py
       ux_audit.py
     typography-system.md
     ux-psychology.md
@@ -175,8 +180,17 @@ skills/
       SKILL.md
   geo-fundamentals/
     SKILL.md
+    scripts/
+      geo_checker.py
+  i18n-localization/
+    SKILL.md
+    scripts/
+      i18n_checker.py
   lint-and-validate/
     SKILL.md
+    scripts/
+      lint_runner.py
+      type_coverage.py
   mcp-builder/
     SKILL.md
   mobile-design/
@@ -219,6 +233,8 @@ skills/
     SKILL.md
   seo-fundamentals/
     SKILL.md
+    scripts/
+      seo_checker.py
   server-management/
     SKILL.md
   systematic-debugging/
@@ -229,6 +245,8 @@ skills/
     SKILL.md
   testing-patterns/
     SKILL.md
+    scripts/
+      test_runner.py
   vulnerability-scanner/
     SKILL.md
     scripts/
@@ -242,7 +260,7 @@ skills/
 
 ## 📊 File Dependencies
 
-> Scanned 12 files
+> Scanned 20 files
 
 ### API Endpoints Used
 
