@@ -1,5 +1,71 @@
 # Maestro Changelog
 
+## [0.3.2] - 2026-01-09
+
+### 🔧 Documentation Reduction & Workflow Improvements
+
+### Changed
+
+#### Documentation Generation
+- **`documentation-writer.md`** → Now triggers ONLY on explicit user request (not auto-invoked)
+- **`parallel-agents/SKILL.md`** → Narrowed trigger phrases: "write docs" instead of "docs"
+- **`orchestrator.md`** → Documentation agent marked as "explicit request only"
+
+#### Plan File System
+- **Location:** `docs/PLAN-*.md` → `./[task-slug].md` (project root)
+- **Naming:** Dynamic based on task, no `PLAN-` prefix required
+- **`plan-writing/SKILL.md`** → Complete rewrite: Principles over templates
+  - 5 Planning Principles (SHORT, SPECIFIC, DYNAMIC, PROJECT-SPECIFIC SCRIPTS, SIMPLE VERIFICATION)
+  - Removed fixed Phase 1-2-3-4 template
+  - Removed verbose examples (~100 lines removed)
+
+#### Approval Flow
+- **`project-planner.md`** → Removed "STOP and ASK 3 questions" rule
+- **`orchestrator.md`** → Simplified to "Quick Context Check"
+- **`create.md`** → Removed "STOP and ask for approval" checkpoint
+- Plans now created and work proceeds without piece-by-piece approval
+
+### Added
+
+#### Agent Self-Check (`clean-code/SKILL.md`)
+```
+| Check | Question |
+| Goal met? | Did I do exactly what user asked? |
+| Files edited? | Did I modify all necessary files? |
+| Code works? | Did I test/verify the change? |
+| No errors? | Lint and TypeScript pass? |
+| Nothing forgotten? | Any edge cases missed? |
+```
+
+#### Dependency Awareness (`clean-code/SKILL.md`)
+- Before editing ANY file, agents must think:
+  - What imports this file?
+  - What does this file import?
+  - What tests cover this?
+  - Is this a shared component?
+- Rule: Edit file + all dependent files in SAME task
+
+#### Script Execution Rules (`clean-code/SKILL.md`)
+- **Agent → Script Mapping:** Each agent runs ONLY their own skill's scripts
+- **Output Handling:** READ → SUMMARIZE → ASK (not auto-fix)
+  - Parse script output
+  - Summarize errors/warnings/passes
+  - Ask user: "Should I fix the X errors?"
+  - Wait for confirmation
+
+#### OS Detection for Commands (`project-planner.md`)
+- Planner now reads `CODEBASE.md` first to check OS field
+- Windows → Use Claude Write tool for files, PowerShell for commands
+- macOS/Linux → Can use `touch`, `mkdir -p`, bash commands
+- Prevents Unix commands failing on Windows (e.g., `cat <<EOF`)
+
+### Removed
+- Phase 4: Documentation from plan template (now optional)
+- Fixed plan examples (API Endpoint Implementation example)
+- Verbose verification script lists from plan template
+
+---
+
 ## [0.3.1] - 2026-01-09
 
 ### Fixed

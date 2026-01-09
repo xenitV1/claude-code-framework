@@ -4,7 +4,7 @@
 
 ---
 
-## 📁 Project Info
+## Project Info
 
 | Property | Value |
 |----------|-------|
@@ -16,11 +16,11 @@
 
 ---
 
-## 📂 Project Structure
+## Project Structure
 
-> **Legend:** `file.ts ← A.tsx, B.tsx` = This file is **imported by** A.tsx and B.tsx.
+> **Legend:** `file.ts <- A.tsx, B.tsx` = This file is **imported by** A.tsx and B.tsx.
 > Directories with `[N files: ...]` are summarized to reduce size.
-> 📊 Showing 155 files. 1 dirs summarized, 1 dirs excluded (node_modules, etc.)
+> [STATS] Showing 157 files. 1 dirs summarized, 1 dirs excluded (node_modules, etc.)
 
 
 ```
@@ -166,6 +166,10 @@ skills/
     3d-games/
       SKILL.md
     SKILL.md
+    game-art/
+      SKILL.md
+    game-audio/
+      SKILL.md
     game-design/
       SKILL.md
     mobile-games/
@@ -229,8 +233,6 @@ skills/
     SKILL.md
   red-team-tactics/
     SKILL.md
-  security-checklist/
-    SKILL.md
   seo-fundamentals/
     SKILL.md
     scripts/
@@ -249,6 +251,7 @@ skills/
       test_runner.py
   vulnerability-scanner/
     SKILL.md
+    checklists.md
     scripts/
       security_scan.py
   webapp-testing/
@@ -258,7 +261,7 @@ skills/
 ```
 
 
-## 📊 File Dependencies
+## File Dependencies
 
 > Scanned 20 files
 
