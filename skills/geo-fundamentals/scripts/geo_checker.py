@@ -1,212 +1,289 @@
 #!/usr/bin/env python3
 """
 GEO Checker - Generative Engine Optimization Audit
-Checks content for AI citation readiness.
+Checks PUBLIC WEB CONTENT for AI citation readiness.
+
+PURPOSE:
+    - Analyze pages that will be INDEXED by AI engines (ChatGPT, Perplexity, etc.)
+    - Check for structured data, author info, dates, FAQ sections
+    - Help content rank in AI-generated answers
+
+WHAT IT CHECKS:
+    - HTML files (actual web pages)
+    - JSX/TSX files (React page components)
+    - NOT markdown files (those are developer docs, not public content)
+
+Usage:
+    python geo_checker.py <project_path>
 """
 import sys
 import re
 import json
 from pathlib import Path
 
-def check_html_file(file_path: Path) -> dict:
-    """Check a single HTML file for GEO elements."""
-    content = file_path.read_text(encoding='utf-8', errors='ignore')
+# Fix Windows console encoding
+try:
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except AttributeError:
+    pass
+
+
+# Directories to skip (not public content)
+SKIP_DIRS = {
+    'node_modules', '.next', 'dist', 'build', '.git', '.github',
+    '__pycache__', '.vscode', '.idea', 'coverage', 'test', 'tests',
+    '__tests__', 'spec', 'docs', 'documentation'
+}
+
+# Files to skip (not public pages)
+SKIP_FILES = {
+    'jest.config', 'webpack.config', 'vite.config', 'tsconfig',
+    'package.json', 'package-lock', 'yarn.lock', '.eslintrc',
+    'tailwind.config', 'postcss.config', 'next.config'
+}
+
+
+def is_page_file(file_path: Path) -> bool:
+    """Check if this file is likely a public-facing page."""
+    name = file_path.stem.lower()
+    
+    # Skip config/utility files
+    if any(skip in name for skip in SKIP_FILES):
+        return False
+    
+    # Skip test files
+    if name.endswith('.test') or name.endswith('.spec'):
+        return False
+    if name.startswith('test_') or name.startswith('spec_'):
+        return False
+    
+    # Likely page indicators
+    page_indicators = ['page', 'index', 'home', 'about', 'contact', 'blog', 
+                       'post', 'article', 'product', 'service', 'landing']
+    
+    # Check if it's in a pages/app directory (Next.js, etc.)
+    parts = [p.lower() for p in file_path.parts]
+    if 'pages' in parts or 'app' in parts or 'routes' in parts:
+        return True
+    
+    # Check filename indicators
+    if any(ind in name for ind in page_indicators):
+        return True
+    
+    # HTML files are usually pages
+    if file_path.suffix.lower() == '.html':
+        return True
+    
+    return False
+
+
+def find_web_pages(project_path: Path) -> list:
+    """Find public-facing web pages only."""
+    patterns = ['**/*.html', '**/*.htm', '**/*.jsx', '**/*.tsx']
+    
+    files = []
+    for pattern in patterns:
+        for f in project_path.glob(pattern):
+            # Skip excluded directories
+            if any(skip in f.parts for skip in SKIP_DIRS):
+                continue
+            
+            # Check if it's likely a page
+            if is_page_file(f):
+                files.append(f)
+    
+    return files[:30]  # Limit to 30 pages
+
+
+def check_page(file_path: Path) -> dict:
+    """Check a single web page for GEO elements."""
+    try:
+        content = file_path.read_text(encoding='utf-8', errors='ignore')
+    except Exception as e:
+        return {'file': str(file_path.name), 'passed': [], 'issues': [f"Error: {e}"], 'score': 0}
     
     issues = []
     passed = []
     
-    # 1. Check for structured data (schema.org)
+    # 1. JSON-LD Structured Data (Critical for AI)
     if 'application/ld+json' in content:
-        passed.append("✅ JSON-LD structured data found")
-        # Check for specific schemas
-        if '"@type":"Article"' in content or '"@type": "Article"' in content:
-            passed.append("✅ Article schema present")
-        if '"@type":"FAQPage"' in content or '"@type": "FAQPage"' in content:
-            passed.append("✅ FAQ schema present")
-        if '"@type":"Person"' in content or '"@type": "Person"' in content:
-            passed.append("✅ Person/Author schema present")
+        passed.append("JSON-LD structured data found")
+        if '"@type"' in content:
+            if 'Article' in content:
+                passed.append("Article schema present")
+            if 'FAQPage' in content:
+                passed.append("FAQ schema present")
+            if 'Organization' in content or 'Person' in content:
+                passed.append("Entity schema present")
     else:
-        issues.append("❌ No JSON-LD structured data (AI engines prefer structured content)")
+        issues.append("No JSON-LD structured data (AI engines prefer structured content)")
     
-    # 2. Check for clear headings (H1, H2)
+    # 2. Heading Structure
     h1_count = len(re.findall(r'<h1[^>]*>', content, re.I))
     h2_count = len(re.findall(r'<h2[^>]*>', content, re.I))
+    
     if h1_count == 1:
-        passed.append("✅ Single H1 heading (good for entity clarity)")
+        passed.append("Single H1 heading (clear topic)")
     elif h1_count == 0:
-        issues.append("❌ No H1 heading found")
+        issues.append("No H1 heading - page topic unclear")
     else:
-        issues.append(f"⚠️ Multiple H1 headings ({h1_count}) - use only one")
+        issues.append(f"Multiple H1 headings ({h1_count}) - confusing for AI")
     
-    if h2_count >= 3:
-        passed.append(f"✅ Good heading structure ({h2_count} H2s)")
+    if h2_count >= 2:
+        passed.append(f"{h2_count} H2 subheadings (good structure)")
     else:
-        issues.append("⚠️ Add more H2 subheadings for scannable content")
+        issues.append("Add more H2 subheadings for scannable content")
     
-    # 3. Check for author information
-    author_patterns = [
-        r'author', r'byline', r'written-by', r'contributor'
-    ]
+    # 3. Author Attribution (E-E-A-T signal)
+    author_patterns = ['author', 'byline', 'written-by', 'contributor', 'rel="author"']
     has_author = any(p in content.lower() for p in author_patterns)
     if has_author:
-        passed.append("✅ Author attribution found")
+        passed.append("Author attribution found")
     else:
-        issues.append("❌ No author information (AI prefers attributed content)")
+        issues.append("No author info (AI prefers attributed content)")
     
-    # 4. Check for dates/timestamps
-    date_patterns = [
-        r'datetime=', r'pubdate', r'datePublished', r'dateModified',
-        r'published:', r'updated:', r'last.?updated'
-    ]
+    # 4. Publication Date (Freshness signal)
+    date_patterns = ['datePublished', 'dateModified', 'datetime=', 'pubdate', 'article:published']
     has_date = any(re.search(p, content, re.I) for p in date_patterns)
     if has_date:
-        passed.append("✅ Date/timestamp found")
+        passed.append("Publication date found")
     else:
-        issues.append("❌ No publication date (freshness signals matter)")
+        issues.append("No publication date (freshness matters for AI)")
     
-    # 5. Check for FAQ section
-    faq_patterns = [r'<details', r'faq', r'frequently.?asked', r'q\s*&\s*a']
+    # 5. FAQ Section (Highly citable)
+    faq_patterns = [r'<details', r'faq', r'frequently.?asked', r'"FAQPage"']
     has_faq = any(re.search(p, content, re.I) for p in faq_patterns)
     if has_faq:
-        passed.append("✅ FAQ section detected")
-    else:
-        issues.append("⚠️ Consider adding FAQ section (highly citable)")
+        passed.append("FAQ section detected (highly citable)")
     
-    # 6. Check for statistics/data
-    stat_patterns = [r'\d+%', r'\$\d+', r'million', r'billion', r'study shows', r'research']
-    has_stats = any(re.search(p, content, re.I) for p in stat_patterns)
-    if has_stats:
-        passed.append("✅ Statistics/data found (original data gets cited)")
-    
-    # 7. Check for definition patterns
-    definition_patterns = [r'is defined as', r'refers to', r'means that', r'<dfn']
-    has_definitions = any(re.search(p, content, re.I) for p in definition_patterns)
-    if has_definitions:
-        passed.append("✅ Clear definitions found")
-    
-    # 8. Check for lists (AI loves structured content)
+    # 6. Lists (Structured content)
     list_count = len(re.findall(r'<(ul|ol)[^>]*>', content, re.I))
     if list_count >= 2:
-        passed.append(f"✅ {list_count} lists found (structured content)")
+        passed.append(f"{list_count} lists (structured content)")
     
-    # 9. Check for tables
+    # 7. Tables (Comparison data)
     table_count = len(re.findall(r'<table[^>]*>', content, re.I))
     if table_count >= 1:
-        passed.append(f"✅ {table_count} table(s) found (comparison data)")
+        passed.append(f"{table_count} table(s) (comparison data)")
+    
+    # 8. Entity Recognition (E-E-A-T signal) - NEW 2025
+    entity_patterns = [
+        r'"@type"\s*:\s*"Organization"',
+        r'"@type"\s*:\s*"LocalBusiness"', 
+        r'"@type"\s*:\s*"Brand"',
+        r'itemtype.*schema\.org/(Organization|Person|Brand)',
+        r'rel="author"'
+    ]
+    has_entity = any(re.search(p, content, re.I) for p in entity_patterns)
+    if has_entity:
+        passed.append("Entity/Brand recognition (E-E-A-T)")
+    
+    # 9. Original Statistics/Data (AI citation magnet) - NEW 2025
+    stat_patterns = [
+        r'\d+%',                    # Percentages
+        r'\$[\d,]+',                # Dollar amounts
+        r'study\s+(shows|found)',   # Research citations
+        r'according to',            # Source attribution
+        r'data\s+(shows|reveals)',  # Data-backed claims
+        r'\d+x\s+(faster|better|more)', # Comparison stats
+        r'(million|billion|trillion)', # Large numbers
+    ]
+    stat_matches = sum(1 for p in stat_patterns if re.search(p, content, re.I))
+    if stat_matches >= 2:
+        passed.append("Original statistics/data (citation magnet)")
+    
+    # 10. Conversational/Direct answers - NEW 2025
+    direct_answer_patterns = [
+        r'is defined as',
+        r'refers to',
+        r'means that',
+        r'the answer is',
+        r'in short,',
+        r'simply put,',
+        r'<dfn'
+    ]
+    has_direct = any(re.search(p, content, re.I) for p in direct_answer_patterns)
+    if has_direct:
+        passed.append("Direct answer patterns (LLM-friendly)")
+    
+    # Calculate score
+    total = len(passed) + len(issues)
+    score = (len(passed) / total * 100) if total > 0 else 0
     
     return {
-        'file': str(file_path),
+        'file': str(file_path.name),
         'passed': passed,
         'issues': issues,
-        'score': len(passed) / (len(passed) + len(issues)) * 100 if (passed or issues) else 0
+        'score': round(score)
     }
 
-def check_markdown_file(file_path: Path) -> dict:
-    """Check a markdown file for GEO elements."""
-    content = file_path.read_text(encoding='utf-8', errors='ignore')
-    
-    issues = []
-    passed = []
-    
-    # 1. Check for clear structure
-    h1_count = len(re.findall(r'^# [^#]', content, re.M))
-    h2_count = len(re.findall(r'^## [^#]', content, re.M))
-    
-    if h1_count == 1:
-        passed.append("✅ Single H1 title")
-    elif h1_count == 0:
-        issues.append("❌ No H1 title found")
-    
-    if h2_count >= 3:
-        passed.append(f"✅ Good structure ({h2_count} sections)")
-    else:
-        issues.append("⚠️ Add more sections for scannable content")
-    
-    # 2. Check for bullet/numbered lists
-    list_items = len(re.findall(r'^[\-\*\d\.]\s', content, re.M))
-    if list_items >= 5:
-        passed.append(f"✅ {list_items} list items (structured content)")
-    
-    # 3. Check for code blocks (technical credibility)
-    code_blocks = len(re.findall(r'```', content))
-    if code_blocks >= 2:
-        passed.append("✅ Code examples included")
-    
-    # 4. Check for tables
-    if '|' in content and '---' in content:
-        passed.append("✅ Tables found (comparison data)")
-    
-    # 5. Check for links/citations
-    links = len(re.findall(r'\[.*?\]\(.*?\)', content))
-    if links >= 3:
-        passed.append(f"✅ {links} links/citations")
-    else:
-        issues.append("⚠️ Add more source citations")
-    
-    return {
-        'file': str(file_path),
-        'passed': passed,
-        'issues': issues,
-        'score': len(passed) / (len(passed) + len(issues)) * 100 if (passed or issues) else 0
-    }
 
 def main():
     target = sys.argv[1] if len(sys.argv) > 1 else "."
-    target_path = Path(target)
+    target_path = Path(target).resolve()
     
-    print("\n" + "🤖" * 30)
-    print("GEO CHECKER - Generative Engine Optimization Audit")
-    print("🤖" * 30 + "\n")
+    print("\n" + "=" * 60)
+    print("  GEO CHECKER - AI Citation Readiness Audit")
+    print("=" * 60)
+    print(f"Project: {target_path}")
+    print("-" * 60)
     
+    # Find web pages only
+    pages = find_web_pages(target_path)
+    
+    if not pages:
+        print("\n[!] No public web pages found.")
+        print("    Looking for: HTML, JSX, TSX files in pages/app directories")
+        print("    Skipping: docs, tests, config files, node_modules")
+        output = {"script": "geo_checker", "pages_found": 0, "passed": True}
+        print("\n" + json.dumps(output, indent=2))
+        sys.exit(0)
+    
+    print(f"Found {len(pages)} public pages to analyze\n")
+    
+    # Check each page
     results = []
-    
-    # Find HTML and MD files
-    if target_path.is_file():
-        files = [target_path]
-    else:
-        files = list(target_path.rglob("*.html")) + list(target_path.rglob("*.md"))
-        # Exclude common non-content files
-        files = [f for f in files if not any(x in str(f) for x in ['node_modules', '.git', 'dist', 'build', 'README', 'CHANGELOG'])]
-    
-    if not files:
-        print("⚠️ No HTML or Markdown files found to check.")
-        return
-    
-    for file_path in files[:20]:  # Limit to 20 files
-        if file_path.suffix.lower() == '.html':
-            result = check_html_file(file_path)
-        else:
-            result = check_markdown_file(file_path)
+    for page in pages:
+        result = check_page(page)
         results.append(result)
     
     # Print results
-    total_score = 0
     for result in results:
-        print(f"\n📄 {result['file']}")
-        print(f"   Score: {result['score']:.0f}%")
-        for item in result['passed']:
-            print(f"   {item}")
-        for item in result['issues']:
-            print(f"   {item}")
-        total_score += result['score']
+        status = "[OK]" if result['score'] >= 60 else "[!]"
+        print(f"{status} {result['file']}: {result['score']}%")
+        if result['issues'] and result['score'] < 60:
+            for issue in result['issues'][:2]:  # Show max 2 issues
+                print(f"    - {issue}")
     
-    avg_score = total_score / len(results) if results else 0
+    # Average score
+    avg_score = sum(r['score'] for r in results) / len(results) if results else 0
     
     print("\n" + "=" * 60)
-    print(f"📊 AVERAGE GEO SCORE: {avg_score:.0f}%")
+    print(f"AVERAGE GEO SCORE: {avg_score:.0f}%")
     print("=" * 60)
     
     if avg_score >= 80:
-        print("✅ EXCELLENT - Content is well-optimized for AI citations")
+        print("[OK] Excellent - Content well-optimized for AI citations")
     elif avg_score >= 60:
-        print("⚠️ GOOD - Some improvements recommended")
+        print("[OK] Good - Some improvements recommended")
     elif avg_score >= 40:
-        print("⚠️ NEEDS WORK - Add structured elements")
+        print("[!] Needs work - Add structured elements")
     else:
-        print("❌ POOR - Content needs significant GEO optimization")
+        print("[X] Poor - Content needs GEO optimization")
     
-    # Exit code based on score
+    # JSON output
+    output = {
+        "script": "geo_checker",
+        "project": str(target_path),
+        "pages_checked": len(results),
+        "average_score": round(avg_score),
+        "passed": avg_score >= 60
+    }
+    print("\n" + json.dumps(output, indent=2))
+    
     sys.exit(0 if avg_score >= 60 else 1)
+
 
 if __name__ == "__main__":
     main()

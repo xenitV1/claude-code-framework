@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
 """
-SEO Checker - Basic SEO audit for web projects
-Checks HTML files for meta tags, headings, and structured data.
+SEO Checker - Search Engine Optimization Audit
+Checks HTML/JSX/TSX pages for SEO best practices.
+
+PURPOSE:
+    - Verify meta tags, titles, descriptions
+    - Check Open Graph tags for social sharing
+    - Validate heading hierarchy
+    - Check image accessibility (alt attributes)
+
+WHAT IT CHECKS:
+    - HTML files (actual web pages)
+    - JSX/TSX files (React page components)
+    - Only files that are likely PUBLIC pages
 
 Usage:
     python seo_checker.py <project_path>
-
-Checks:
-    - Title tags
-    - Meta description
-    - Open Graph tags
-    - Heading hierarchy
-    - Image alt attributes
 """
-
 import sys
 import json
 import re
@@ -27,56 +30,114 @@ except:
     pass
 
 
-def find_html_files(project_path: Path) -> list:
-    """Find all HTML/JSX/TSX files."""
+# Directories to skip
+SKIP_DIRS = {
+    'node_modules', '.next', 'dist', 'build', '.git', '.github',
+    '__pycache__', '.vscode', '.idea', 'coverage', 'test', 'tests',
+    '__tests__', 'spec', 'docs', 'documentation', 'examples'
+}
+
+# Files to skip (not pages)
+SKIP_PATTERNS = [
+    'config', 'setup', 'util', 'helper', 'hook', 'context', 'store',
+    'service', 'api', 'lib', 'constant', 'type', 'interface', 'mock',
+    '.test.', '.spec.', '_test.', '_spec.'
+]
+
+
+def is_page_file(file_path: Path) -> bool:
+    """Check if this file is likely a public-facing page."""
+    name = file_path.name.lower()
+    stem = file_path.stem.lower()
+    
+    # Skip utility/config files
+    if any(skip in name for skip in SKIP_PATTERNS):
+        return False
+    
+    # Check path - pages in specific directories are likely pages
+    parts = [p.lower() for p in file_path.parts]
+    page_dirs = ['pages', 'app', 'routes', 'views', 'screens']
+    
+    if any(d in parts for d in page_dirs):
+        return True
+    
+    # Filename indicators for pages
+    page_names = ['page', 'index', 'home', 'about', 'contact', 'blog', 
+                  'post', 'article', 'product', 'landing', 'layout']
+    
+    if any(p in stem for p in page_names):
+        return True
+    
+    # HTML files are usually pages
+    if file_path.suffix.lower() in ['.html', '.htm']:
+        return True
+    
+    return False
+
+
+def find_pages(project_path: Path) -> list:
+    """Find page files to check."""
     patterns = ['**/*.html', '**/*.htm', '**/*.jsx', '**/*.tsx']
-    skip_dirs = {'node_modules', '.next', 'dist', 'build', '.git'}
     
     files = []
     for pattern in patterns:
         for f in project_path.glob(pattern):
-            if not any(skip in f.parts for skip in skip_dirs):
+            # Skip excluded directories
+            if any(skip in f.parts for skip in SKIP_DIRS):
+                continue
+            
+            # Check if it's likely a page
+            if is_page_file(f):
                 files.append(f)
     
     return files[:50]  # Limit to 50 files
 
 
-def check_html_file(file_path: Path) -> dict:
-    """Check a single HTML file for SEO issues."""
+def check_page(file_path: Path) -> dict:
+    """Check a single page for SEO issues."""
     issues = []
     
     try:
         content = file_path.read_text(encoding='utf-8', errors='ignore')
-        
-        # Check for title tag
-        if '<title>' not in content.lower() and 'Head>' not in content:
-            if 'page' in file_path.name.lower() or 'index' in file_path.name.lower():
-                issues.append("Missing <title> tag")
-        
-        # Check for meta description
-        if 'meta' in content.lower() and 'description' not in content.lower():
-            if '<head' in content.lower() or 'Head>' in content:
-                issues.append("Missing meta description")
-        
-        # Check for Open Graph tags
-        if 'og:' not in content and 'property="og' not in content:
-            if 'page' in file_path.name.lower() or 'index' in file_path.name.lower():
-                issues.append("Missing Open Graph tags (og:title, og:description)")
-        
-        # Check heading hierarchy
-        h1_count = len(re.findall(r'<h1[>\s]', content, re.IGNORECASE))
-        if h1_count > 1:
-            issues.append(f"Multiple H1 tags found ({h1_count})")
-        
-        # Check images for alt attributes
-        img_matches = re.findall(r'<img[^>]+>', content, re.IGNORECASE)
-        for img in img_matches:
-            if 'alt=' not in img.lower() or 'alt=""' in img or "alt=''" in img:
-                issues.append("Image missing alt attribute")
-                break  # Report only once per file
-        
     except Exception as e:
-        issues.append(f"Error reading file: {str(e)[:50]}")
+        return {"file": str(file_path.name), "issues": [f"Error: {e}"]}
+    
+    # Detect if this is a layout/template file (has Head component)
+    is_layout = 'Head>' in content or '<head' in content.lower()
+    
+    # 1. Title tag
+    has_title = '<title' in content.lower() or 'title=' in content or 'Head>' in content
+    if not has_title and is_layout:
+        issues.append("Missing <title> tag")
+    
+    # 2. Meta description
+    has_description = 'name="description"' in content.lower() or 'name=\'description\'' in content.lower()
+    if not has_description and is_layout:
+        issues.append("Missing meta description")
+    
+    # 3. Open Graph tags
+    has_og = 'og:' in content or 'property="og:' in content.lower()
+    if not has_og and is_layout:
+        issues.append("Missing Open Graph tags")
+    
+    # 4. Heading hierarchy - multiple H1s
+    h1_matches = re.findall(r'<h1[^>]*>', content, re.I)
+    if len(h1_matches) > 1:
+        issues.append(f"Multiple H1 tags ({len(h1_matches)})")
+    
+    # 5. Images without alt
+    img_pattern = r'<img[^>]+>'
+    imgs = re.findall(img_pattern, content, re.I)
+    for img in imgs:
+        if 'alt=' not in img.lower():
+            issues.append("Image missing alt attribute")
+            break
+        if 'alt=""' in img or "alt=''" in img:
+            issues.append("Image has empty alt attribute")
+            break
+    
+    # 6. Check for canonical link (nice to have)
+    # has_canonical = 'rel="canonical"' in content.lower()
     
     return {
         "file": str(file_path.name),
@@ -88,51 +149,54 @@ def main():
     project_path = Path(sys.argv[1] if len(sys.argv) > 1 else ".").resolve()
     
     print(f"\n{'='*60}")
-    print(f"[SEO CHECKER] Basic SEO Audit")
+    print(f"  SEO CHECKER - Search Engine Optimization Audit")
     print(f"{'='*60}")
     print(f"Project: {project_path}")
     print(f"Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print("-"*60)
     
-    # Find HTML files
-    files = find_html_files(project_path)
-    print(f"Found {len(files)} HTML/JSX/TSX files")
+    # Find pages
+    pages = find_pages(project_path)
     
-    if not files:
-        output = {
-            "script": "seo_checker",
-            "project": str(project_path),
-            "files_checked": 0,
-            "issues_found": 0,
-            "passed": True,
-            "message": "No HTML files found"
-        }
-        print(json.dumps(output, indent=2))
+    if not pages:
+        print("\n[!] No page files found.")
+        print("    Looking for: HTML, JSX, TSX in pages/app/routes directories")
+        output = {"script": "seo_checker", "files_checked": 0, "passed": True}
+        print("\n" + json.dumps(output, indent=2))
         sys.exit(0)
     
-    # Check each file
-    all_issues = []
+    print(f"Found {len(pages)} page files to analyze\n")
     
-    for f in files:
-        result = check_html_file(f)
+    # Check each page
+    all_issues = []
+    for f in pages:
+        result = check_page(f)
         if result["issues"]:
             all_issues.append(result)
     
     # Summary
-    print("\n" + "="*60)
-    print("SEO ISSUES")
-    print("="*60)
+    print("=" * 60)
+    print("SEO ANALYSIS RESULTS")
+    print("=" * 60)
     
     if all_issues:
-        for item in all_issues[:10]:  # Show max 10 files
-            print(f"\n{item['file']}:")
+        # Group by issue type
+        issue_counts = {}
+        for item in all_issues:
             for issue in item["issues"]:
-                print(f"  - {issue}")
+                issue_counts[issue] = issue_counts.get(issue, 0) + 1
         
-        if len(all_issues) > 10:
-            print(f"\n... and {len(all_issues) - 10} more files with issues")
+        print("\nIssue Summary:")
+        for issue, count in sorted(issue_counts.items(), key=lambda x: -x[1]):
+            print(f"  [{count}] {issue}")
+        
+        print(f"\nAffected files ({len(all_issues)}):")
+        for item in all_issues[:5]:
+            print(f"  - {item['file']}")
+        if len(all_issues) > 5:
+            print(f"  ... and {len(all_issues) - 5} more")
     else:
-        print("No SEO issues found!")
+        print("\n[OK] No SEO issues found!")
     
     total_issues = sum(len(item["issues"]) for item in all_issues)
     passed = total_issues == 0
@@ -140,7 +204,7 @@ def main():
     output = {
         "script": "seo_checker",
         "project": str(project_path),
-        "files_checked": len(files),
+        "files_checked": len(pages),
         "files_with_issues": len(all_issues),
         "issues_found": total_issues,
         "passed": passed
