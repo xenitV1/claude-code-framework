@@ -9,8 +9,8 @@
             "name": "maestro",
             "description": "Elite AI Development Orchestrator for Claude Code",
             "source": {
-                "source": "github",
-                "repo": "xenitV1/claude-code-maestro"
+                "source": "url",
+                "url": "https://github.com/xenitV1/claude-code-maestro.git"
             },
             "version": "0.6.0"
         }
