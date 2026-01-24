@@ -1,18 +1,18 @@
 {
-    "name": "maestro",
-    "displayName": "Claude Code Maestro",
-    "version": "0.6.0",
-    "description": "Elite AI Development Orchestrator for Claude Code. Provides specialized agents, modular skills, intelligent hooks, and persistent memory systems for autonomous development workflows.",
-    "publisher": "xenitV1",
-    "license": "MIT",
-    "icon": "icon.png",
-    "categories": [
-        "Workflow",
-        "Agents",
-        "Development"
-    ],
-    "links": {
-        "repository": "https://github.com/xenitV1/claude-code-maestro",
-        "homepage": "https://x.com/xenit_v0"
-    }
+    "name": "maestro-marketplace",
+    "owner": {
+        "name": "xenitV1",
+        "url": "https://github.com/xenitV1"
+    },
+    "plugins": [
+        {
+            "name": "maestro",
+            "description": "Elite AI Development Orchestrator for Claude Code",
+            "source": {
+                "source": "github",
+                "repo": "xenitV1/claude-code-maestro"
+            },
+            "version": "0.6.0"
+        }
+    ]
 }
